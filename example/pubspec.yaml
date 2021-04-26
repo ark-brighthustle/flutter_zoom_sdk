@@ -11,7 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  another_flushbar: ^1.10.20
   flutter_statusbarcolor: 0.2.3
 
   flutter_zoom_sdk:
