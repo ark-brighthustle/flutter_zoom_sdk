@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Flutter Zoom SDK
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -10,7 +9,6 @@ Feedback and Pull Requests are always welcome.
 
 ## Zoom SDK Versions
 =======
->>>>>>> e22d4f10e09bbf86bd59f5afbb25682319a2d43d
 
 Android: https://github.com/zoom/zoom-sdk-android/releases/tag/v4.6.21666.0429
 
