@@ -1,4 +1,15 @@
-iOS: https://github.com/zoom/zoom-sdk-ios/releases/tag/v4.6.21666.0428
+# Flutter Zoom Plugin
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+A Flutter plugin for the Zoom SDK.
+
+*Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
+Feedback and Pull Requests are always welcome.
+
+## Zoom SDK Versions
+
+Android: https://github.com/zoom/zoom-sdk-android/releases/tag/v4.6.21666.0429
 
 ## Installation
 
