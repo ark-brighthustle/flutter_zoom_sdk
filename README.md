@@ -8,13 +8,12 @@ A Flutter plugin for the Zoom SDK.
 Feedback and Pull Requests are always welcome.
 
 ## Zoom SDK Versions
-=======
 
 Android: https://github.com/zoom/zoom-sdk-android/releases/tag/v4.6.21666.0429
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.1` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.2` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### Android
 
