@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_zoom_sdk_example/start_meeting_screen.dart';
-import 'dart:async';
 
 import 'join_screen.dart';
 import 'meeting_screen.dart';
 
+// for complete example see https://github.com/evilrat/flutter_zoom_sdk/tree/master/example
 
 void main() => runApp(ExampleApp());
 
