@@ -20,13 +20,13 @@ class ZoomMeetingOptions {
   String displayName;
   String meetingId;
   String meetingPassword;
-  String zoomToken;
-  String zoomAccessToken;
   String disableDialIn;
   String disableDrive;
   String disableInvite;
   String disableShare;
+  String disableTitlebar;
   String noDisconnectAudio;
+  String viewOptions;
   String noAudio;
 
   ZoomMeetingOptions({
@@ -34,13 +34,13 @@ class ZoomMeetingOptions {
     this.displayName,
     this.meetingId,
     this.meetingPassword,
-    this.zoomToken,
-    this.zoomAccessToken,
     this.disableDialIn,
     this.disableDrive,
     this.disableInvite,
     this.disableShare,
+    this.disableTitlebar,
     this.noDisconnectAudio,
+    this.viewOptions,
     this.noAudio
   });
 }

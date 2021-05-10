@@ -4,16 +4,17 @@
 
 A Flutter plugin for the Zoom SDK.
 
+*Note*: IOS Version currently under development.
 *Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
 Feedback and Pull Requests are always welcome.
 
 ## Zoom SDK Versions
 
-Android: https://github.com/zoom/zoom-sdk-android/releases/tag/v4.6.21666.0429
+*Note*: Updated to new sdk with new features.
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.2` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.3` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### Android
 
@@ -22,6 +23,7 @@ Change the minimum Android sdk version to at the minimum 21 in your `android/app
 ```
 minSdkVersion 21
 ```
+gradle version should be 3.4.0
 
 Add the zoom proguard content to your android project: https://github.com/zoom/zoom-sdk-android/blob/master/proguard.cfg
 
@@ -77,6 +79,8 @@ class MeetingWidget extends StatelessWidget {
         disableInvite: "true",
         disableShare: "true",
         noAudio: "false",
+        disableTitlebar: "false", //make it true for disabling titlebar
+        viewOptions: "false", //make it true for hiding zoom icon on meeting ui which shows meeting id and password
         noDisconnectAudio: "false"
     );
   }
@@ -188,11 +192,10 @@ class StartMeetingWidget extends StatelessWidget {
       appSecret: "appSecret", // Replace with with key got from the Zoom Marketplace
     );
     this.meetingOptions = new ZoomMeetingOptions(
-        userId: '<zoom_user_id>', // Replace with the user email or Zoom user ID
+        userId: 'username', // Replace with the user email or Zoom user ID
+        meetingPassword: 'password', // Replace with the user password for your Zoom ID
         displayName: 'Example display Name',
         meetingId: meetingId, 
-        zoomAccessToken: "<zak_token>", // Replace with the token obtained from the Zoom API
-        zoomToken: "<zoom_token>", // Replace with the token obtained from the Zoom API
         disableDialIn: "true",
         disableDrive: "true",
         disableInvite: "true",

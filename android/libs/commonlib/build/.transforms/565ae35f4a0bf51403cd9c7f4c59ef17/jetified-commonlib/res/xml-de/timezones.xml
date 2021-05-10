@@ -1,0 +1,192 @@
+<timezones>
+    <!--GMT-11:00-->
+    <timezone id="Pacific/Midway">Midway</timezone>
+    <timezone id="Pacific/Pago_Pago">Pago Pago</timezone>
+    <!--GMT-10:00-->
+    <timezone id="Pacific/Honolulu">Honolulu</timezone>
+    <!--GMT-9:00-->
+    <timezone id="America/Anchorage">Anchorage</timezone>
+    <timezone id="America/Juneau">Juneau</timezone>
+    <!--GMT-8:00-->
+    <timezone id="America/Vancouver">Vancouver</timezone>
+    <timezone id="America/Los_Angeles">USA - Pacific Standard Time</timezone>
+    <timezone id="America/Tijuana">Tijuana</timezone>
+    <!--GMT-7:00-->
+    <timezone id="America/Edmonton">Edmonton</timezone>
+    <timezone id="America/Phoenix">Phoenix</timezone>
+    <timezone id="America/Denver">Denver</timezone>
+    <timezone id="America/Mazatlan">Mazatlan</timezone>
+    <timezone id="America/Chihuahua">Chihuahua</timezone>
+    <!--GMT-6:00-->
+    <timezone id="America/Winnipeg">Winnipeg</timezone>
+    <timezone id="America/Regina">Regina</timezone>
+    <timezone id="America/Chicago">Chicago</timezone>
+    <timezone id="America/Mexico_City">Mexiko-Stadt</timezone>
+    <timezone id="America/Guatemala">Guatemala</timezone>
+    <timezone id="America/El_Salvador">El Salvador</timezone>
+    <timezone id="America/Managua">Managua</timezone>
+    <timezone id="America/Costa_Rica">Costa Rica</timezone>
+    <timezone id="America/Tegucigalpa">Tegucigalpa</timezone>
+    <timezone id="America/Monterrey">Monterrey</timezone>
+    <!--GMT-5:00-->
+    <timezone id="America/Montreal">Montreal</timezone>
+    <timezone id="America/New_York">New York</timezone>
+    <timezone id="America/Indianapolis">East Indiana</timezone>
+    <timezone id="America/Panama">Panama</timezone>
+    <timezone id="America/Bogota">Bogota</timezone>
+    <timezone id="America/Lima">Lima</timezone>
+    <!--GMT-4:00-->
+    <timezone id="America/Halifax">Halifax</timezone>
+    <timezone id="America/Puerto_Rico">PuertoRico</timezone>
+    <timezone id="America/Caracas">Caracas</timezone>
+    <timezone id="Canada/Atlantic">Atlantic Time (Kanada)</timezone>
+    <timezone id="America/La_Paz">La Paz</timezone>
+    <timezone id="America/Guyana">Guyana</timezone>
+    <timezone id="America/Barbados">Barbados</timezone>
+    <timezone id="America/Manaus">Manaus</timezone>
+    <!--GMT-3:30-->
+    <timezone id="America/St_Johns">St. John's</timezone>
+    <!--GMT-3:00-->
+    <timezone id="America/Santiago">Santiago</timezone>
+    <timezone id="America/Montevideo">Montevideo</timezone>
+    <timezone id="America/Araguaina">Brasilia</timezone>
+    <timezone id="America/Argentina/Buenos_Aires">Buenos Aires</timezone>
+    <timezone id="America/Godthab">Grönland</timezone>
+    <!--GMT-2:00-->
+    <timezone id="America/Sao_Paulo">Sao Paulo</timezone>
+    <timezone id="Atlantic/South_Georgia">Süd-Georgien</timezone>
+    <!--GMT-1:00-->
+    <timezone id="Atlantic/Azores">Azoren</timezone>
+    <timezone id="Atlantic/Cape_Verde">Kap Verde</timezone>
+    <!--GMT-0:00-->
+    <timezone id="UTC">Koordinierte Weltzeit UTC</timezone>
+    <timezone id="Etc/Greenwich">Greenwich-Zeit</timezone>
+    <timezone id="Atlantic/Reykjavik">Reykjavik</timezone>
+    <timezone id="Europe/Dublin">Dublin</timezone>
+    <timezone id="Europe/London">London</timezone>
+    <timezone id="Europe/Lisbon">Lissabon</timezone>
+    <timezone id="Africa/Casablanca">Casablanca</timezone>
+    <timezone id="Africa/Nouakchott">Nouakchott</timezone>
+    <!--GMT+1:00-->
+    <timezone id="Europe/Belgrade">Mitteleuropäische Zeit (Belgrade)</timezone>
+    <timezone id="CET">Sarajevo, Skopje, Zagreb</timezone>
+    <timezone id="Europe/Oslo">Oslo</timezone>
+    <timezone id="Europe/Copenhagen">Kopenhagen</timezone>
+    <timezone id="Europe/Brussels">Mitteleuropäische Zeit (Brüssel)</timezone>
+    <timezone id="Europe/Berlin">Berlin</timezone>
+    <timezone id="Europe/Amsterdam">Amsterdam</timezone>
+    <timezone id="Europe/Rome">Rome</timezone>
+    <timezone id="Europe/Stockholm">Stockholm</timezone>
+    <timezone id="Europe/Vienna">Wien</timezone>
+    <timezone id="Europe/Luxembourg">Luxembourg</timezone>
+    <timezone id="Europe/Paris">Paris</timezone>
+    <timezone id="Europe/Zurich">Zürich</timezone>
+    <timezone id="Europe/Madrid">Madrid</timezone>
+    <timezone id="Africa/Bangui">West-Zentral-Afrika</timezone>
+    <timezone id="Africa/Algiers">Algier</timezone>
+    <timezone id="Africa/Tunis">Tunis</timezone>
+    <timezone id="Europe/Warsaw">Warschau</timezone>
+    <timezone id="Europe/Prague">Prag, Bratislava</timezone>
+    <timezone id="Europe/Budapest">Budapest</timezone>
+    <timezone id="Africa/Brazzaville">Westafrikanische Zeit (Brazzaville)</timezone>
+    <timezone id="Europe/Sarajevo">Mitteleuropäische Zeit (Sarajevo)</timezone>
+    <!--GMT+2:00-->
+    <timezone id="Europe/Helsinki">Osteuropäische Zeit (Helsinki)</timezone>
+    <timezone id="Africa/Harare">Zentralafrikanische Zeit (Harare)</timezone>
+    <timezone id="Europe/Sofia">Sofia</timezone>
+    <timezone id="Europe/Athens">Osteuropäische Zeit (Athen)</timezone>
+    <timezone id="Europe/Bucharest">Bucharest</timezone>
+    <timezone id="Asia/Nicosia">Nicosia</timezone>
+    <timezone id="Asia/Beirut">Osteuropäische Zeit (Beirut)</timezone>
+    <timezone id="Asia/Damascus">Damaskus</timezone>
+    <timezone id="Asia/Jerusalem">Jerusalem</timezone>
+    <timezone id="Asia/Amman">Osteuropäische Zeit (Amman)</timezone>
+    <timezone id="Africa/Tripoli">Tripolis</timezone>
+    <timezone id="Africa/Cairo">Osteuropäische Zeit (Kairo)</timezone>
+    <timezone id="Africa/Johannesburg">Johannesburg</timezone>
+    <timezone id="Europe/Kiev">Kiew</timezone>
+    <timezone id="Africa/Windhoek">Windhoek</timezone>
+    <timezone id="Africa/Khartoum">Khartum</timezone>
+    <!--GMT+3:00-->
+    <timezone id="Africa/Nairobi">Ostafrikanische Zeit (Nairobi)</timezone>
+    <timezone id="Europe/Istanbul">Istanbul</timezone>
+    <timezone id="Europe/Moscow">Moskau</timezone>
+    <timezone id="Asia/Baghdad">Bagdad</timezone>
+    <timezone id="Asia/Kuwait">Kuwait</timezone>
+    <timezone id="Asia/Riyadh">Riad</timezone>
+    <timezone id="Asia/Bahrain">Bahrain</timezone>
+    <timezone id="Asia/Qatar">Katar</timezone>
+    <timezone id="Asia/Aden">Aden</timezone>
+    <timezone id="Africa/Djibouti">Dschibuti</timezone>
+    <timezone id="Africa/Mogadishu">Mogadischu</timezone>
+    <timezone id="Europe/Minsk">Minsk</timezone>
+    <!--GMT+3:30-->
+    <timezone id="Asia/Tehran">Teheran</timezone>
+    <!--GMT+4:00-->
+    <timezone id="Asia/Dubai">Dubai</timezone>
+    <timezone id="Asia/Muscat">Maskat</timezone>
+    <timezone id="Asia/Baku">Baku</timezone>
+    <timezone id="Asia/Tbilisi">Tiflis</timezone>
+    <timezone id="Asia/Yerevan">Erivan</timezone>
+    <!--GMT+4:30-->
+    <timezone id="Asia/Kabul">Afghanistan-Zeit (Kabul)</timezone>
+    <!--GMT+5:00-->
+    <timezone id="Asia/Yekaterinburg">Jekaterinburg</timezone>
+    <timezone id="Asia/Tashkent">Taschkent</timezone>
+    <timezone id="Asia/Karachi">Karachi</timezone>
+    <timezone id="Asia/Oral">Oral</timezone>
+    <!--GMT+5:30-->
+    <timezone id="Asia/Calcutta">Calcutta</timezone>
+    <timezone id="Asia/Kolkata">Mumbai, Kalkutta, Neu Delhi</timezone>
+    <timezone id="Asia/Colombo">Colombo</timezone>
+    <!--GMT+5:45-->
+    <timezone id="Asia/Katmandu">Katmandu</timezone>
+    <!--GMT+6:00-->
+    <timezone id="Asia/Almaty">Almaty</timezone>
+    <timezone id="Asia/Dacca">Dhaka</timezone>
+    <timezone id="Asia/Dhaka">Astana, Dhaka</timezone>
+    <!--GMT+6:30-->
+    <timezone id="Asia/Rangoon">Rangun</timezone>
+    <!--GMT+7:00-->
+    <timezone id="Asia/Novosibirsk">Nowosibirsk</timezone>
+    <timezone id="Asia/Krasnoyarsk">Krasnojarsk</timezone>
+    <timezone id="Asia/Bangkok">Bangkok</timezone>
+    <timezone id="Asia/Saigon">Vietnam</timezone>
+    <timezone id="Asia/Jakarta">Jakarta</timezone>
+    <!--GMT+8:00-->
+    <timezone id="Asia/Irkutsk">Irkutsk</timezone>
+    <timezone id="Asia/Shanghai">Beijing</timezone>
+    <timezone id="Asia/Hong_Kong">Hongkong</timezone>
+    <timezone id="Asia/Taipei">Taipeh</timezone>
+    <timezone id="Asia/Kuala_Lumpur">Kuala Lumpur</timezone>
+    <timezone id="Asia/Singapore">Singapur</timezone>
+    <timezone id="Australia/Perth">Perth</timezone>
+    <!--GMT+9:00-->
+    <timezone id="Asia/Yakutsk">Jakutsk</timezone>
+    <timezone id="Asia/Seoul">Seoul</timezone>
+    <timezone id="Asia/Tokyo">Tokio</timezone>
+    <!--GMT+9:30-->
+    <timezone id="Australia/Darwin">Darwin</timezone>
+    <!--GMT+10:00-->
+    <timezone id="Asia/Vladivostok">Wladiwostok</timezone>
+    <timezone id="Pacific/Port_Moresby">Guam, Port Moresby</timezone>
+    <timezone id="Australia/Brisbane">Brisbane</timezone>
+    <timezone id="Pacific/Guam">Guam</timezone>
+    <!--GMT+10:30-->
+    <timezone id="Australia/Adelaide">Adelaide</timezone>
+    <!--GMT+11:00-->
+    <timezone id="Australia/Sydney">Sydney</timezone>
+    <timezone id="Australia/Hobart">Hobart</timezone>
+    <timezone id="Asia/Magadan">Magadan</timezone>
+    <timezone id="Pacific/Guadalcanal">Salomonen</timezone>
+    <timezone id="Pacific/Noumea">Neukaledonien</timezone>
+    <!--GMT+12:00-->
+    <timezone id="Asia/Kamchatka">Kamtschatka</timezone>
+    <timezone id="Pacific/Majuro">Majuro</timezone>
+    <!--GMT+13:00-->
+    <timezone id="Pacific/Fiji">Fidschi</timezone>
+    <timezone id="Pacific/Auckland">Auckland</timezone>
+    <timezone id="Pacific/Tongatapu">Tongatapu</timezone>
+    <!--GMT+14:00-->
+    <timezone id="Pacific/Apia">Unabhängiger Staat Samoa</timezone>
+</timezones>

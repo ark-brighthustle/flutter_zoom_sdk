@@ -1,0 +1,3 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+  android:drawable="@color/zm_v2_svg_setting_divider"
+  android:insetLeft="@dimen/zm_setting_item_padding_left"/>

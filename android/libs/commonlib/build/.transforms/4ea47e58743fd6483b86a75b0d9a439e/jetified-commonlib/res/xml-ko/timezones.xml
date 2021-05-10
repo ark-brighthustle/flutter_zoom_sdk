@@ -1,0 +1,192 @@
+<timezones>
+    <!--GMT-11:00-->
+    <timezone id="Pacific/Midway">미드웨이 제도, 사모아</timezone>
+    <timezone id="Pacific/Pago_Pago">파고파고</timezone>
+    <!--GMT-10:00-->
+    <timezone id="Pacific/Honolulu">하와이</timezone>
+    <!--GMT-9:00-->
+    <timezone id="America/Anchorage">알래스카</timezone>
+    <timezone id="America/Juneau">주노</timezone>
+    <!--GMT-8:00-->
+    <timezone id="America/Vancouver">밴쿠버</timezone>
+    <timezone id="America/Los_Angeles">태평양 표준시(미국 및 캐나다)</timezone>
+    <timezone id="America/Tijuana">티후아나</timezone>
+    <!--GMT-7:00-->
+    <timezone id="America/Edmonton">에드먼턴</timezone>
+    <timezone id="America/Denver">산지 표준시(미국 및 캐나다)</timezone>
+    <timezone id="America/Phoenix">애리조나</timezone>
+    <timezone id="America/Mazatlan">마사틀란</timezone>
+    <timezone id="America/Chihuahua">치와와</timezone>
+    <!--GMT-6:00-->
+    <timezone id="America/Winnipeg">위니펙</timezone>
+    <timezone id="America/Regina">서스캐처원</timezone>
+    <timezone id="America/Chicago">중부 표준시(미국 및 캐나다)</timezone>
+    <timezone id="America/Mexico_City">멕시코 시티</timezone>
+    <timezone id="America/Guatemala">과테말라</timezone>
+    <timezone id="America/El_Salvador">엘살바도르</timezone>
+    <timezone id="America/Managua">마나과</timezone>
+    <timezone id="America/Costa_Rica">코스타리카</timezone>
+    <timezone id="America/Tegucigalpa">테구시갈파</timezone>
+    <timezone id="America/Monterrey">몬테레이</timezone>
+    <!--GMT-5:00-->
+    <timezone id="America/Montreal">몬트리올</timezone>
+    <timezone id="America/New_York">동부 표준시(미국 및 캐나다)</timezone>
+    <timezone id="America/Indianapolis">인디애나(동부)</timezone>
+    <timezone id="America/Panama">파나마</timezone>
+    <timezone id="America/Bogota">보고타</timezone>
+    <timezone id="America/Lima">리마</timezone>
+    <!--GMT-4:00-->
+    <timezone id="America/Halifax">핼리팩스</timezone>
+    <timezone id="America/Puerto_Rico">푸에르토리코</timezone>
+    <timezone id="America/Caracas">카라카스</timezone>
+    <timezone id="Canada/Atlantic">대서양 표준시(캐나다)</timezone>
+    <timezone id="America/La_Paz">라파스</timezone>
+    <timezone id="America/Guyana">가이아나</timezone>
+    <timezone id="America/Barbados">대서양 표준시(바베이도스)</timezone>
+    <timezone id="America/Manaus">마나우스</timezone>
+    <!--GMT-3:30-->
+    <timezone id="America/St_Johns">뉴펀들랜드 및 래브라도</timezone>
+    <!--GMT-3:00-->
+    <timezone id="America/Santiago">산티아고</timezone>
+    <timezone id="America/Montevideo">몬테비디오</timezone>
+    <timezone id="America/Araguaina">레시페</timezone>
+    <timezone id="America/Argentina/Buenos_Aires">부에노스아이레스, 조지타운</timezone>
+    <timezone id="America/Godthab">그린란드</timezone>
+    <!--GMT-2:00-->
+    <timezone id="America/Sao_Paulo">상파울루</timezone>
+    <timezone id="America/Sao_Paulo">브라질리아</timezone>
+    <timezone id="Atlantic/South_Georgia">대서양 중부</timezone>
+    <!--GMT-1:00-->
+    <timezone id="Atlantic/Azores">아조레스</timezone>
+    <timezone id="Atlantic/Cape_Verde">카보베르데 제도</timezone>
+    <!--GMT-0:00-->
+    <timezone id="UTC">세계 표준시 UTC</timezone>
+    <timezone id="Etc/Greenwich">그리니치 표준시</timezone>
+    <timezone id="Atlantic/Reykjavik">레이캬비크</timezone>
+    <timezone id="Europe/Dublin">더블린</timezone>
+    <timezone id="Europe/London">런던</timezone>
+    <timezone id="Europe/Lisbon">리스본</timezone>
+    <timezone id="Africa/Casablanca">카사블랑카</timezone>
+    <timezone id="Africa/Nouakchott">누악쇼트</timezone>
+    <!--GMT+1:00-->
+    <timezone id="Europe/Belgrade">베오그라드, 브라티슬라바, 류블랴나</timezone>
+    <timezone id="CET">사라예보, 스코페, 자그레브</timezone>
+    <timezone id="Europe/Oslo">오슬로</timezone>
+    <timezone id="Europe/Copenhagen">코펜하겐</timezone>
+    <timezone id="Europe/Brussels">브뤼셀</timezone>
+    <timezone id="Europe/Berlin">암스테르담, 베를린, 로마, 스톡홀름, 비엔나</timezone>
+    <timezone id="Europe/Amsterdam">암스테르담</timezone>
+    <timezone id="Europe/Rome">로마</timezone>
+    <timezone id="Europe/Stockholm">스톡홀름</timezone>
+    <timezone id="Europe/Vienna">비엔나</timezone>
+    <timezone id="Europe/Luxembourg">룩셈부르크</timezone>
+    <timezone id="Europe/Paris">파리</timezone>
+    <timezone id="Europe/Zurich">취리히</timezone>
+    <timezone id="Europe/Madrid">마드리드</timezone>
+    <timezone id="Africa/Bangui">서중앙 아프리카</timezone>
+    <timezone id="Africa/Algiers">알제</timezone>
+    <timezone id="Africa/Tunis">튀니스</timezone>
+    <timezone id="Europe/Warsaw">바르샤바</timezone>
+    <timezone id="Europe/Prague">프라하 브라티슬라바</timezone>
+    <timezone id="Europe/Budapest">부다페스트</timezone>
+    <timezone id="Africa/Brazzaville">WAT</timezone>
+    <timezone id="Europe/Sarajevo">사라예보</timezone>
+    <!--GMT+2:00-->
+    <timezone id="Europe/Helsinki">헬싱키</timezone>
+    <timezone id="Africa/Harare">하라레, 프리토리아</timezone>
+    <timezone id="Europe/Sofia">소피아</timezone>
+    <timezone id="Europe/Athens">아테네</timezone>
+    <timezone id="Europe/Bucharest">부카레스트</timezone>
+    <timezone id="Asia/Nicosia">니코시아</timezone>
+    <timezone id="Asia/Beirut">베이루트</timezone>
+    <timezone id="Asia/Damascus">다마스쿠스</timezone>
+    <timezone id="Asia/Jerusalem">예루살렘</timezone>
+    <timezone id="Asia/Amman">암만</timezone>
+    <timezone id="Africa/Tripoli">트리폴리</timezone>
+    <timezone id="Africa/Cairo">카이로</timezone>
+    <timezone id="Africa/Johannesburg">요하네스버그</timezone>
+    <timezone id="Europe/Kiev">키예프</timezone>
+    <timezone id="Africa/Windhoek">빈트후크</timezone>
+    <timezone id="Africa/Khartoum">카르툼</timezone>
+    <!--GMT+3:00-->
+    <timezone id="Africa/Nairobi">나이로비</timezone>
+    <timezone id="Europe/Istanbul">이스탄불</timezone>
+    <timezone id="Europe/Moscow">모스크바</timezone>
+    <timezone id="Asia/Baghdad">바그다드</timezone>
+    <timezone id="Asia/Kuwait">쿠웨이트</timezone>
+    <timezone id="Asia/Riyadh">리야드</timezone>
+    <timezone id="Asia/Bahrain">바레인</timezone>
+    <timezone id="Asia/Qatar">카타르</timezone>
+    <timezone id="Asia/Aden">아덴</timezone>
+    <timezone id="Africa/Djibouti">지부티</timezone>
+    <timezone id="Africa/Mogadishu">모가디슈</timezone>
+    <timezone id="Europe/Minsk">민스크</timezone>
+    <!--GMT+3:30-->
+    <timezone id="Asia/Tehran">테헤란</timezone>
+    <!--GMT+4:00-->
+    <timezone id="Asia/Dubai">두바이</timezone>
+    <timezone id="Asia/Muscat">무스카트</timezone>
+    <timezone id="Asia/Baku">바쿠, 트빌리시, 예레반</timezone>
+    <timezone id="Asia/Tbilisi">트빌리시</timezone>
+    <timezone id="Asia/Yerevan">예레반</timezone>
+    <!--GMT+4:30-->
+    <timezone id="Asia/Kabul">카불</timezone>
+    <!--GMT+5:00-->
+    <timezone id="Asia/Yekaterinburg">예카테린부르크</timezone>
+    <timezone id="Asia/Tashkent">이슬라마바드, 카라치, 타슈켄트</timezone>
+    <timezone id="Asia/Karachi">이슬라마바드, 카라치</timezone>
+    <timezone id="Asia/Oral">우랄스크</timezone>
+    <!--GMT+5:30-->
+    <timezone id="Asia/Calcutta">인도</timezone>
+    <timezone id="Asia/Kolkata">뭄바이, 콜카타, 뉴델리</timezone>
+    <!--GMT+5:45-->
+    <timezone id="Asia/Katmandu">카트만두</timezone>
+    <!--GMT+6:00-->
+    <timezone id="Asia/Almaty">알마티</timezone>
+    <timezone id="Asia/Dacca">다카</timezone>
+    <timezone id="Asia/Dhaka">아스타나, 다카</timezone>
+    <!--GMT+6:30-->
+    <timezone id="Asia/Rangoon">랑군</timezone>
+    <!--GMT+7:00-->
+    <timezone id="Asia/Novosibirsk">노보시비르스크</timezone>
+    <timezone id="Asia/Krasnoyarsk">크라스노야르스크</timezone>
+    <timezone id="Asia/Bangkok">방콕</timezone>
+    <timezone id="Asia/Saigon">베트남</timezone>
+    <timezone id="Asia/Jakarta">자카르타</timezone>
+    <!--GMT+8:00-->
+    <timezone id="Asia/Irkutsk">이르쿠츠크, 울란바토르</timezone>
+    <timezone id="Asia/Shanghai">베이징, 상하이</timezone>
+    <timezone id="Asia/Hong_Kong">홍콩</timezone>
+    <timezone id="Asia/Taipei">타이페이</timezone>
+    <timezone id="Asia/Kuala_Lumpur">쿠알라룸푸르</timezone>
+    <timezone id="Asia/Singapore">싱가포르</timezone>
+    <timezone id="Australia/Perth">퍼스</timezone>
+    <!--GMT+9:00-->
+    <timezone id="Asia/Yakutsk">야쿠츠크</timezone>
+    <timezone id="Asia/Seoul">서울</timezone>
+    <timezone id="Asia/Tokyo">오사카, 삿포로, 도쿄</timezone>
+    <!--GMT+9:30-->
+    <timezone id="Australia/Darwin">다윈</timezone>
+    <!--GMT+10:00-->
+    <timezone id="Asia/Vladivostok">블라디보스토크</timezone>
+    <timezone id="Pacific/Port_Moresby">괌, 포트모르즈비</timezone>
+    <timezone id="Australia/Brisbane">브리즈번</timezone>
+    <timezone id="Pacific/Guam">괌</timezone>
+    <!--GMT+10:30-->
+    <timezone id="Australia/Adelaide">애들레이드</timezone>
+    <!--GMT+11:00-->
+    <timezone id="Australia/Sydney">캔버라, 멜버른, 시드니</timezone>
+    <timezone id="Australia/Hobart">호바트</timezone>
+    <timezone id="Asia/Magadan">마가단</timezone>
+    <timezone id="Pacific/Guadalcanal">솔로몬 제도</timezone>
+    <timezone id="Pacific/Noumea">뉴칼레도니아</timezone>
+    <!--GMT+12:00-->
+    <timezone id="Asia/Kamchatka">캄차카</timezone>
+    <timezone id="Pacific/Majuro">마샬 군도</timezone>
+    <!--GMT+13:00-->
+    <timezone id="Pacific/Fiji">피지 제도, 마샬 제도</timezone>
+    <timezone id="Pacific/Auckland">오클랜드, 웰링턴</timezone>
+    <timezone id="Pacific/Tongatapu">통가</timezone>
+    <!--GMT+14:00-->
+    <timezone id="Pacific/Apia">사모아 독립국</timezone>
+</timezones>

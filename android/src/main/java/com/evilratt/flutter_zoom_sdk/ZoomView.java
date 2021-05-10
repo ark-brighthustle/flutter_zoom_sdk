@@ -15,12 +15,13 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
 import us.zoom.sdk.JoinMeetingOptions;
 import us.zoom.sdk.JoinMeetingParams;
-import us.zoom.sdk.StartMeetingParamsWithoutLogin;
+import us.zoom.sdk.MeetingViewsOptions;
 import us.zoom.sdk.StartMeetingOptions;
 import us.zoom.sdk.MeetingService;
 import us.zoom.sdk.MeetingStatus;
 import us.zoom.sdk.ZoomError;
 import us.zoom.sdk.ZoomSDK;
+import us.zoom.sdk.ZoomApiError;
 import us.zoom.sdk.ZoomSDKAuthenticationListener;
 import us.zoom.sdk.ZoomSDKInitParams;
 import us.zoom.sdk.ZoomSDKInitializeListener;
@@ -82,36 +83,34 @@ public class ZoomView  implements PlatformView,
         }
 
         ZoomSDKInitParams initParams = new ZoomSDKInitParams();
-        initParams.jwtToken = options.get("sdkToken");
         initParams.appKey = options.get("appKey");
         initParams.appSecret = options.get("appSecret");
         initParams.domain = options.get("domain");
-        zoomSDK.initialize(
-                context,
-                new ZoomSDKInitializeListener() {
+        initParams.enableLog = true;
+        ZoomSDKInitializeListener listener = new ZoomSDKInitializeListener() {
+            /**
+             * @param errorCode {@link us.zoom.sdk.ZoomError#ZOOM_ERROR_SUCCESS} if the SDK has been initialized successfully.
+             */
+            @Override
+            public void onZoomSDKInitializeResult(int errorCode, int internalErrorCode) {
+                List<Integer> response = Arrays.asList(errorCode, internalErrorCode);
 
-                    @Override
-                    public void onZoomAuthIdentityExpired() {
+                if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
+                    System.out.println("Failed to initialize Zoom SDK");
+                    result.success(response);
+                    return;
+                }
 
-                    }
+                ZoomSDK zoomSDK = ZoomSDK.getInstance();
+                MeetingService meetingService = zoomSDK.getMeetingService();
+                meetingStatusChannel.setStreamHandler(new StatusStreamHandler(meetingService));
+                result.success(response);
+            }
 
-                    @Override
-                    public void onZoomSDKInitializeResult(int errorCode, int internalErrorCode) {
-                        List<Integer> response = Arrays.asList(errorCode, internalErrorCode);
-
-                        if (errorCode != ZoomError.ZOOM_ERROR_SUCCESS) {
-                            System.out.println("Failed to initialize Zoom SDK");
-                            result.success(response);
-                            return;
-                        }
-
-                        ZoomSDK zoomSDK = ZoomSDK.getInstance();
-                        MeetingService meetingService = zoomSDK.getMeetingService();
-                        meetingStatusChannel.setStreamHandler(new StatusStreamHandler(meetingService));
-                        result.success(response);
-                    }
-                },
-                initParams);
+            @Override
+            public void onZoomAuthIdentityExpired() { }
+        };
+        zoomSDK.initialize(context, listener, initParams);
     }
 
     private void joinMeeting(MethodCall methodCall, MethodChannel.Result result) {
@@ -126,15 +125,20 @@ public class ZoomView  implements PlatformView,
             return;
         }
 
-        final MeetingService meetingService = zoomSDK.getMeetingService();
+        MeetingService meetingService = zoomSDK.getMeetingService();
 
         JoinMeetingOptions opts = new JoinMeetingOptions();
         opts.no_invite = parseBoolean(options, "disableInvite", false);
         opts.no_share = parseBoolean(options, "disableShare", false);
+//        opts.no_titlebar =  parseBoolean(options, "disableTitlebar", false);
         opts.no_driving_mode = parseBoolean(options, "disableDrive", false);
         opts.no_dial_in_via_phone = parseBoolean(options, "disableDialIn", false);
         opts.no_disconnect_audio = parseBoolean(options, "noDisconnectAudio", false);
         opts.no_audio = parseBoolean(options, "noAudio", false);
+        boolean view_options = parseBoolean(options, "viewOptions", false);
+        if(view_options){
+            opts.meeting_views_options = MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD;
+        }
 
         JoinMeetingParams params = new JoinMeetingParams();
 
@@ -159,28 +163,19 @@ public class ZoomView  implements PlatformView,
             return;
         }
 
-        final MeetingService meetingService = zoomSDK.getMeetingService();
+        if(zoomSDK.isLoggedIn()){
+            MeetingService meetingService = zoomSDK.getMeetingService();
+            StartMeetingOptions opts= new StartMeetingOptions();
+            meetingService.startInstantMeeting(context, opts);
 
-        StartMeetingOptions opts = new StartMeetingOptions();
-        opts.no_invite = parseBoolean(options, "disableInvite", false);
-        opts.no_share = parseBoolean(options, "disableShare", false);
-        opts.no_driving_mode = parseBoolean(options, "disableDrive", false);
-        opts.no_dial_in_via_phone = parseBoolean(options, "disableDialIn", false);
-        opts.no_disconnect_audio = parseBoolean(options, "noDisconnectAudio", false);
-        opts.no_audio = parseBoolean(options, "noAudio", false);
-
-        StartMeetingParamsWithoutLogin params = new StartMeetingParamsWithoutLogin();
-
-		params.userId = options.get("userId");
-        params.displayName = options.get("displayName");
-        params.meetingNo = options.get("meetingId");
-		params.userType = MeetingService.USER_TYPE_API_USER;
-		params.zoomToken = options.get("zoomToken");
-		params.zoomAccessToken = options.get("zoomAccessToken");
-		
-        meetingService.startMeetingWithParams(context, params, opts);
-
-        result.success(true);
+            result.success(true);
+        }else {
+            int res = ZoomSDK.getInstance().loginWithZoom(options.get("userId"), options.get("meetingPassword"));
+            if (res == ZoomApiError.ZOOM_API_ERROR_SUCCESS) {
+                // Request executed, listen for result to start meeting
+                //ZoomSDK.getInstance().addAuthenticationListener(authListener);
+            }
+        }
     }
 
     private boolean parseBoolean(Map<String, String> options, String property, boolean defaultValue) {
@@ -219,7 +214,10 @@ public class ZoomView  implements PlatformView,
 
     @Override
     public void onZoomSDKLoginResult(long result) {
-
+//        if (result == ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
+//            // Once we verify that the request was successful, we may start the meeting
+//            startMeeting(MainJavaActivity.this);
+//        }
     }
 
     @Override

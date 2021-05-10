@@ -16,19 +16,19 @@ class StartMeetingWidget extends StatelessWidget {
   StartMeetingWidget({Key key, meetingId}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
-      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
+      appKey: "",
+      appSecret: "",
     );
     this.meetingOptions = new ZoomMeetingOptions(
-        userId: '<zoom_user_id>',
+        userId: '',
+        meetingPassword: '',
         displayName: 'Kumar',
         meetingId: meetingId,
-        zoomAccessToken: "<User zak>",
-        zoomToken: "<user_token>",
-        disableDialIn: "true",
-        disableDrive: "true",
-        disableInvite: "true",
-        disableShare: "true",
+        disableDialIn: "false",
+        disableDrive: "false",
+        disableInvite: "false",
+        disableShare: "false",
+        disableTitlebar: "false",
         noAudio: "false",
         noDisconnectAudio: "false"
     );

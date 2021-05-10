@@ -80,12 +80,11 @@ class ZoomViewController {
     optionMap.putIfAbsent("displayName", () => options.displayName);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
     optionMap.putIfAbsent("meetingPassword", () => options.meetingPassword);
-    optionMap.putIfAbsent("zoomToken", () => options.zoomToken);
-    optionMap.putIfAbsent("zoomAccessToken", () => options.zoomAccessToken);
     optionMap.putIfAbsent("disableDialIn", () => options.disableDialIn);
     optionMap.putIfAbsent("disableDrive", () => options.disableDrive);
     optionMap.putIfAbsent("disableInvite", () => options.disableInvite);
     optionMap.putIfAbsent("disableShare", () => options.disableShare);
+    optionMap.putIfAbsent("disableTitlebar", () => options.disableTitlebar);
     optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
@@ -102,7 +101,9 @@ class ZoomViewController {
     optionMap.putIfAbsent("disableDrive", () => options.disableDrive);
     optionMap.putIfAbsent("disableInvite", () => options.disableInvite);
     optionMap.putIfAbsent("disableShare", () => options.disableShare);
+    optionMap.putIfAbsent("disableTitlebar", () => options.disableTitlebar);
     optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
+    optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
     return _methodChannel.invokeMethod('join', optionMap);

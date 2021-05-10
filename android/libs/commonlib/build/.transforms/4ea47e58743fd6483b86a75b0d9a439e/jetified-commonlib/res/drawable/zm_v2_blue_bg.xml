@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/zm_v2_text_btn_blue_pressed">
+
+    <item android:drawable="@color/zm_v2_text_btn_blue_pressed" android:state_pressed="true"/>
+    <item android:drawable="@color/zm_v2_text_btn_blue_disable" android:state_enabled="false"/>
+    <item android:drawable="@color/zm_v2_text_btn_blue_normal"/>
+</ripple>

@@ -1,0 +1,3 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+  <solid android:color="@color/zm_v2_svg_setting_divider"/>
+</shape>

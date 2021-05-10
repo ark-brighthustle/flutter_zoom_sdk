@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:background="@color/zm_white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="20dp"
+    android:paddingTop="15dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="15dp" >
+
+    <TextView
+        android:id="@+id/txtLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ZMTextView.PopItem"
+        android:layout_toRightOf="@+id/imgIcon"
+        android:layout_centerVertical="true"
+        android:text="Email" />
+    <TextView
+        android:id="@+id/txtCountryCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ZMTextView.PopItem.disable"
+        android:layout_toRightOf="@+id/txtLabel"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
+        android:text="+1" />
+
+</RelativeLayout>
