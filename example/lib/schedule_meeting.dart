@@ -15,8 +15,8 @@ class ScheduleMeeting extends StatelessWidget {
   ScheduleMeeting({Key key, meetingId, meetingPassword}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
-      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
+      appKey: "apiKey",
+      appSecret: "appSecret",
     );
     this.meetingOptions = new ZoomScheduleOptions(
       setMeetingTopic: "New Meeting",

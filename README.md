@@ -24,7 +24,7 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.3` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.4` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### Android
 
@@ -90,9 +90,9 @@ class MeetingWidget extends StatelessWidget {
 
     // Setting Zoom meeting options (default to false if not set)
     this.meetingOptions = new ZoomMeetingOptions(
-        userId: 'example',
-        meetingId: meetingId,
-        meetingPassword: meetingPassword,
+        userId: 'example', //pass username for join meeting only
+        meetingId: meetingId, //pass meeting id for join meeting only
+        meetingPassword: meetingPassword, //pass meeting password for join meeting only
         disableDialIn: "true",
         disableDrive: "true",
         disableInvite: "true",
@@ -182,12 +182,12 @@ class StartMeetingWidget extends StatefulWidget {
   StartMeetingWidget({Key key, meetingId}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "apikey", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
-      appSecret: "appsecret", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
+      appKey: "apiKey", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
+      appSecret: "appSecret", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
     );
     this.loginOptions = new ZoomMeetingOptions(
-        userId: 'useremail', // Replace with the user email or Zoom user ID
-        meetingPassword: 'password', // Replace with the user password for your Zoom ID
+        userId: 'useremail', // Replace with the user email or Zoom user ID of host for start meeting only.
+        meetingPassword: 'password', // Replace with the user password for your Zoom ID of host for start meeting only.
         disableDialIn: "false",
         disableDrive: "false",
         disableInvite: "false",

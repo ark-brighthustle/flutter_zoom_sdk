@@ -16,12 +16,12 @@ class StartMeetingWidget extends StatefulWidget {
   StartMeetingWidget({Key key, meetingId}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
-      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
+      appKey: "apiKey",
+      appSecret: "appSecret",
     );
     this.loginOptions = new ZoomMeetingOptions(
-        userId: 'yashkumar12125@gmail.com',
-        meetingPassword: 'Dlinkmoderm0641',
+        userId: 'username', //pass host email for zoom
+        meetingPassword: 'pass', //pass host password for zoom
         disableDialIn: "false",
         disableDrive: "false",
         disableInvite: "false",
