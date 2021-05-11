@@ -15,8 +15,8 @@ class MeetingWidget extends StatelessWidget {
   MeetingWidget({Key key, meetingId, meetingPassword}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "",
-      appSecret: "",
+      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
+      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
     );
     this.meetingOptions = new ZoomMeetingOptions(
         userId: 'Yash',

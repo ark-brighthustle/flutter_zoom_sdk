@@ -4,9 +4,19 @@
 
 A Flutter plugin for the Zoom SDK.
 
-*Note*: IOS Version currently under development.
 *Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
-Feedback and Pull Requests are always welcome.
+Feedback and IOS Version currently under development, Pull Requests are always welcome.
+
+## Features
+
+- [x] Updated Zoom SDK.
+- [x] Stream meeting status.
+- [x] Join meeting.
+- [x] Start an instant meeting for Login user.
+- [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
+- [ ] Schedule Meeting.
+- [ ] List, Delete & Update Scheduled Meeting.
+- [ ] Share Screen using Sharing key or Meeting ID directly.
 
 ## Zoom SDK Versions
 
@@ -22,11 +32,20 @@ Change the minimum Android sdk version to at the minimum 21 in your `android/app
 
 ```
 minSdkVersion 21
+Change Gradle on project level build Gradle to 3.4.0 and make sure to keep minSdkVersion to 21 or +
 ```
-gradle version should be 3.4.0
 
 Add the zoom proguard content to your android project: https://github.com/zoom/zoom-sdk-android/blob/master/proguard.cfg
 
+```
+-keep class us.zoom.{*;}
+-keep class com.zipow.{;}
+-keep class us.zipow.**{;}
+-keep class org.webrtc.{*;}
+-keep class us.google.protobuf.{;}
+-keep class com.google.crypto.tink.**{;}
+-keep class androidx.security.crypto.**{*;}
+```
 ## Examples
 
 ### Meeting status
@@ -79,8 +98,8 @@ class MeetingWidget extends StatelessWidget {
         disableInvite: "true",
         disableShare: "true",
         noAudio: "false",
-        disableTitlebar: "false", //make it true for disabling titlebar
-        viewOptions: "false", //make it true for hiding zoom icon on meeting ui which shows meeting id and password
+        disableTitlebar: "false", //Make it true for disabling titlebar
+        viewOptions: "false", //Make it true for hiding zoom icon on meeting ui which shows meeting id and password
         noDisconnectAudio: "false"
     );
   }
@@ -149,61 +168,43 @@ class MeetingWidget extends StatelessWidget {
 }
 ```
 
-### Start a Meeting - Non-login user
+### Start a Meeting - Login user
 
-You need to obtain the User Token and Zoom Access Token (ZAK) in order to start meetings for a user. They are unique authentication tokens required to host a meeting on behalf of another user.
-
-Example of getting User Token and ZAK [here](https://marketplace.zoom.us/docs/sdk/native-sdks/android/mastering-zoom-sdk/start-join-meeting/api-user/authentication)
-
-More info about the User Token and Zoom Access Token [here](https://marketplace.zoom.us/docs/sdk/native-sdks/credentials).
-
-In order to run the example app:
-
-1. Create an JWT app to get a JWT token using the instructions [here](https://marketplace.zoom.us/docs/guides/build/jwt-app).
-2. Create a meeting (with a host of course) then get the Meeting ID (can be a 10 or 11-digit number).
-3. Use the Zoom API to obtain the tokens from the host.
-
-    ```shell script
-    # User token
-    curl --location --request GET 'https://api.zoom.us/v2/users/<zoom_user_id>/token?type=token&access_token=<jwt_token>'
-    
-    # Access token
-    curl --location --request GET 'https://api.zoom.us/v2/users/<zoom_user_id>/token?type=zak&access_token=<jwt_token>'
-    ```
-    
-    **Note for obtaining tokens**: 
-    
-    The user must log in using their email and password to get the user token. If a user signed into Zoom using Google or Facebook, a null value will be returned for the token.
-
-4. Pass the meeting ID and tokens to the plugin.
+1. Pass the Zoom user ID or user email and password to the plugin.
 
 ```dart
-class StartMeetingWidget extends StatelessWidget {
+class StartMeetingWidget extends StatefulWidget {
 
   ZoomOptions zoomOptions;
-  ZoomMeetingOptions meetingOptions;
+  ZoomMeetingOptions loginOptions;
 
-  Timer timer;
 
   StartMeetingWidget({Key key, meetingId}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "appKey", // Replace with with key got from the Zoom Marketplace
-      appSecret: "appSecret", // Replace with with key got from the Zoom Marketplace
+      appKey: "apikey", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
+      appSecret: "appsecret", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
     );
-    this.meetingOptions = new ZoomMeetingOptions(
-        userId: 'username', // Replace with the user email or Zoom user ID
+    this.loginOptions = new ZoomMeetingOptions(
+        userId: 'useremail', // Replace with the user email or Zoom user ID
         meetingPassword: 'password', // Replace with the user password for your Zoom ID
-        displayName: 'Example display Name',
-        meetingId: meetingId, 
-        disableDialIn: "true",
-        disableDrive: "true",
-        disableInvite: "true",
-        disableShare: "true",
+        disableDialIn: "false",
+        disableDrive: "false",
+        disableInvite: "false",
+        disableShare: "false",
+        disableTitlebar: "false",
+        viewOptions: "false",
         noAudio: "false",
         noDisconnectAudio: "false"
     );
   }
+
+  @override
+  _StartMeetingWidgetState createState() => _StartMeetingWidgetState();
+}
+
+class _StartMeetingWidgetState extends State<StartMeetingWidget> {
+  Timer timer;
 
   bool _isMeetingEnded(String status) {
     var result = false;
@@ -216,51 +217,61 @@ class StartMeetingWidget extends StatelessWidget {
     return result;
   }
 
+  bool _isLoading = true;
+
   @override
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
     return Scaffold(
       appBar: AppBar(
-          title: Text('Initializing meeting '),
+          title: Text('Loading meeting '),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: ZoomView(onViewCreated: (controller) {
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            _isLoading ? CircularProgressIndicator() : Container(),
+            Expanded(
+              child: ZoomView(onViewCreated: (controller) {
 
-          print("Created the view");
+                print("Created the view");
 
-          controller.initZoom(this.zoomOptions)
-              .then((results) {
+                controller.initZoom(this.widget.zoomOptions)
+                    .then((results) {
+                  print(results);
 
-            if(results[0] == 0) {
+                  if(results[0] == 0) {
 
-              controller.zoomStatusEvents.listen((status) {
-                print("Meeting Status Stream: " + status[0] + " - " + status[1]);
-                if (_isMeetingEnded(status[0])) {
-                  Navigator.pop(context);
-                  timer?.cancel();
-                }
-              });
+                    controller.zoomStatusEvents.listen((status) {
+                      print("Meeting Status Stream: " + status[0] + " - " + status[1]);
+                      if (_isMeetingEnded(status[0])) {
+                        Navigator.pop(context);
+                        timer?.cancel();
+                      }
+                    });
 
-              print("listen on event channel");
+                    print("listen on event channel");
 
-              controller.startMeeting(this.meetingOptions)
-                  .then((joinMeetingResult) {
+                    controller.login(this.widget.loginOptions).then((loginResult) {
+                      print("LoginResultBool :- " + loginResult.toString());
+                      if(loginResult){
+                        print("LoginResult :- Logged In");
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }else{
+                        print("LoginResult :- Logged In Failed");
+                      }
+                    });
+                  }
 
-                timer = Timer.periodic(new Duration(seconds: 2), (timer) {
-                  controller.meetingStatus(this.meetingOptions.meetingId)
-                      .then((status) {
-                    print("Meeting Status Polling: " + status[0] + " - " + status[1]);
-                  });
+                }).catchError((error) {
+                  print(error);
                 });
-
-              });
-            }
-
-          }).catchError((error) {
-            print(error);
-          });
-        })
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

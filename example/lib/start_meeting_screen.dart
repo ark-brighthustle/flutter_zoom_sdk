@@ -1,38 +1,44 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
 
 import 'package:flutter/material.dart';
 
-class StartMeetingWidget extends StatelessWidget {
+class StartMeetingWidget extends StatefulWidget {
 
   ZoomOptions zoomOptions;
-  ZoomMeetingOptions meetingOptions;
+  ZoomMeetingOptions loginOptions;
 
-  Timer timer;
 
   StartMeetingWidget({Key key, meetingId}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "",
-      appSecret: "",
+      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
+      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
     );
-    this.meetingOptions = new ZoomMeetingOptions(
-        userId: '',
-        meetingPassword: '',
-        displayName: 'Kumar',
-        meetingId: meetingId,
+    this.loginOptions = new ZoomMeetingOptions(
+        userId: 'yashkumar12125@gmail.com',
+        meetingPassword: 'Dlinkmoderm0641',
         disableDialIn: "false",
         disableDrive: "false",
         disableInvite: "false",
         disableShare: "false",
         disableTitlebar: "false",
+        viewOptions: "false",
         noAudio: "false",
         noDisconnectAudio: "false"
     );
   }
+
+  @override
+  _StartMeetingWidgetState createState() => _StartMeetingWidgetState();
+}
+
+class _StartMeetingWidgetState extends State<StartMeetingWidget> {
+  Timer timer;
 
   bool _isMeetingEnded(String status) {
     var result = false;
@@ -45,6 +51,8 @@ class StartMeetingWidget extends StatelessWidget {
     return result;
   }
 
+  bool _isLoading = true;
+
   @override
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
@@ -52,47 +60,53 @@ class StartMeetingWidget extends StatelessWidget {
       appBar: AppBar(
           title: Text('Loading meeting '),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: ZoomView(onViewCreated: (controller) {
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            _isLoading ? CircularProgressIndicator() : Container(),
+            Expanded(
+              child: ZoomView(onViewCreated: (controller) {
 
-          print("Created the view");
+                print("Created the view");
 
-          controller.initZoom(this.zoomOptions)
-              .then((results) {
-            print(results);
+                controller.initZoom(this.widget.zoomOptions)
+                    .then((results) {
+                  print(results);
 
-            if(results[0] == 0) {
+                  if(results[0] == 0) {
 
-              controller.zoomStatusEvents.listen((status) {
-                print("Meeting Status Stream: " + status[0] + " - " + status[1]);
-                if (_isMeetingEnded(status[0])) {
-                  Navigator.pop(context);
-                  timer?.cancel();
-                }
-              });
+                    controller.zoomStatusEvents.listen((status) {
+                      print("Meeting Status Stream: " + status[0] + " - " + status[1]);
+                      if (_isMeetingEnded(status[0])) {
+                        Navigator.pop(context);
+                        timer?.cancel();
+                      }
+                    });
 
-              print("listen on event channel");
+                    print("listen on event channel");
 
-              controller.startMeeting(this.meetingOptions)
-                  .then((joinMeetingResult) {
+                    controller.login(this.widget.loginOptions).then((loginResult) {
+                      print("LoginResultBool :- " + loginResult.toString());
+                      if(loginResult){
+                        print("LoginResult :- Logged In");
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }else{
+                        print("LoginResult :- Logged In Failed");
+                      }
+                    });
+                  }
 
-                timer = Timer.periodic(new Duration(seconds: 2), (timer) {
-                  controller.meetingStatus(this.meetingOptions.meetingId)
-                      .then((status) {
-                    print("Meeting Status : " + status[0] + " - " + status[1]);
-                  });
+                }).catchError((error) {
+                  print(error);
                 });
-
-              });
-            }
-
-          }).catchError((error) {
-            print(error);
-          });
-        })
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
-
 }

@@ -109,6 +109,44 @@ class ZoomViewController {
     return _methodChannel.invokeMethod('join', optionMap);
   }
 
+  Future<bool> scheduleMeeting(ZoomScheduleOptions options) async {
+    assert(options != null);
+    var optionMap = new Map<String, String>();
+    optionMap.putIfAbsent("setMeetingTopic", () => options.setMeetingTopic);
+    optionMap.putIfAbsent("setStartTime", () => options.setStartTime);
+    optionMap.putIfAbsent("durationMinute", () => options.durationMinute);
+    optionMap.putIfAbsent("canJoinBeforeHost", () => options.canJoinBeforeHost);
+    optionMap.putIfAbsent("setPassword", () => options.setPassword);
+    optionMap.putIfAbsent("setHostVideoOff", () => options.setHostVideoOff);
+    optionMap.putIfAbsent("setAttendeeVideoOff", () => options.setAttendeeVideoOff);
+    optionMap.putIfAbsent("setTimeZoneId", () => options.setTimeZoneId);
+    optionMap.putIfAbsent("setEnableMeetingToPublic", () => options.setEnableMeetingToPublic);
+    optionMap.putIfAbsent("setEnableLanguageInterpretation", () => options.setEnableLanguageInterpretation);
+    optionMap.putIfAbsent("setEnableWaitingRoom", () => options.setEnableWaitingRoom);
+    optionMap.putIfAbsent("enableAutoRecord", () => options.enableAutoRecord);
+    optionMap.putIfAbsent("autoLocalRecord", () => options.autoLocalRecord);
+    optionMap.putIfAbsent("autoCloudRecord", () => options.autoCloudRecord);
+
+    return _methodChannel.invokeMethod('schedule', optionMap);
+  }
+
+  Future<bool> login(ZoomMeetingOptions options) async {
+    assert(options != null);
+    var optionMap = new Map<String, String>();
+    optionMap.putIfAbsent("userId", () => options.userId);
+    optionMap.putIfAbsent("meetingPassword", () => options.meetingPassword);
+    optionMap.putIfAbsent("disableDialIn", () => options.disableDialIn);
+    optionMap.putIfAbsent("disableDrive", () => options.disableDrive);
+    optionMap.putIfAbsent("disableInvite", () => options.disableInvite);
+    optionMap.putIfAbsent("disableShare", () => options.disableShare);
+    optionMap.putIfAbsent("disableTitlebar", () => options.disableTitlebar);
+    optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
+    optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
+    optionMap.putIfAbsent("noAudio", () => options.noAudio);
+
+    return _methodChannel.invokeMethod('login', optionMap);
+  }
+
   Future<List> meetingStatus(String meetingId) async {
     assert(meetingId != null);
 

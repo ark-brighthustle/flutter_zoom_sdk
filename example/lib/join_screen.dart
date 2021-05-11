@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_sdk_example/schedule_meeting.dart';
 import 'package:flutter_zoom_sdk_example/start_meeting_screen.dart';
 
 import 'meeting_screen.dart';
@@ -79,6 +80,22 @@ class _JoinWidgetState extends State<JoinWidget> {
                   },
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Builder(
+                  builder: (context) {
+                    // The basic Material Design action button.
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue, // background
+                        onPrimary: Colors.white, // foreground
+                      ),
+                      onPressed: () => scheduleMeeting(context),
+                      child: Text('Schedule'),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -136,6 +153,16 @@ class _JoinWidgetState extends State<JoinWidget> {
       MaterialPageRoute(
         builder: (context) {
           return StartMeetingWidget(meetingId: meetingIdController.text);
+        },
+      ),
+    );
+  }
+
+  scheduleMeeting(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return ScheduleMeeting(meetingId: meetingIdController.text);
         },
       ),
     );

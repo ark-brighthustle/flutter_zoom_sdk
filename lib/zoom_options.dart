@@ -44,3 +44,39 @@ class ZoomMeetingOptions {
     this.noAudio
   });
 }
+
+class ZoomScheduleOptions {
+  String setMeetingTopic;
+  String setStartTime;
+  String durationMinute;
+  String canJoinBeforeHost;
+  String setPassword;
+  String setHostVideoOff;
+  String setAttendeeVideoOff;
+  String setTimeZoneId;
+  String setEnableMeetingToPublic;
+  String setEnableLanguageInterpretation;
+  String setEnableWaitingRoom;
+  String setUsePmiAsMeetingID;
+  String enableAutoRecord;
+  String autoLocalRecord;
+  String autoCloudRecord;
+
+  ZoomScheduleOptions({
+    this.setMeetingTopic,
+    this.setStartTime,
+    this.durationMinute,
+    this.canJoinBeforeHost,
+    this.setPassword,
+    this.setHostVideoOff,
+    this.setAttendeeVideoOff,
+    this.setTimeZoneId,
+    this.setEnableMeetingToPublic,
+    this.setEnableLanguageInterpretation,
+    this.setEnableWaitingRoom,
+    this.setUsePmiAsMeetingID,
+    this.enableAutoRecord,
+    this.autoLocalRecord,
+    this.autoCloudRecord
+  });
+}

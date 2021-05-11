@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:flutter_zoom_sdk_example/schedule_meeting.dart';
 import 'package:flutter_zoom_sdk_example/start_meeting_screen.dart';
 
 import 'join_screen.dart';
@@ -25,6 +26,7 @@ class ExampleApp extends StatelessWidget {
         '/': (context) => JoinWidget(),
         '/meeting': (context) => MeetingWidget(),
         '/startmeeting': (context) => StartMeetingWidget(),
+        '/schedule': (context) => ScheduleMeeting(),
       },
     );
   }
