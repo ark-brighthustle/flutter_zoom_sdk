@@ -1,6 +1,6 @@
 name: flutter_zoom_sdk
 description: Zoom SDK implementation by EvilRATT
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/evilrat/flutter_zoom_sdk.git
 
 environment:
