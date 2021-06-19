@@ -1,10 +1,10 @@
 
 class ZoomOptions {
 
-  String domain;
-  String appKey;
-  String appSecret;
-  String jwtToken;
+  String? domain;
+  String? appKey;
+  String? appSecret;
+  String? jwtToken;
 
   ZoomOptions({
     this.domain,
@@ -16,18 +16,18 @@ class ZoomOptions {
 
 class ZoomMeetingOptions {
 
-  String userId;
-  String displayName;
-  String meetingId;
-  String meetingPassword;
-  String disableDialIn;
-  String disableDrive;
-  String disableInvite;
-  String disableShare;
-  String disableTitlebar;
-  String noDisconnectAudio;
-  String viewOptions;
-  String noAudio;
+  String? userId;
+  String? displayName;
+  String? meetingId;
+  String? meetingPassword;
+  String? disableDialIn;
+  String? disableDrive;
+  String? disableInvite;
+  String? disableShare;
+  String? disableTitlebar;
+  String? noDisconnectAudio;
+  String? viewOptions;
+  String? noAudio;
 
   ZoomMeetingOptions({
     this.userId,
@@ -46,21 +46,21 @@ class ZoomMeetingOptions {
 }
 
 class ZoomScheduleOptions {
-  String setMeetingTopic;
-  String setStartTime;
-  String durationMinute;
-  String canJoinBeforeHost;
-  String setPassword;
-  String setHostVideoOff;
-  String setAttendeeVideoOff;
-  String setTimeZoneId;
-  String setEnableMeetingToPublic;
-  String setEnableLanguageInterpretation;
-  String setEnableWaitingRoom;
-  String setUsePmiAsMeetingID;
-  String enableAutoRecord;
-  String autoLocalRecord;
-  String autoCloudRecord;
+  String? setMeetingTopic;
+  String? setStartTime;
+  String? durationMinute;
+  String? canJoinBeforeHost;
+  String? setPassword;
+  String? setHostVideoOff;
+  String? setAttendeeVideoOff;
+  String? setTimeZoneId;
+  String? setEnableMeetingToPublic;
+  String? setEnableLanguageInterpretation;
+  String? setEnableWaitingRoom;
+  String? setUsePmiAsMeetingID;
+  String? enableAutoRecord;
+  String? autoLocalRecord;
+  String? autoCloudRecord;
 
   ZoomScheduleOptions({
     this.setMeetingTopic,

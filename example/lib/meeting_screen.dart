@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
+
+// ignore: must_be_immutable
 class MeetingWidget extends StatelessWidget {
 
-  ZoomOptions zoomOptions;
-  ZoomMeetingOptions meetingOptions;
+  late ZoomOptions zoomOptions;
+  late ZoomMeetingOptions meetingOptions;
 
-  Timer timer;
+  late Timer timer;
 
-  MeetingWidget({Key key, meetingId, meetingPassword}) : super(key: key) {
+  MeetingWidget({Key? key, meetingId, meetingPassword}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
       appKey: "apiKey",
@@ -69,7 +70,7 @@ class MeetingWidget extends StatelessWidget {
                 print("Meeting Status Stream: " + status[0] + " - " + status[1]);
                 if (_isMeetingEnded(status[0])) {
                   Navigator.pop(context);
-                  timer?.cancel();
+                  timer.cancel();
                 }
               });
 
@@ -79,7 +80,7 @@ class MeetingWidget extends StatelessWidget {
                   .then((joinMeetingResult) {
 
                 timer = Timer.periodic(new Duration(seconds: 2), (timer) {
-                  controller.meetingStatus(this.meetingOptions.meetingId)
+                  controller.meetingStatus(this.meetingOptions.meetingId!)
                       .then((status) {
                     print("Meeting Status Polling: " + status[0] + " - " + status[1]);
                   });

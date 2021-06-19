@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_zoom_sdk/zoom_view.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_zoom_sdk');

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/schedule_meeting.dart';
 import 'package:flutter_zoom_sdk_example/start_meeting_screen.dart';
@@ -115,34 +114,14 @@ class _JoinWidgetState extends State<JoinWidget> {
       );
     }else{
       if(meetingIdController.text.isEmpty){
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Enter a valid meeting id to continue."),
         ));
-        // Flushbar(
-        //   message: "Enter a valid meeting id to continue.",
-        //   icon: Icon(
-        //     Icons.info_outline,
-        //     size: 28.0,
-        //     color: Colors.blue[300],
-        //   ),
-        //   duration: Duration(seconds: 3),
-        //   leftBarIndicatorColor: Colors.red[300],
-        // )..show(context);
       }
       else if(meetingPasswordController.text.isEmpty){
-        Scaffold.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Enter a meeting password to start."),
         ));
-        // Flushbar(
-        //   message: "Enter a meeting password to start.",
-        //   icon: Icon(
-        //     Icons.info_outline,
-        //     size: 28.0,
-        //     color: Colors.blue[300],
-        //   ),
-        //   duration: Duration(seconds: 3),
-        //   leftBarIndicatorColor: Colors.red[300],
-        // )..show(context);
       }
     }
 

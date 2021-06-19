@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_zoom_sdk_example/schedule_meeting.dart';
 import 'package:flutter_zoom_sdk_example/start_meeting_screen.dart';
 
@@ -13,7 +12,6 @@ void main() => runApp(ExampleApp());
 class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.blue);
     return MaterialApp(
       title: 'Example Zoom SDK',
       theme: ThemeData(
