@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-A Flutter plugin for the Zoom SDK.
+A Flutter plugin for the Zoom SDK With all features and null safety support.
 
 *Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
 Feedback and IOS Version currently under development, Pull Requests are always welcome.
@@ -10,10 +10,12 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 ## Features
 
 - [x] Updated Zoom SDK.
+- [x] Null Safety.
 - [x] Stream meeting status.
 - [x] Join meeting.
 - [x] Start an instant meeting for Login user.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
+- [ ] Web & IOS Support (Coming Soon by end of June).
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
 - [ ] Share Screen using Sharing key or Meeting ID directly.
@@ -24,7 +26,7 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.4` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.5` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### Android
 
