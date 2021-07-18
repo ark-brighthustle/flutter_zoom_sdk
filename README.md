@@ -16,7 +16,8 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 - [x] Start an instant meeting for Login user.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
-- [ ] Web & IOS Support (Coming Soon by end of June).
+- [ ] IOS Support (Coming Soon by first week of Aug).
+- [ ] Web Support 
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
 - [ ] Share Screen using Sharing key or Meeting ID directly.
@@ -35,7 +36,6 @@ Change the minimum Android sdk version to at the minimum 21 in your `android/app
 
 ```
 minSdkVersion 21
-Change Gradle on project level build Gradle to 3.4.0 and make sure to keep minSdkVersion to 21 or +
 ```
 
 To Change the Notification name copy the below code to `android/app/src/main/res/values/strings.xml` file
