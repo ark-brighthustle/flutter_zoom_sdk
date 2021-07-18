@@ -15,6 +15,7 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 - [x] Join meeting.
 - [x] Start an instant meeting for Login user.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
+- [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
 - [ ] Web & IOS Support (Coming Soon by end of June).
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
@@ -26,7 +27,7 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.5` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.6` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 ### Android
 
@@ -35,6 +36,12 @@ Change the minimum Android sdk version to at the minimum 21 in your `android/app
 ```
 minSdkVersion 21
 Change Gradle on project level build Gradle to 3.4.0 and make sure to keep minSdkVersion to 21 or +
+```
+
+To Change the Notification name copy the below code to `android/app/src/main/res/values/strings.xml` file
+
+```
+<string name="app_name_zoom_local" >Your App Name</string>
 ```
 
 Add the zoom proguard content to your android project: https://github.com/zoom/zoom-sdk-android/blob/master/proguard.cfg

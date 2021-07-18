@@ -1,9 +1,13 @@
 package com.evilratt.flutter_zoom_sdk;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -13,12 +17,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
 import us.zoom.sdk.AccountService;
+import us.zoom.sdk.CustomizedNotificationData;
+import us.zoom.sdk.InMeetingNotificationHandle;
 import us.zoom.sdk.JoinMeetingOptions;
 import us.zoom.sdk.JoinMeetingParams;
 import us.zoom.sdk.MeetingItem;
@@ -40,7 +49,7 @@ import us.zoom.sdk.ZoomSDKInitializeListener;
 
 public class ZoomView  implements PlatformView,
         MethodChannel.MethodCallHandler,
-        PreMeetingServiceListener{
+        PreMeetingServiceListener, ActivityAware {
     private final TextView textView;
     private final MethodChannel methodChannel;
     private final Context context;
@@ -50,6 +59,7 @@ public class ZoomView  implements PlatformView,
     private String mTimeZoneId;
     private AccountService mAccoutnService;
     private PreMeetingService mPreMeetingService = null;
+    private FlutterActivity activity;
 
 
     ZoomView(Context context, BinaryMessenger messenger, int id) {
@@ -75,6 +85,9 @@ public class ZoomView  implements PlatformView,
                 break;
             case "login":
                 login(methodCall, result);
+                break;
+            case "logout":
+                logout();
                 break;
             case "join":
                 joinMeeting(methodCall, result);
@@ -111,6 +124,29 @@ public class ZoomView  implements PlatformView,
         initParams.appSecret = options.get("appSecret");
         initParams.domain = options.get("domain");
         initParams.enableLog = true;
+
+        final InMeetingNotificationHandle handle=new InMeetingNotificationHandle() {
+
+            @Override
+            public boolean handleReturnToConfNotify(Context context, Intent intent) {
+                intent = new Intent(context, ZoomView.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                if(!(context instanceof Activity)) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                intent.setAction(InMeetingNotificationHandle.ACTION_RETURN_TO_CONF);
+                context.startActivity(intent);
+                return true;
+            }
+        };
+
+
+        final CustomizedNotificationData data = new CustomizedNotificationData();
+        data.setContentTitleId(R.string.app_name_zoom_local);
+        data.setLargeIconId(R.drawable.zm_mm_type_emoji);
+        data.setSmallIconId(R.drawable.zm_mm_type_emoji);
+        data.setSmallIconForLorLaterId(R.drawable.zm_mm_type_emoji);;
+        
         ZoomSDKInitializeListener listener = new ZoomSDKInitializeListener() {
             /**
              * @param errorCode {@link us.zoom.sdk.ZoomError#ZOOM_ERROR_SUCCESS} if the SDK has been initialized successfully.
@@ -126,6 +162,9 @@ public class ZoomView  implements PlatformView,
                 }
 
                 ZoomSDK zoomSDK = ZoomSDK.getInstance();
+                ZoomSDK.getInstance().getMeetingSettingsHelper().enableShowMyMeetingElapseTime(true);
+                ZoomSDK.getInstance().getMeetingSettingsHelper().setCustomizedNotificationData(data, handle);
+
                 MeetingService meetingService = zoomSDK.getMeetingService();
                 meetingStatusChannel.setStreamHandler(new StatusStreamHandler(meetingService));
                 result.success(response);
@@ -360,7 +399,6 @@ public class ZoomView  implements PlatformView,
         return options.get(property) == null ? defaultValue : Boolean.parseBoolean(options.get(property));
     }
 
-
     private void meetingStatus(MethodChannel.Result result) {
 
         ZoomSDK zoomSDK = ZoomSDK.getInstance();
@@ -392,6 +430,11 @@ public class ZoomView  implements PlatformView,
         return (int) ((mDateTo.getTimeInMillis() - mDateFrom.getTimeInMillis()) / 60000);
     }
 
+    public boolean logout() {
+        ZoomSDK zoomSDK = ZoomSDK.getInstance();
+        return zoomSDK.logoutZoom();
+    }
+
     @Override
     public void dispose() {
         if (mPreMeetingService != null) {
@@ -421,6 +464,26 @@ public class ZoomView  implements PlatformView,
 
     @Override
     public void onDeleteMeeting(int i) {
+
+    }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        activity = (FlutterActivity) binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
 
     }
 }

@@ -28,6 +28,8 @@ class ZoomMeetingOptions {
   String? noDisconnectAudio;
   String? viewOptions;
   String? noAudio;
+  String? jwtAPIKey;//--for web
+  String? jwtSignature;//--for web
 
   ZoomMeetingOptions({
     this.userId,
@@ -41,7 +43,9 @@ class ZoomMeetingOptions {
     this.disableTitlebar,
     this.noDisconnectAudio,
     this.viewOptions,
-    this.noAudio
+    this.noAudio,
+    this.jwtAPIKey,
+    this.jwtSignature,
   });
 }
 

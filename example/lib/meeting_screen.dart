@@ -16,8 +16,8 @@ class MeetingWidget extends StatelessWidget {
   MeetingWidget({Key? key, meetingId, meetingPassword}) : super(key: key) {
     this.zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "apiKey",
-      appSecret: "appSecret",
+      appKey: "XKE4uWfeLwWEmh78YMbC6mqKcF8oM4YHTr9I",
+      appSecret: "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb",
     );
     this.meetingOptions = new ZoomMeetingOptions(
         userId: 'username', //pass username for join meeting only
@@ -27,7 +27,7 @@ class MeetingWidget extends StatelessWidget {
         disableDrive: "true",
         disableInvite: "true",
         disableShare: "true",
-        disableTitlebar: "true",
+        disableTitlebar: "false",
         viewOptions: "true",
         noAudio: "false",
         noDisconnectAudio: "false"
