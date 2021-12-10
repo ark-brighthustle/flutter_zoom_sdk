@@ -1,83 +1,42 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
+import 'package:flutter_zoom_sdk/zoom_platform_view.dart';
 
 
-typedef void ZoomViewCreatedCallback(ZoomViewController controller);
+// typedef void ZoomViewCreatedCallback(ZoomViewController controller);
 
-class ZoomView extends StatefulWidget {
-  const ZoomView({
-    Key? key,
-    this.zoomOptions,
-    this.meetingOptions,
-    this.onViewCreated,
-  }) : super(key: key);
+class ZoomView extends ZoomPlatform {
+  final MethodChannel channel = MethodChannel('com.evilratt/zoom_sdk');
 
-  final ZoomViewCreatedCallback? onViewCreated;
-  final ZoomOptions? zoomOptions;
-  final ZoomMeetingOptions? meetingOptions;
-
+  /// The event channel used to interact with the native platform.
+  final EventChannel eventChannel = EventChannel('com.evilratt/zoom_sdk_event_stream');
   @override
-  State<StatefulWidget> createState() => _ZoomViewState();
-}
-
-class _ZoomViewState extends State<ZoomView> {
-  @override
-  Widget build(BuildContext context) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return AndroidView(
-        viewType: 'flutter_zoom_sdk',
-        onPlatformViewCreated: _onPlatformViewCreated,
-      );
-    }
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return UiKitView(
-        viewType: 'flutter_zoom_sdk',
-        onPlatformViewCreated: _onPlatformViewCreated,
-      );
-    }
-    return Text(
-        '$defaultTargetPlatform is not yet supported by the flutter_zoom_sdk plugin');
-  }
-
-  void _onPlatformViewCreated(int id) {
-    if (widget.onViewCreated == null) {
-      return;
-    }
-
-    var controller = new ZoomViewController._(id);
-    widget.onViewCreated!(controller);
-  }
-}
-
-class ZoomViewController {
-  ZoomViewController._(int id)
-      : _methodChannel =
-            new MethodChannel('com.evilratt/flutter_zoom_sdk'),
-        _zoomStatusEventChannel =
-            new EventChannel("com.evilratt/zoom_event_stream");
-
-  final MethodChannel _methodChannel;
-  final EventChannel _zoomStatusEventChannel;
-
-  Future<dynamic> initZoom(ZoomOptions options) async {
+  Future<List> initZoom(ZoomOptions options) async {
+    assert(options != null);
 
     var optionMap = new Map<String, String?>();
-    optionMap.putIfAbsent("appKey", () => options.appKey);
-    optionMap.putIfAbsent("appSecret", () => options.appSecret);
+
+    if (options.appKey != null) {
+      optionMap.putIfAbsent("appKey", () => options.appKey!);
+    }
+    if (options.appSecret != null) {
+      optionMap.putIfAbsent("appSecret", () => options.appSecret!);
+    }
+
     optionMap.putIfAbsent("domain", () => options.domain);
-
-    return _methodChannel.invokeMethod('init', optionMap);
+    return channel
+        .invokeMethod<List>('init', optionMap)
+        .then<List>((List? value) => value ?? List.empty());
   }
 
-  Future<dynamic> startMeeting(ZoomMeetingOptions options) async {
+  @override
+  Future<List> startMeetingNormal(ZoomMeetingOptions options) async {
+    assert(options != null);
     var optionMap = new Map<String, String?>();
     optionMap.putIfAbsent("userId", () => options.userId);
-    optionMap.putIfAbsent("displayName", () => options.displayName);
+    optionMap.putIfAbsent("userPassword", () => options.userPassword);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
-    optionMap.putIfAbsent("meetingPassword", () => options.meetingPassword);
     optionMap.putIfAbsent("disableDialIn", () => options.disableDialIn);
     optionMap.putIfAbsent("disableDrive", () => options.disableDrive);
     optionMap.putIfAbsent("disableInvite", () => options.disableInvite);
@@ -85,11 +44,16 @@ class ZoomViewController {
     optionMap.putIfAbsent("disableTitlebar", () => options.disableTitlebar);
     optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
+    optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
 
-    return _methodChannel.invokeMethod('start', optionMap);
+    return channel
+        .invokeMethod<List>('startNormal', optionMap)
+        .then<List>((List? value) => value ?? List.empty());
   }
 
-  Future<dynamic> joinMeeting(ZoomMeetingOptions options) async {
+  @override
+  Future<bool> joinMeeting(ZoomMeetingOptions options) async {
+    assert(options != null);
     var optionMap = new Map<String, String?>();
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
@@ -103,33 +67,16 @@ class ZoomViewController {
     optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
-    return _methodChannel.invokeMethod('join', optionMap);
+    return channel
+        .invokeMethod<bool>('join', optionMap)
+        .then<bool>((bool? value) => value ?? false);
   }
 
-  Future<dynamic> scheduleMeeting(ZoomScheduleOptions options) async {
-    var optionMap = new Map<String, String?>();
-    optionMap.putIfAbsent("setMeetingTopic", () => options.setMeetingTopic);
-    optionMap.putIfAbsent("setStartTime", () => options.setStartTime);
-    optionMap.putIfAbsent("durationMinute", () => options.durationMinute);
-    optionMap.putIfAbsent("canJoinBeforeHost", () => options.canJoinBeforeHost);
-    optionMap.putIfAbsent("setPassword", () => options.setPassword);
-    optionMap.putIfAbsent("setHostVideoOff", () => options.setHostVideoOff);
-    optionMap.putIfAbsent("setAttendeeVideoOff", () => options.setAttendeeVideoOff);
-    optionMap.putIfAbsent("setTimeZoneId", () => options.setTimeZoneId);
-    optionMap.putIfAbsent("setEnableMeetingToPublic", () => options.setEnableMeetingToPublic);
-    optionMap.putIfAbsent("setEnableLanguageInterpretation", () => options.setEnableLanguageInterpretation);
-    optionMap.putIfAbsent("setEnableWaitingRoom", () => options.setEnableWaitingRoom);
-    optionMap.putIfAbsent("enableAutoRecord", () => options.enableAutoRecord);
-    optionMap.putIfAbsent("autoLocalRecord", () => options.autoLocalRecord);
-    optionMap.putIfAbsent("autoCloudRecord", () => options.autoCloudRecord);
-
-    return _methodChannel.invokeMethod('schedule', optionMap);
-  }
-
-  Future<dynamic> login(ZoomMeetingOptions options) async {
+  @override
+  Future<List> startMeeting(ZoomMeetingOptions options) async {
     var optionMap = new Map<String, String?>();
     optionMap.putIfAbsent("userId", () => options.userId);
-    optionMap.putIfAbsent("meetingPassword", () => options.meetingPassword);
+    optionMap.putIfAbsent("userPassword", () => options.userPassword);
     optionMap.putIfAbsent("disableDialIn", () => options.disableDialIn);
     optionMap.putIfAbsent("disableDrive", () => options.disableDrive);
     optionMap.putIfAbsent("disableInvite", () => options.disableInvite);
@@ -139,18 +86,32 @@ class ZoomViewController {
     optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
-    return _methodChannel.invokeMethod('login', optionMap);
+    return channel
+        .invokeMethod<List>('login', optionMap)
+        .then<List>((List? value) => value ?? List.empty());
   }
 
-  Future<dynamic> meetingStatus(String meetingId) async {
+  @override
+  Future<List> meetingStatus(String meetingId) async {
+    assert(meetingId != null);
 
     var optionMap = new Map<String, String>();
     optionMap.putIfAbsent("meetingId", () => meetingId);
 
-    return _methodChannel.invokeMethod('meeting_status', optionMap);
+    return channel
+        .invokeMethod<List>('meeting_status', optionMap)
+        .then<List>((List? value) => value ?? List.empty());
   }
 
-  Stream<dynamic> get zoomStatusEvents {
-    return _zoomStatusEventChannel.receiveBroadcastStream();
+  @override
+  Stream<dynamic> onMeetingStatus() {
+    return eventChannel.receiveBroadcastStream();
+  }
+
+  @override
+  Future<List> meetinDetails() async {
+    return channel
+        .invokeMethod<List>('meeting_details')
+        .then<List>((List? value) => value ?? List.empty());
   }
 }

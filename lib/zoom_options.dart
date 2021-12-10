@@ -4,19 +4,18 @@ class ZoomOptions {
   String? domain;
   String? appKey;
   String? appSecret;
-  String? jwtToken;
 
   ZoomOptions({
     this.domain,
     this.appKey,
     this.appSecret,
-    this.jwtToken
   });
 }
 
 class ZoomMeetingOptions {
 
   String? userId;
+  String? userPassword;
   String? displayName;
   String? meetingId;
   String? meetingPassword;
@@ -33,6 +32,7 @@ class ZoomMeetingOptions {
 
   ZoomMeetingOptions({
     this.userId,
+    this.userPassword,
     this.displayName,
     this.meetingId,
     this.meetingPassword,
@@ -46,41 +46,5 @@ class ZoomMeetingOptions {
     this.noAudio,
     this.jwtAPIKey,
     this.jwtSignature,
-  });
-}
-
-class ZoomScheduleOptions {
-  String? setMeetingTopic;
-  String? setStartTime;
-  String? durationMinute;
-  String? canJoinBeforeHost;
-  String? setPassword;
-  String? setHostVideoOff;
-  String? setAttendeeVideoOff;
-  String? setTimeZoneId;
-  String? setEnableMeetingToPublic;
-  String? setEnableLanguageInterpretation;
-  String? setEnableWaitingRoom;
-  String? setUsePmiAsMeetingID;
-  String? enableAutoRecord;
-  String? autoLocalRecord;
-  String? autoCloudRecord;
-
-  ZoomScheduleOptions({
-    this.setMeetingTopic,
-    this.setStartTime,
-    this.durationMinute,
-    this.canJoinBeforeHost,
-    this.setPassword,
-    this.setHostVideoOff,
-    this.setAttendeeVideoOff,
-    this.setTimeZoneId,
-    this.setEnableMeetingToPublic,
-    this.setEnableLanguageInterpretation,
-    this.setEnableWaitingRoom,
-    this.setUsePmiAsMeetingID,
-    this.enableAutoRecord,
-    this.autoLocalRecord,
-    this.autoCloudRecord
   });
 }

@@ -30,6 +30,11 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 
 First, add `flutter_zoom_sdk: ^0.0.6` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
+After running pub get, you must run the follow script to get Zoom SDK for the first time:
+```shell script
+flutter pub run zoom:unzip_zoom_sdk
+```
+
 ### Android
 
 Change the minimum Android sdk version to at the minimum 21 in your `android/app/build.gradle` file.
@@ -41,20 +46,23 @@ minSdkVersion 21
 To Change the Notification name copy the below code to `android/app/src/main/res/values/strings.xml` file
 
 ```
-<string name="app_name_zoom_local" >Your App Name</string>
+<string name="app_name_zoom_local" >Your App Name</string> // Put your app name in here for notification.
 ```
 
-Add the zoom proguard content to your android project: https://github.com/zoom/zoom-sdk-android/blob/master/proguard.cfg
+Disable shrinkResources for release buid
+```
+   buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            shrinkResources false
+            minifyEnabled false
+        }
+    }
+```
 
-```
--keep class us.zoom.{*;}
--keep class com.zipow.{;}
--keep class us.zipow.**{;}
--keep class org.webrtc.{*;}
--keep class us.google.protobuf.{;}
--keep class com.google.crypto.tink.**{;}
--keep class androidx.security.crypto.**{*;}
-```
+
 ## Error Codes
 
 | Error Response        | Error Reference                       |
@@ -172,6 +180,8 @@ joinMeeting(BuildContext context) {
 
 ### Start a Meeting - Login user
 
+1. Pass the Zoom user email and password to the plugin.
+
 ```dart
 startMeeting(BuildContext context) {
     bool _isMeetingEnded(String status) {
@@ -239,124 +249,12 @@ startMeeting(BuildContext context) {
 
 ## Migration Guide
 
-### Join Meeting
-
-```dart
-class MeetingWidget extends StatelessWidget {
-
-  ZoomOptions zoomOptions;
-  ZoomMeetingOptions meetingOptions;
-
-  Timer timer;
-
-  MeetingWidget({Key key, meetingId, meetingPassword}) : super(key: key) {
-    // Setting up the Zoom credentials
-    this.zoomOptions = new ZoomOptions(
-      domain: "zoom.us",
-      appKey: "appKey", // Replace with with key got from the Zoom Marketplace
-      appSecret: "appSecret", // Replace with with secret got from the Zoom Marketplace
-    );
-
-    // Setting Zoom meeting options (default to false if not set)
-    this.meetingOptions = new ZoomMeetingOptions(
-        userId: 'example', //pass username for join meeting only
-        meetingId: meetingId, //pass meeting id for join meeting only
-        meetingPassword: meetingPassword, //pass meeting password for join meeting only
-        disableDialIn: "true",
-        disableDrive: "true",
-        disableInvite: "true",
-        disableShare: "true",
-        noAudio: "false",
-        disableTitlebar: "false", //Make it true for disabling titlebar
-        viewOptions: "false", //Make it true for hiding zoom icon on meeting ui which shows meeting id and password
-        noDisconnectAudio: "false"
-   z );
-  }
-
-  bool _isMeetingEnded(String status) {
-    var result = false;
-
-    if (Platform.isAndroid)
-      result = status == "MEETING_STATUS_DISCONNECTING" || status == "MEETING_STATUS_FAILED";
-    else
-      result = status == "MEETING_STATUS_IDLE";
-
-    return result;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Initializing meeting '),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: ZoomView(onViewCreated: (controller) {
-
-          print("Created the view");
-
-          controller.initZoom(this.zoomOptions)
-              .then((results) {
-
-            if(results[0] == 0) {
-
-              // Listening on the Zoom status stream (1)
-              controller.zoomStatusEvents.listen((status) {
-
-                print("Meeting Status Stream: " + status[0] + " - " + status[1]);
-
-                if (_isMeetingEnded(status[0])) {
-                  Navigator.pop(context);
-                  timer?.cancel();
-                }
-              });
-
-              print("listen on event channel");
-
-              controller.joinMeeting(this.meetingOptions)
-                  .then((joinMeetingResult) {
-
-                    // Polling the Zoom status (2)
-                timer = Timer.periodic(new Duration(seconds: 2), (timer) {
-                  controller.meetingStatus(this.meetingOptions.meetingId)
-                      .then((status) {
-                    print("Meeting Status Polling: " + status[0] + " - " + status[1]);
-                  });
-                });
-              });
-            }
-
-          }).catchError((error) {
-            print(error);
-          });
-        })
-      ),
-    );
-  }
-}
-```
-
 ### Start a Meeting - Login user
 
-1. Pass the Zoom user ID or user email and password to the plugin.
-
-```dart
-class StartMeetingWidget extends StatefulWidget {
-
-  ZoomOptions zoomOptions;
-  ZoomMeetingOptions loginOptions;
-
-
-  StartMeetingWidget({Key key, meetingId}) : super(key: key) {
-    this.zoomOptions = new ZoomOptions(
-      domain: "zoom.us",
-      appKey: "apiKey", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
-      appSecret: "appSecret", // Replace with with key got from the Zoom Marketplace ZOOM SDK Section
-    );
-    this.loginOptions = new ZoomMeetingOptions(
-        userId: 'useremail', // Replace with the user email or Zoom user ID of host for start meeting only.
-        meetingPassword: 'password', // Replace with the user password for your Zoom ID of host for start meeting only.
+```
+    var meetingOptions = new ZoomMeetingOptions(
+        userId: '', //pass host email for zoom
+        userPassword: '', // replace 'meetingPassword' with userPassword
         disableDialIn: "false",
         disableDrive: "false",
         disableInvite: "false",
@@ -366,83 +264,60 @@ class StartMeetingWidget extends StatefulWidget {
         noAudio: "false",
         noDisconnectAudio: "false"
     );
-  }
+```
 
-  @override
-  _StartMeetingWidgetState createState() => _StartMeetingWidgetState();
-}
+### ZoomView(onViewCreated: (controller) {} --- Replaced with
 
-class _StartMeetingWidgetState extends State<StartMeetingWidget> {
-  Timer timer;
+```
+     var zoom = ZoomView();
+     // Initializing Zoom SDK
+     zoom.initZoom(zoomOptions).then((results) {}
 
-  bool _isMeetingEnded(String status) {
-    var result = false;
+```
+### controller.zoomStatusEvents.listen((status) {} -- Replaced With
 
-    if (Platform.isAndroid)
-      result = status == "MEETING_STATUS_DISCONNECTING" || status == "MEETING_STATUS_FAILED";
-    else
-      result = status == "MEETING_STATUS_IDLE";
+```
+    var zoom = ZoomView();
+    zoom.initZoom(zoomOptions).then((results) {
+        if(results[0] == 0){
+            zoom.onMeetingStatus().listen((status) {
+                //Some Statement
+                //Log for meeting status
+            }
+        }
+    }
 
-    return result;
-  }
+```
 
-  bool _isLoading = true;
+### Start meetion function chaged :-
 
-  @override
-  Widget build(BuildContext context) {
-    // Use the Todo to create the UI.
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Loading meeting '),
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            _isLoading ? CircularProgressIndicator() : Container(),
-            Expanded(
-              child: ZoomView(onViewCreated: (controller) {
+```
+    controller.login(this.widget.loginOptions).then((loginResult) {}
 
-                print("Created the view");
+```
 
-                controller.initZoom(this.widget.zoomOptions)
-                    .then((results) {
-                  print(results);
+```
+    var zoom = ZoomView();
+    zoom.initZoom(zoomOptions).then((results) {
+        if(results[0] == 0){
+            zoom.onMeetingStatus().listen((status) {
+                //Some Statement
+                //Log for meeting status
+            }
+            zoom.startMeeting(meetingOptions).then((loginResult) {
+                print("[LoginResult] :- " + loginResult[0] + " - " + loginResult[1]);
+                if(loginResult[0] == "SDK ERROR"){
+                    //SDK INIT FAILED
+                    print((loginResult[1]).toString());
+                }else if(loginResult[0] == "LOGIN ERROR"){
+                    //LOGIN FAILED - WITH ERROR CODES
+                    print((loginResult[1]).toString());
+                }else{
+                    //LOGIN SUCCESS & MEETING STARTED - WITH SUCCESS CODE 200
+                    print((loginResult[0]).toString());
+                }
+            });
+        }
+    }
 
-                  if(results[0] == 0) {
-
-                    controller.zoomStatusEvents.listen((status) {
-                      print("Meeting Status Stream: " + status[0] + " - " + status[1]);
-                      if (_isMeetingEnded(status[0])) {
-                        Navigator.pop(context);
-                        timer?.cancel();
-                      }
-                    });
-
-                    print("listen on event channel");
-
-                    controller.login(this.widget.loginOptions).then((loginResult) {
-                      print("LoginResultBool :- " + loginResult.toString());
-                      if(loginResult){
-                        print("LoginResult :- Logged In");
-                        setState(() {
-                          _isLoading = false;
-                        });
-                      }else{
-                        print("LoginResult :- Logged In Failed");
-                      }
-                    });
-                  }
-
-                }).catchError((error) {
-                  print(error);
-                });
-              }),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 ```
