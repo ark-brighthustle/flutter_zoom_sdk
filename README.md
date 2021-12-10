@@ -5,7 +5,7 @@
 A Flutter plugin for the Zoom SDK With all features and null safety support.
 
 *Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
-Feedback and IOS Version currently under development, Pull Requests are always welcome.
+Feedback and iOS Version currently under development, Pull Requests are always welcome.
 
 ## Features
 
@@ -18,7 +18,7 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 - [x] Login Error with proper Error codes.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
-- [ ] IOS Support (Coming Soon by first week of Aug).
+- [ ] iOS Support (Coming Soon by 25th December 2021).
 - [ ] Web Support 
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
