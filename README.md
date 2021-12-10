@@ -79,11 +79,20 @@ For Android:
 - `MEETING_STATUS_RECONNECTING`
 - `MEETING_STATUS_WAITINGFORHOST`
 
-| Left-Aligned  | Center Aligned  |
-| :------------ |:---------------:|
-| ERROR- 0      | some wordy text |
-| ERROR- 0      | centered        |
-| ERROR- 0      | are neat        |
+| Error Response        | Error Reference                       |
+| :-------------------- |:-------------------------------------:|
+| [LOGIN ERROR]- 1      | EMAIL_LOGIN_DISABLE                   |
+| [LOGIN ERROR]- 2      | ERROR_USER_NOT_EXIST                  |
+| [LOGIN ERROR]- 3      | ERROR_WRONG_PASSWORD                  |
+| [LOGIN ERROR]- 4      | ERROR_WRONG_ACCOUNTLOCKED             |
+| [LOGIN ERROR]- 5      | ERROR_WRONG_SDKNEEDUPDATE             |
+| [LOGIN ERROR]- 6      | ERROR_WRONG_TOOMANY_FAILED_ATTEMPTS   |
+| [LOGIN ERROR]- 7      | ERROR_WRONG_SMSCODEERROR              |
+| [LOGIN ERROR]- 8      | ERROR_WRONG_SMSCODEEXPIRED            |
+| [LOGIN ERROR]- 9      | ERROR_WRONG_PHONENUMBERFORMATINVALID  |
+| [LOGIN ERROR]- 10     | ERROR_LOGINTOKENINVALID               |
+| [LOGIN ERROR]- 11     | ERROR_UserDisagreeLoginDisclaimer     |
+| [LOGIN ERROR]- 100    | ERROR_WRONG_OTHER_ISSUE               |
 
 ### Join Meeting
 
