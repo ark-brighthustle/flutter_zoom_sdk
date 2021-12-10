@@ -55,6 +55,24 @@ Add the zoom proguard content to your android project: https://github.com/zoom/z
 -keep class com.google.crypto.tink.**{;}
 -keep class androidx.security.crypto.**{*;}
 ```
+## Error Codes
+
+| Error Response        | Error Reference                       |
+| :-------------------- |:-------------------------------------:|
+|  LOGIN ERROR - 1      | EMAIL_LOGIN_DISABLE                   |
+|  LOGIN ERROR - 2      | ERROR_USER_NOT_EXIST                  |
+|  LOGIN ERROR - 3      | ERROR_WRONG_PASSWORD                  |
+|  LOGIN ERROR - 4      | ERROR_WRONG_ACCOUNTLOCKED             |
+|  LOGIN ERROR - 5      | ERROR_WRONG_SDKNEEDUPDATE             |
+|  LOGIN ERROR - 6      | ERROR_WRONG_TOOMANY_FAILED_ATTEMPTS   |
+|  LOGIN ERROR - 7      | ERROR_WRONG_SMSCODEERROR              |
+|  LOGIN ERROR - 8      | ERROR_WRONG_SMSCODEEXPIRED            |
+|  LOGIN ERROR - 9      | ERROR_WRONG_PHONENUMBERFORMATINVALID  |
+|  LOGIN ERROR - 10     | ERROR_LOGINTOKENINVALID               |
+|  LOGIN ERROR - 11     | ERROR_UserDisagreeLoginDisclaimer     |
+|  LOGIN ERROR - 100    | ERROR_WRONG_OTHER_ISSUE               |
+|  SDK ERROR - 001      | ERROR_SDK_NOT_INITIALIZED             |
+
 ## Examples
 
 ### Meeting status
@@ -79,20 +97,147 @@ For Android:
 - `MEETING_STATUS_RECONNECTING`
 - `MEETING_STATUS_WAITINGFORHOST`
 
-| Error Response        | Error Reference                       |
-| :-------------------- |:-------------------------------------:|
-| [LOGIN ERROR]- 1      | EMAIL_LOGIN_DISABLE                   |
-| [LOGIN ERROR]- 2      | ERROR_USER_NOT_EXIST                  |
-| [LOGIN ERROR]- 3      | ERROR_WRONG_PASSWORD                  |
-| [LOGIN ERROR]- 4      | ERROR_WRONG_ACCOUNTLOCKED             |
-| [LOGIN ERROR]- 5      | ERROR_WRONG_SDKNEEDUPDATE             |
-| [LOGIN ERROR]- 6      | ERROR_WRONG_TOOMANY_FAILED_ATTEMPTS   |
-| [LOGIN ERROR]- 7      | ERROR_WRONG_SMSCODEERROR              |
-| [LOGIN ERROR]- 8      | ERROR_WRONG_SMSCODEEXPIRED            |
-| [LOGIN ERROR]- 9      | ERROR_WRONG_PHONENUMBERFORMATINVALID  |
-| [LOGIN ERROR]- 10     | ERROR_LOGINTOKENINVALID               |
-| [LOGIN ERROR]- 11     | ERROR_UserDisagreeLoginDisclaimer     |
-| [LOGIN ERROR]- 100    | ERROR_WRONG_OTHER_ISSUE               |
+### Join Meeting
+
+```dart
+joinMeeting(BuildContext context) {
+    bool _isMeetingEnded(String status) {
+      var result = false;
+
+      if (Platform.isAndroid)
+        result = status == "MEETING_STATUS_DISCONNECTING" || status == "MEETING_STATUS_FAILED";
+      else
+        result = status == "MEETING_STATUS_IDLE";
+
+      return result;
+    }
+    if(meetingIdController.text.isNotEmpty && meetingPasswordController.text.isNotEmpty){
+      ZoomOptions zoomOptions = new ZoomOptions(
+        domain: "zoom.us",
+        appKey: "", //API KEY FROM ZOOM
+        appSecret: "", //API SECRET FROM ZOOM
+      );
+      var meetingOptions = new ZoomMeetingOptions(
+          userId: 'username', //pass username for join meeting only --- Any name eg:- EVILRATT.
+          meetingId: ', //pass meeting id for join meeting only
+          meetingPassword: '', //pass meeting password for join meeting only
+          disableDialIn: "true",
+          disableDrive: "true",
+          disableInvite: "true",
+          disableShare: "true",
+          disableTitlebar: "false",
+          viewOptions: "true",
+          noAudio: "false",
+          noDisconnectAudio: "false"
+      );
+
+      var zoom = ZoomView();
+      zoom.initZoom(zoomOptions).then((results) {
+        if(results[0] == 0) {
+          zoom.onMeetingStatus().listen((status) {
+            print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+            if (_isMeetingEnded(status[0])) {
+              print("[Meeting Status] :- Ended");
+              timer.cancel();
+            }
+          });
+          print("listen on event channel");
+          zoom.joinMeeting(meetingOptions).then((joinMeetingResult) {
+            timer = Timer.periodic(new Duration(seconds: 2), (timer) {
+              zoom.meetingStatus(meetingOptions.meetingId!)
+                  .then((status) {
+                print("[Meeting Status Polling] : " + status[0] + " - " + status[1]);
+              });
+            });
+          });
+        }
+      }).catchError((error) {
+        print("[Error Generated] : " + error);
+      });
+    }else{
+      if(meetingIdController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Enter a valid meeting id to continue."),
+        ));
+      }
+      else if(meetingPasswordController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Enter a meeting password to start."),
+        ));
+      }
+    }
+
+  }
+```
+
+### Start a Meeting - Login user
+
+```dart
+startMeeting(BuildContext context) {
+    bool _isMeetingEnded(String status) {
+      var result = false;
+
+      if (Platform.isAndroid)
+        result = status == "MEETING_STATUS_DISCONNECTING" || status == "MEETING_STATUS_FAILED";
+      else
+        result = status == "MEETING_STATUS_IDLE";
+
+      return result;
+    }
+    ZoomOptions zoomOptions = new ZoomOptions(
+      domain: "zoom.us",
+      appKey: "", //API KEY FROM ZOOM
+      appSecret: "", //API SECRET FROM ZOOM
+    );
+    var meetingOptions = new ZoomMeetingOptions(
+        userId: '', //pass host email for zoom
+        userPassword: '', //pass host password for zoom
+        disableDialIn: "false",
+        disableDrive: "false",
+        disableInvite: "false",
+        disableShare: "false",
+        disableTitlebar: "false",
+        viewOptions: "false",
+        noAudio: "false",
+        noDisconnectAudio: "false"
+    );
+
+    var zoom = ZoomView();
+    zoom.initZoom(zoomOptions).then((results) {
+      if(results[0] == 0) {
+        zoom.onMeetingStatus().listen((status) {
+          print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+          if (_isMeetingEnded(status[0])) {
+            print("[Meeting Status] :- Ended");
+            timer.cancel();
+          }
+          if(status[0] == "MEETING_STATUS_INMEETING"){
+            zoom.meetinDetails().then((meetingDetailsResult) {
+              print("[MeetingDetailsResult] :- " + meetingDetailsResult.toString());
+            });
+          }
+        });
+        zoom.startMeeting(meetingOptions).then((loginResult) {
+          print("[LoginResult] :- " + loginResult[0] + " - " + loginResult[1]);
+          if(loginResult[0] == "SDK ERROR"){
+            //SDK INIT FAILED
+            print((loginResult[1]).toString());
+          }else if(loginResult[0] == "LOGIN ERROR"){
+            //LOGIN FAILED - WITH ERROR CODES
+            print((loginResult[1]).toString());
+          }else{
+            //LOGIN SUCCESS & MEETING STARTED - WITH SUCCESS CODE 200
+            print((loginResult[0]).toString());
+          }
+        });
+      }
+    }).catchError((error) {
+      print("[Error Generated] : " + error);
+    });
+  }
+```
+
+## Migration Guide
 
 ### Join Meeting
 
@@ -125,7 +270,7 @@ class MeetingWidget extends StatelessWidget {
         disableTitlebar: "false", //Make it true for disabling titlebar
         viewOptions: "false", //Make it true for hiding zoom icon on meeting ui which shows meeting id and password
         noDisconnectAudio: "false"
-    );
+   z );
   }
 
   bool _isMeetingEnded(String status) {
