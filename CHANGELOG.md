@@ -13,3 +13,7 @@
 - Function changed from login to startMeeting
 - Return meeting number & password on start meeting programmatically
 - Customized Notification Icon & App name
+
+## 0.0.8
+
+- Bug Fixed on flutter pub run flutter_zoom_sdk:unzip_zoom_sdk command
