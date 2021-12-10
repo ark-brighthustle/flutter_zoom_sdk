@@ -30,7 +30,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.7` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.8` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
