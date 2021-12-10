@@ -79,6 +79,12 @@ For Android:
 - `MEETING_STATUS_RECONNECTING`
 - `MEETING_STATUS_WAITINGFORHOST`
 
+| Left-Aligned  | Center Aligned  |
+| :------------ |:---------------:|
+| ERROR- 0      | some wordy text |
+| ERROR- 0      | centered        |
+| ERROR- 0      | are neat        |
+
 ### Join Meeting
 
 ```dart
