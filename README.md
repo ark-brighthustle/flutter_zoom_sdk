@@ -9,7 +9,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Features
 
-- [x] Updated Zoom SDK.
+- [x] Updated Zoom SDK to latest.
 - [x] Null Safety.
 - [x] Stream meeting status.
 - [x] Join meeting.
