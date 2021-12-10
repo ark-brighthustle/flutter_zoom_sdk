@@ -14,6 +14,8 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 - [x] Stream meeting status.
 - [x] Join meeting.
 - [x] Start an instant meeting for Login user.
+- [x] Start an meeting for Login user with Meeeting ID.
+- [x] Login Error with proper Error codes.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
 - [ ] IOS Support (Coming Soon by first week of Aug).
@@ -28,11 +30,11 @@ Feedback and IOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.6` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.7` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
-flutter pub run zoom:unzip_zoom_sdk
+flutter pub run flutter_zoom_sdk:unzip_zoom_sdk
 ```
 
 ### Android
