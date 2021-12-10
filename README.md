@@ -268,7 +268,7 @@ startMeeting(BuildContext context) {
     );
 ```
 
-### ZoomView(onViewCreated: (controller) {} --- Replaced with
+### ZoomView(onViewCreated: (controller) {}) --- Replaced with
 
 ```
      var zoom = ZoomView();
@@ -276,7 +276,7 @@ startMeeting(BuildContext context) {
      zoom.initZoom(zoomOptions).then((results) {}
 
 ```
-### controller.zoomStatusEvents.listen((status) {} -- Replaced With
+### controller.zoomStatusEvents.listen((status) {}) -- Replaced With
 
 ```
     var zoom = ZoomView();
@@ -294,7 +294,7 @@ startMeeting(BuildContext context) {
 ### Start meetion function chaged :-
 
 ```
-    controller.login(this.widget.loginOptions).then((loginResult) {}
+    controller.login(this.widget.loginOptions).then((loginResult) {})
 
 ```
 
