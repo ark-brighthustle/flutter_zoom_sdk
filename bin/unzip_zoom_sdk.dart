@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'dart:io';
-import 'package:archive/archive.dart';
 
 void main(List<String> args) async {
   var location = Platform.script.toString();
