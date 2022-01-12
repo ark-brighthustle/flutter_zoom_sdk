@@ -30,9 +30,54 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.8` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^0.0.9` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
+```shell script
+flutter pub run flutter_zoom_sdk:unzip_zoom_sdk
+```
+
+### iOS
+
+Add two rows to the `ios/Runner/Info.plist`:
+
+- one with the key `Privacy - Camera Usage Description` and a usage description.
+- and one with the key `Privacy - Microphone Usage Description` and a usage description.
+
+Or in text format add the key:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Need to use the camera for call</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Need to use the microphone for call</string>
+```
+
+
+Diable BITCODE in the `ios/Podfile`:
+
+```
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+    end
+  end
+end
+```
+
+**NOTE for testing on the iOS simulator**
+
+If you want to use the iOS Simulator to test your app, you will need to ensure you have the iOS Dev Zoom SDK as a dependency.
+
+To use the Dev Zoom SDK, run the following
+```shell script
+flutter pub run flutter_zoom_sdk:unzip_zoom_sdk dev
+```
+
+To switch back to the normal Zoom SDK, simply run
+
 ```shell script
 flutter pub run flutter_zoom_sdk:unzip_zoom_sdk
 ```

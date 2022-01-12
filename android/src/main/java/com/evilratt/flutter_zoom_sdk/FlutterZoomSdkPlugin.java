@@ -271,6 +271,10 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       meetingService.startInstantMeeting(context, opts);
       inMeetingService = zoomSDK.getInMeetingService();
       result.success(Arrays.asList("MEETING SUCCESS", "200"));
+    }else{
+      System.out.println("Not LoggedIn!!!!!!");
+      result.success(Arrays.asList("LOGIN REQUIRED", "001"));
+      return;
     }
   }
 
