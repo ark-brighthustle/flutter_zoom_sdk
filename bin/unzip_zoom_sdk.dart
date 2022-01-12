@@ -12,9 +12,7 @@ void main(List<String> args) async {
     var scriptDir = sd.join(Platform.pathSeparator);
     var packageConfigPath = [scriptDir, '..', '..', '..', 'package_config.json']
         .join(Platform.pathSeparator);
-    print(packageConfigPath);
     var jsonString = File(packageConfigPath).readAsStringSync();
-    print(jsonString);
     Map<String, dynamic> packages = jsonDecode(jsonString);
     var packageList = packages["packages"];
     String? zoomFileUri;
@@ -38,7 +36,7 @@ void main(List<String> args) async {
   if (!isNewFlutter)
     location = location.replaceFirst("/bin/unzip_zoom_sdk.dart", "");
 
-  // await checkAndDownloadSDK(location);
+  await checkAndDownloadSDK(location);
 
   print('Complete');
 }

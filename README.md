@@ -18,7 +18,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 - [x] Login Error with proper Error codes.
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
-- [ ] iOS Support (Coming Soon by 25th December 2021).
+- [x] iOS Support.
 - [ ] Web Support 
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
@@ -30,7 +30,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^0.0.9` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
@@ -174,7 +174,7 @@ joinMeeting(BuildContext context) {
       );
       var meetingOptions = new ZoomMeetingOptions(
           userId: 'username', //pass username for join meeting only --- Any name eg:- EVILRATT.
-          meetingId: ', //pass meeting id for join meeting only
+          meetingId: '', //pass meeting id for join meeting only
           meetingPassword: '', //pass meeting password for join meeting only
           disableDialIn: "true",
           disableDrive: "true",
