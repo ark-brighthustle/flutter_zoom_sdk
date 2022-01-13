@@ -33,3 +33,7 @@
 
 - iOS Build Issue fixed for real devices
 - Some Minor Improvements
+
+## 1.0.0+2
+
+- iOS Start meeting issue fixed
