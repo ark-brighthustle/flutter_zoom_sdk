@@ -38,7 +38,7 @@
 
 - iOS Start meeting issue fixed
 
-## 1.0.0+2
+## 1.0.0+3
 
 - iOS Start meeting issue fixed
 - iOS get meeting id and password after starting meeting fixed
