@@ -31,5 +31,5 @@
 
 ## 1.0.0+1
 
-- iOS Build Issue fixed for real devicess
-- Some Minor Improvments
+- iOS Build Issue fixed for real devices
+- Some Minor Improvements
