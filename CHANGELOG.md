@@ -28,3 +28,8 @@
 - Bug Fixed on flutter pub run flutter_zoom_sdk:unzip_zoom_sdk command
 - IOS SDK implemented
 - Bug Fixes
+
+## 1.0.0+1
+
+- iOS Build Issue fixed for real devicess
+- Some Minor Improvments

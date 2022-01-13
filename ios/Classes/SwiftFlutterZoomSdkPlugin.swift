@@ -93,8 +93,15 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
 
       public func login(call: FlutterMethodCall, result: @escaping FlutterResult) {
               let authService = MobileRTC.shared().getAuthService()
+                
               if ((authService?.isLoggedIn()) == true) {
                   self.startMeeting(call:call, result:result);
+              }else{
+                  let arguments = call.arguments as! Dictionary<String, String?>
+                  authService?.login(withEmail: arguments["userId"]!!, password: arguments["userPassword"]!!, rememberMe: false)
+                  if ((authService?.isLoggedIn()) == true) {
+                      self.startMeeting(call:call, result:result);
+                  }
               }
       }
 
@@ -102,7 +109,6 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
 
            let meetingService = MobileRTC.shared().getMeetingService()
            if meetingService != nil {
-
                let meetingState = meetingService?.getMeetingState()
                result(getStateMessage(meetingState))
            } else {
@@ -114,10 +120,8 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
 
            let meetingService = MobileRTC.shared().getMeetingService()
            let meetingSettings = MobileRTC.shared().getMeetingSettings()
-           let authService = MobileRTC.shared().getAuthService()
 
-           if (meetingService != nil & (authService?.isLoggedIn()) == true) {
-
+           if (meetingService != nil) {
                let arguments = call.arguments as! Dictionary<String, String?>
 
                meetingSettings?.disableDriveMode(parseBoolean(data: arguments["disableDrive"]!, defaultValue: false))
@@ -127,41 +131,11 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
                meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
                meetingSettings?.meetingTitleHidden = parseBoolean(data:arguments["disableTitlebar"]!, defaultValue: false)
-               boolValue = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
-               if(boolValue){
+               let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
+               if(viewopts){
                     meetingSettings?.meetingTitleHidden = true
                     meetingSettings?.meetingPasswordHidden = true
                }
-//                if  arguments["meetingViewOptions"] != nil{
-//                    let meetingViewOptions = parseInt(data: arguments["meetingViewOptions"]!, defaultValue: 0)
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_AUDIO) != 0 {
-//                        meetingSettings?.meetingAudioHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_LEAVE) != 0 {
-//                        meetingSettings?.meetingLeaveHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_MORE) != 0 {
-//                        meetingSettings?.meetingMoreHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_PARTICIPANTS) != 0 {
-//                        meetingSettings?.meetingParticipantHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_SWITCH_AUDIO_SOURCE) != 0 {
-//
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_SWITCH_CAMERA) != 0 {
-//
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_VIDEO) != 0 {
-//                        meetingSettings?.meetingVideoHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_TEXT_MEETING_ID) != 0 {
-//                        meetingSettings?.meetingTitleHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_TEXT_PASSWORD) != 0 {
-//                        meetingSettings?.meetingPasswordHidden = true
-//                    }
-//                }
                let joinMeetingParameters = MobileRTCMeetingJoinParam()
                joinMeetingParameters.userName = arguments["userId"]!!
                joinMeetingParameters.meetingNumber = arguments["meetingId"]!!
@@ -187,64 +161,43 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
 
            let meetingService = MobileRTC.shared().getMeetingService()
            let meetingSettings = MobileRTC.shared().getMeetingSettings()
+           let authService = MobileRTC.shared().getAuthService()
+           
+           if meetingService != nil{
+               if ((authService?.isLoggedIn()) == true) {
+                   let arguments = call.arguments as! Dictionary<String, String?>
 
-           if meetingService != nil {
+                   meetingSettings?.disableDriveMode(parseBoolean(data: arguments["disableDrive"]!, defaultValue: false))
+                   meetingSettings?.disableCall(in: parseBoolean(data: arguments["disableDialIn"]!, defaultValue: false))
+                   meetingSettings?.setAutoConnectInternetAudio(parseBoolean(data: arguments["noDisconnectAudio"]!, defaultValue: false))
+                   meetingSettings?.setMuteAudioWhenJoinMeeting(parseBoolean(data: arguments["noAudio"]!, defaultValue: false))
+                   meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
+                   meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
+                   let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
+                   if(viewopts){
+                        meetingSettings?.meetingTitleHidden = true
+                        meetingSettings?.meetingPasswordHidden = true
+                   }
+                   let startMeetingParameters = MobileRTCMeetingStartParam4LoginlUser()
 
-               let arguments = call.arguments as! Dictionary<String, String?>
+                   //user.userType = .apiUser
+                   //user.meetingNumber = arguments["meetingId"]!!
+                   //user.userName = arguments["displayName"]!!
+                  // user.userToken = arguments["zoomToken"]!!
+                   //user.userID = arguments["userId"]!!
+                   //user.zak = arguments["zoomAccessToken"]!!
 
-               meetingSettings?.disableDriveMode(parseBoolean(data: arguments["disableDrive"]!, defaultValue: false))
-               meetingSettings?.disableCall(in: parseBoolean(data: arguments["disableDialIn"]!, defaultValue: false))
-               meetingSettings?.setAutoConnectInternetAudio(parseBoolean(data: arguments["noDisconnectAudio"]!, defaultValue: false))
-               meetingSettings?.setMuteAudioWhenJoinMeeting(parseBoolean(data: arguments["noAudio"]!, defaultValue: false))
-               meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
-               meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
-//                if  arguments["meetingViewOptions"] != nil{
-//                    let meetingViewOptions = parseInt(data: arguments["meetingViewOptions"]!, defaultValue: 0)
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_AUDIO) != 0 {
-//                        meetingSettings?.meetingAudioHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_LEAVE) != 0 {
-//                        meetingSettings?.meetingLeaveHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_MORE) != 0 {
-//                        meetingSettings?.meetingMoreHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_PARTICIPANTS) != 0 {
-//                        meetingSettings?.meetingParticipantHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_SWITCH_AUDIO_SOURCE) != 0 {
-//
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_SWITCH_CAMERA) != 0 {
-//
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_BUTTON_VIDEO) != 0 {
-//                        meetingSettings?.meetingVideoHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_TEXT_MEETING_ID) != 0 {
-//                        meetingSettings?.meetingTitleHidden = true
-//                    }
-//                    if (meetingViewOptions & MeetingViewOptions.NO_TEXT_PASSWORD) != 0 {
-//                        meetingSettings?.meetingPasswordHidden = true
-//                    }
-//                }
-               let user: MobileRTCMeetingStartParam4WithoutLoginUser = MobileRTCMeetingStartParam4WithoutLoginUser.init()
+                   //let param: MobileRTCMeetingStartParam = user
 
-               user.userType = .apiUser
-               user.meetingNumber = arguments["meetingId"]!!
-               user.userName = arguments["displayName"]!!
-              // user.userToken = arguments["zoomToken"]!!
-               user.userID = arguments["userId"]!!
-               user.zak = arguments["zoomAccessToken"]!!
+                   let response = meetingService?.startMeeting(with: startMeetingParameters)
 
-               let param: MobileRTCMeetingStartParam = user
-
-               let response = meetingService?.startMeeting(with: param)
-
-               if let response = response {
-                   print("Got response from start: \(response)")
+                   if let response = response {
+                       print("Got response from start: \(response)")
+                   }
+                   result(true)
+               }else{
+                   result(false)
                }
-               result(true)
            } else {
                result(false)
            }
@@ -375,7 +328,7 @@ public class AuthenticationDelegate: NSObject, MobileRTCAuthDelegate {
         self.result = nil
     }
 
-    public func onMobileRTCLoginReturn(_ returnValue: Int) {
+    public func onMobileRTCLoginReturn(_ returnValue: Int){
 
     }
 
