@@ -39,7 +39,6 @@ flutter pub run flutter_zoom_sdk:unzip_zoom_sdk
 
 ### iOS
 
-*Note*: only startMeeting function can start meeting.
 *Note*: correct login ID and Password needed at first attempt or need to reload app.
 *Note*: There is no error message for login failure like android.
 
