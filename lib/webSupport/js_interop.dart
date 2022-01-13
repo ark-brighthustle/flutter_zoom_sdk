@@ -1,5 +1,5 @@
 @JS()
-library zoom;
+library flutter_zoom_sdk;
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
@@ -15,7 +15,8 @@ Map jsToMap(jsObject) {
 dynamic convertToDart(value) {
   // Value types.
   if (value == null) return null;
-  if (value is bool || value is num || value is DateTime || value is String) return value;
+  if (value is bool || value is num || value is DateTime || value is String)
+    return value;
 
   // JsArray.
   if (value is Iterable) return value.map(convertToDart).toList();
@@ -27,4 +28,3 @@ dynamic convertToDart(value) {
 // But you don't use them directly. Just see `jsToMap`.
 @JS('Object.keys')
 external List<String> _getKeysOfObject(jsObject);
-

@@ -1,6 +1,4 @@
-
 class ZoomOptions {
-
   String? domain;
   String? appKey;
   String? appSecret;
@@ -32,53 +30,51 @@ class ZoomOptions {
   bool? disableReport; //--for web
   List<String>? meetingInfo; //--for web
 
-  ZoomOptions({
-    required this.domain,
-    this.appKey,
-    this.appSecret,
-    this.language = "en-US",
-    this.showMeetingHeader = true,
-    this.disableInvite = false,
-    this.disableCallOut = false,
-    this.disableRecord = false,
-    this.disableJoinAudio = false,
-    this.audioPanelAlwaysOpen = false,
-    this.isSupportAV = true,
-    this.isSupportChat = true,
-    this.isSupportQA = true,
-    this.isSupportCC = true,
-    this.isSupportPolling = true,
-    this.isSupportBreakout = true,
-    this.screenShare = true,
-    this.rwcBackup = '',
-    this.videoDrag = true,
-    this.sharingMode = 'both',
-    this.videoHeader = true,
-    this.isLockBottom = true,
-    this.isSupportNonverbal = true,
-    this.isShowJoiningErrorDialog = true,
-    this.disablePreview = false,
-    this.disableCORP = true,
-    this.inviteUrlFormat = '',
-    this.disableVOIP = false,
-    this.disableReport = false,
-    this.meetingInfo = const [
-      'topic',
-      'host',
-      'mn',
-      'pwd',
-      'telPwd',
-      'invite',
-      'participant',
-      'dc',
-      'enctype',
-      'report'
-    ]
-  });
+  ZoomOptions(
+      {required this.domain,
+      this.appKey,
+      this.appSecret,
+      this.language = "en-US",
+      this.showMeetingHeader = true,
+      this.disableInvite = false,
+      this.disableCallOut = false,
+      this.disableRecord = false,
+      this.disableJoinAudio = false,
+      this.audioPanelAlwaysOpen = false,
+      this.isSupportAV = true,
+      this.isSupportChat = true,
+      this.isSupportQA = true,
+      this.isSupportCC = true,
+      this.isSupportPolling = true,
+      this.isSupportBreakout = true,
+      this.screenShare = true,
+      this.rwcBackup = '',
+      this.videoDrag = true,
+      this.sharingMode = 'both',
+      this.videoHeader = true,
+      this.isLockBottom = true,
+      this.isSupportNonverbal = true,
+      this.isShowJoiningErrorDialog = true,
+      this.disablePreview = false,
+      this.disableCORP = true,
+      this.inviteUrlFormat = '',
+      this.disableVOIP = false,
+      this.disableReport = false,
+      this.meetingInfo = const [
+        'topic',
+        'host',
+        'mn',
+        'pwd',
+        'telPwd',
+        'invite',
+        'participant',
+        'dc',
+        'enctype',
+        'report'
+      ]});
 }
 
 class ZoomMeetingOptions {
-
   String? userId;
   String? userPassword;
   String? displayName;
@@ -94,8 +90,8 @@ class ZoomMeetingOptions {
   String? noAudio;
   String? zoomToken;
   String? zoomAccessToken;
-  String? jwtAPIKey;//--for web
-  String? jwtSignature;//--for web
+  String? jwtAPIKey; //--for web
+  String? jwtSignature; //--for web
 
   ZoomMeetingOptions({
     this.userId,

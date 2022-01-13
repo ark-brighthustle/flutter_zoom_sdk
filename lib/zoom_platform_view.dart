@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
 import 'package:flutter_zoom_sdk/zoom_view.dart';
@@ -14,6 +13,7 @@ abstract class ZoomPlatform extends PlatformInterface {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
+
   Future<List> initZoom(ZoomOptions options) async {
     throw UnimplementedError('initZoom() has not been implemented.');
   }
@@ -34,11 +34,11 @@ abstract class ZoomPlatform extends PlatformInterface {
     throw UnimplementedError('meetingStatus() has not been implemented.');
   }
 
-  Stream<dynamic> onMeetingStatus(){
+  Stream<dynamic> onMeetingStatus() {
     throw UnimplementedError('onMeetingStatus() has not been implemented.');
   }
 
-  Future<List> meetinDetails() async{
+  Future<List> meetinDetails() async {
     throw UnimplementedError('meetingDetails() has not been implemented.');
   }
 }

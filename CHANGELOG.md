@@ -47,3 +47,8 @@
 ## 1.0.0+4
 
 - Web SDK implemented
+
+## 1.0.0+5
+
+- Web SDK bug fixes
+- minor improvments

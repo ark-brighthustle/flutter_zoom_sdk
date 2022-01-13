@@ -1,5 +1,5 @@
 @JS()
-library zoom;
+library flutter_zoom_sdk;
 
 import 'package:js/js.dart';
 
@@ -8,34 +8,34 @@ import 'package:js/js.dart';
 class InitParams {
   external factory InitParams(
       {leaveUrl,
-        showMeetingHeader,
-        disableInvite,
-        disableCallOut,
-        disableRecord,
-        disableJoinAudio,
-        audioPanelAlwaysOpen,
-        isSupportAV,
-        isSupportChat,
-        isSupportQA,
-        isSupportCC,
-        isSupportPolling,
-        isSupportBreakout,
-        screenShare,
-        rwcBackup,
-        videoDrag,
-        sharingMode,
-        videoHeader,
-        isLockBottom,
-        isSupportNonverbal,
-        isShowJoiningErrorDialog,
-        disablePreview,
-        disableCORP,
-        inviteUrlFormat,
-        disableVoIP,
-        disableReport,
-        meetingInfo,
-        success,
-        error});
+      showMeetingHeader,
+      disableInvite,
+      disableCallOut,
+      disableRecord,
+      disableJoinAudio,
+      audioPanelAlwaysOpen,
+      isSupportAV,
+      isSupportChat,
+      isSupportQA,
+      isSupportCC,
+      isSupportPolling,
+      isSupportBreakout,
+      screenShare,
+      rwcBackup,
+      videoDrag,
+      sharingMode,
+      videoHeader,
+      isLockBottom,
+      isSupportNonverbal,
+      isShowJoiningErrorDialog,
+      disablePreview,
+      disableCORP,
+      inviteUrlFormat,
+      disableVoIP,
+      disableReport,
+      meetingInfo,
+      success,
+      error});
   external String get leaveUrl;
 }
 

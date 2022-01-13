@@ -1,20 +1,15 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:flutter_zoom_sdk/zoom_options.dart';
 import 'package:flutter_zoom_sdk/zoom_platform_view.dart';
-
-
-// typedef void ZoomViewCreatedCallback(ZoomViewController controller);
 
 class ZoomView extends ZoomPlatform {
   final MethodChannel channel = MethodChannel('com.evilratt/zoom_sdk');
 
   /// The event channel used to interact with the native platform.
-  final EventChannel eventChannel = EventChannel('com.evilratt/zoom_sdk_event_stream');
+  final EventChannel eventChannel =
+      EventChannel('com.evilratt/zoom_sdk_event_stream');
   @override
   Future<List> initZoom(ZoomOptions options) async {
-    assert(options != null);
-
     var optionMap = new Map<String, String?>();
 
     if (options.appKey != null) {
@@ -32,7 +27,6 @@ class ZoomView extends ZoomPlatform {
 
   @override
   Future<List> startMeetingNormal(ZoomMeetingOptions options) async {
-    assert(options != null);
     var optionMap = new Map<String, String?>();
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("userPassword", () => options.userPassword);
@@ -53,7 +47,6 @@ class ZoomView extends ZoomPlatform {
 
   @override
   Future<bool> joinMeeting(ZoomMeetingOptions options) async {
-    assert(options != null);
     var optionMap = new Map<String, String?>();
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
@@ -93,8 +86,6 @@ class ZoomView extends ZoomPlatform {
 
   @override
   Future<List> meetingStatus(String meetingId) async {
-    assert(meetingId != null);
-
     var optionMap = new Map<String, String>();
     optionMap.putIfAbsent("meetingId", () => meetingId);
 

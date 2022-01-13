@@ -67,7 +67,6 @@ class ZoomViewWeb extends ZoomPlatform {
 
   String generateSignature(
       String apiKey, String apiSecret, String meetingNumber, int role) {
-    // Prevent time sync issue between client signature generation and zoom
     final timestamp = DateTime.now().millisecondsSinceEpoch - 30000;
     var str = '${apiKey}${meetingNumber}${timestamp}${role}';
     var bytes = utf8.encode(str);
@@ -89,7 +88,8 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<List> completer = Completer();
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
-        userName: options.displayName != null ? options.displayName : options.userId,
+        userName:
+            options.displayName != null ? options.displayName : options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,
@@ -108,7 +108,7 @@ class ZoomViewWeb extends ZoomPlatform {
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
         userName:
-        options.displayName != null ? options.displayName : options.userId,
+            options.displayName != null ? options.displayName : options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,
@@ -128,7 +128,6 @@ class ZoomViewWeb extends ZoomPlatform {
 
   @override
   Stream<dynamic> onMeetingStatus() {
-    final Completer<bool> completer = Completer();
     streamController?.close();
     streamController = StreamController<dynamic>();
     ZoomMtg.inMeetingServiceListener('onMeetingStatus', allowInterop((status) {

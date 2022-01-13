@@ -1,5 +1,5 @@
 @JS()
-library stringify;
+library flutter_zoom_sdk_stringify;
 
 import 'package:js/js.dart';
 

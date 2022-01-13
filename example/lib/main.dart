@@ -13,7 +13,7 @@ class ExampleApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      navigatorObservers: [ ],
+      navigatorObservers: [],
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
