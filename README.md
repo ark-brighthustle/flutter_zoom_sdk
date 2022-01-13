@@ -19,7 +19,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
 - [x] iOS Support.
-- [ ] Web Support 
+- [x] Web Support
 - [ ] Schedule Meeting.
 - [ ] List, Delete & Update Scheduled Meeting.
 - [ ] Share Screen using Sharing key or Meeting ID directly.
@@ -30,7 +30,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.0.0+2` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0+4` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
@@ -57,7 +57,7 @@ Or in text format add the key:
 ```
 
 
-Diable BITCODE in the `ios/Podfile`:
+Disable BITCODE in the `ios/Podfile`:
 
 ```
 post_install do |installer|
@@ -131,6 +131,41 @@ Disable shrinkResources for release buid
 |  LOGIN ERROR - 100    | ERROR_WRONG_OTHER_ISSUE               |
 |  SDK ERROR - 001      | ERROR_SDK_NOT_INITIALIZED             |
 
+### Web
+
+**NOTE for using on Web**
+
+You cannot get meeting ID and Password after start meeting
+Only user whose JWT credentials is provided inside the app can start the meeting
+
+Add stylesheet to the head of index.html
+```html
+<link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.9/css/bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.9.9/css/react-select.css" />
+```
+Import ZoomMtg dependencies to the body of index.html
+```html
+<!-- import ZoomMtg dependencies -->
+   <script src="https://source.zoom.us/1.9.9/lib/vendor/react.min.js"></script>
+   <script src="https://source.zoom.us/1.9.9/lib/vendor/react-dom.min.js"></script>
+   <script src="https://source.zoom.us/1.9.9/lib/vendor/redux.min.js"></script>
+   <script src="https://source.zoom.us/1.9.9/lib/vendor/redux-thunk.min.js"></script>
+   <script src="https://source.zoom.us/1.9.9/lib/vendor/lodash.min.js"></script>
+   <script src="https://source.zoom.us/1.9.9/lib/av/1502_js_media.min.js"></script>
+
+   <!-- import ZoomMtg -->
+   <script src="https://source.zoom.us/zoom-meeting-1.9.9.min.js"></script>
+
+   <script src="main.dart.js" type="application/javascript"></script>
+```
+You need to obtain the User Token and Zoom Access Token (ZAK) in order to start meetings for a web user. They are unique authentication tokens required to host a meeting on behalf of another user.
+
+Example of getting User Token and ZAK [here](https://marketplace.zoom.us/docs/sdk/native-sdks/android/mastering-zoom-sdk/start-join-meeting/api-user/authentication)
+
+More info about the User Token and Zoom Access Token [here](https://marketplace.zoom.us/docs/sdk/native-sdks/credentials).
+
+To get personal meeting id and passcode follow https://zoom.us/meeting#/ and navigate to Personal Room tab
+
 ## Examples
 
 ### Meeting status
@@ -141,6 +176,14 @@ There are 2 ways to obtains the Zoom meeting status
 
 
 The plugin emits the following Zoom meeting events:
+
+For iOS:
+- `MEETING_STATUS_IDLE`
+- `MEETING_STATUS_CONNECTING`
+- `MEETING_STATUS_INMEETING`
+- `MEETING_STATUS_WEBINAR_PROMOTE`
+- `MEETING_STATUS_WEBINAR_DEPROMOTE`
+- `MEETING_STATUS_UNKNOWN`
 
 For Android:
 - `MEETING_STATUS_IDLE`
@@ -225,6 +268,165 @@ joinMeeting(BuildContext context) {
       }
     }
 
+  }
+```
+
+### Join Meeting - For Web (JWT Required)
+
+1. Pass the Jwt API Key as api key for web & Jwt API Secret as appSecret
+2. Role must be passed as 0 inside generateSignature for join a meeting
+
+```dart
+joinMeetingWeb(BuildContext context) {
+      ZoomOptions zoomOptions = new ZoomOptions(
+        domain: "zoom.us",
+        appKey: "", //API KEY FROM ZOOM - Jwt API Key
+        appSecret: "", //API SECRET FROM ZOOM - Jwt API Secret
+        language: "en-US", // Optional - For Web
+        showMeetingHeader: true, // Optional - For Web
+        disableInvite: false, // Optional - For Web
+        disableCallOut: false, // Optional - For Web
+        disableRecord: false, // Optional - For Web
+        disableJoinAudio: false, // Optional - For Web
+        audioPanelAlwaysOpen: false, // Optional - For Web
+        isSupportAV: true, // Optional - For Web
+        isSupportChat: true, // Optional - For Web
+        isSupportQA: true, // Optional - For Web
+        isSupportCC: true, // Optional - For Web
+        isSupportPolling: true, // Optional - For Web
+        isSupportBreakout: true, // Optional - For Web
+        screenShare: true, // Optional - For Web
+        rwcBackup: '', // Optional - For Web
+        videoDrag: true, // Optional - For Web
+        sharingMode: 'both', // Optional - For Web
+        videoHeader: true, // Optional - For Web
+        isLockBottom: true, // Optional - For Web
+        isSupportNonverbal: true, // Optional - For Web
+        isShowJoiningErrorDialog: true, // Optional - For Web
+        disablePreview: false, // Optional - For Web
+        disableCORP: true, // Optional - For Web
+        inviteUrlFormat: '', // Optional - For Web
+        disableVOIP: false, // Optional - For Web
+        disableReport: false, // Optional - For Web
+        meetingInfo: const [
+            // Optional - For Web
+            'topic',
+            'host',
+            'mn',
+            'pwd',
+            'telPwd',
+            'invite',
+            'participant',
+            'dc',
+            'enctype',
+            'report'
+        ]
+      );
+      var meetingOptions = new ZoomMeetingOptions(
+          userId: 'username', //pass username for join meeting only --- Any name eg:- EVILRATT.
+          meetingId: meetingIdController.text, //Personal meeting id for start meeting required
+          meetingPassword: meetingPasswordController.text, //Personal meeting passcode for start meeting required
+          //To get personal meeting id and passcode follow https://zoom.us/meeting#/ and novigate to Personal Room tab
+      );
+
+      var zoom = ZoomViewWeb();
+      zoom.initZoom(zoomOptions).then((results) {
+        if(results[0] == 0) {
+          var zr = window.document.getElementById("zmmtg-root");
+          querySelector('body')?.append(zr!);
+          zoom.onMeetingStatus().listen((status) {
+            print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+          });
+          final signature = zoom.generateSignature(zoomOptions.appKey.toString(), zoomOptions.appSecret.toString(), meetingIdController.text, 0);
+          meetingOptions.jwtAPIKey = zoomOptions.appKey.toString();
+          meetingOptions.jwtSignature = signature;
+          zoom.joinMeeting(meetingOptions).then((joinMeetingResult) {
+            print("[Meeting Status Polling] : " + joinMeetingResult[0] + " - " + joinMeetingResult[1]);
+          });
+        }
+      }).catchError((error) {
+        print("[Error Generated] : " + error);
+      });
+  }
+```
+
+### Start a Meeting - For Web (JWT Required)
+
+1. Pass the Jwt API Key as api key for web & Jwt API Secret as appSecret
+2. Role must be passed as 1 inside generateSignature for start a meeting
+3. Pass your Personal meeting ID and Passcode to staty the meeting (Meeeting ID and Passcode must belong to same user account as JWT credentials)
+
+```dart
+startMeetingWeb(BuildContext context) {
+    ZoomOptions zoomOptions = new ZoomOptions(
+        domain: "zoom.us",
+        appKey: "", //API KEY FROM ZOOM - Jwt API Key
+        appSecret: "", //API SECRET FROM ZOOM - Jwt API Secret
+        language: "en-US", // Optional - For Web
+        showMeetingHeader: true, // Optional - For Web
+        disableInvite: false, // Optional - For Web
+        disableCallOut: false, // Optional - For Web
+        disableRecord: false, // Optional - For Web
+        disableJoinAudio: false, // Optional - For Web
+        audioPanelAlwaysOpen: false, // Optional - For Web
+        isSupportAV: true, // Optional - For Web
+        isSupportChat: true, // Optional - For Web
+        isSupportQA: true, // Optional - For Web
+        isSupportCC: true, // Optional - For Web
+        isSupportPolling: true, // Optional - For Web
+        isSupportBreakout: true, // Optional - For Web
+        screenShare: true, // Optional - For Web
+        rwcBackup: '', // Optional - For Web
+        videoDrag: true, // Optional - For Web
+        sharingMode: 'both', // Optional - For Web
+        videoHeader: true, // Optional - For Web
+        isLockBottom: true, // Optional - For Web
+        isSupportNonverbal: true, // Optional - For Web
+        isShowJoiningErrorDialog: true, // Optional - For Web
+        disablePreview: false, // Optional - For Web
+        disableCORP: true, // Optional - For Web
+        inviteUrlFormat: '', // Optional - For Web
+        disableVOIP: false, // Optional - For Web
+        disableReport: false, // Optional - For Web
+        meetingInfo: const [
+            // Optional - For Web
+            'topic',
+            'host',
+            'mn',
+            'pwd',
+            'telPwd',
+            'invite',
+            'participant',
+            'dc',
+            'enctype',
+            'report'
+            ]
+        );
+    var meetingOptions = new ZoomMeetingOptions(
+        userId: '', //pass host username for zoom
+        meetingId: meetingIdController.text, //Personal meeting id for start meeting required
+        meetingPassword: meetingPasswordController.text, //Personal meeting passcode for start meeting required
+        //To get personal meeting id and passcode follow https://zoom.us/meeting#/ and navigate to Personal Room tab
+    );
+
+    var zoom = ZoomViewWeb();
+    zoom.initZoom(zoomOptions).then((results) {
+      if(results[0] == 0) {
+        var zr = window.document.getElementById("zmmtg-root");
+        querySelector('body')?.append(zr!);
+        zoom.onMeetingStatus().listen((status) {
+          print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+        });
+        final signature = zoom.generateSignature(zoomOptions.appKey.toString(), zoomOptions.appSecret.toString(), meetingIdController.text, 1);
+        meetingOptions.jwtAPIKey = zoomOptions.appKey.toString();
+        meetingOptions.jwtSignature = signature;
+        zoom.startMeeting(meetingOptions).then((startMeetingResult) {
+          print("[Meeting Status Polling] : " + startMeetingResult[0] + " - " + startMeetingResult[1]);
+        });
+      }
+    }).catchError((error) {
+      print("[Error Generated] : " + error);
+    });
   }
 ```
 

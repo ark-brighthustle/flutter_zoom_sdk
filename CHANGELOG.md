@@ -43,3 +43,7 @@
 - iOS Start meeting issue fixed
 - iOS get meeting id and password after starting meeting fixed
 - iOS startMeetingNormal added and fixed
+
+## 1.0.0+4
+
+- Web SDK implemented

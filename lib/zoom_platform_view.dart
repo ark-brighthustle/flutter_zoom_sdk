@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
 import 'package:flutter_zoom_sdk/zoom_view.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+export 'zoom_options.dart';
 
 abstract class ZoomPlatform extends PlatformInterface {
   ZoomPlatform() : super(token: _token);
