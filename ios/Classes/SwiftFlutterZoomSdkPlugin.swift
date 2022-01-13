@@ -38,12 +38,16 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
           switch call.method {
           case "init":
               self.initZoom(call: call, result: result)
+          case "login":
+              self.login(call: call, result: result)
           case "join":
               self.joinMeeting(call: call, result: result)
-          case "start":
-              self.startMeeting(call: call, result: result)
+          case "startNormal":
+              self.startMeetingNormal(call: call, result: result)
           case "meeting_status":
               self.meetingStatus(call: call, result: result)
+          case "meeting_details":
+              self.meetingDetails(call: call, result: result)
           default:
               result(FlutterMethodNotImplemented)
           }
@@ -59,9 +63,11 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
           case "join":
               self.joinMeeting(call: call, result: result)
           case "start":
-              self.startMeeting(call: call, result: result)
+              self.startMeetingNormal(call: call, result: result)
           case "meeting_status":
               self.meetingStatus(call: call, result: result)
+          case "meeting_details":
+              self.meetingDetails(call: call, result: result)
           default:
               result(FlutterMethodNotImplemented)
           }
@@ -91,19 +97,33 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
            auth?.sdkAuth()
       }
 
-      public func startMeeting(call: FlutterMethodCall, result: @escaping FlutterResult) {
+      public func login(call: FlutterMethodCall, result: @escaping FlutterResult) {
               let authService = MobileRTC.shared().getAuthService()
                 
               if ((authService?.isLoggedIn()) == true) {
-                  self.login(call:call, result:result);
+                  self.startMeeting(call:call, result:result);
               }else{
                   let arguments = call.arguments as! Dictionary<String, String?>
                   authService?.login(withEmail: arguments["userId"]!!, password: arguments["userPassword"]!!, rememberMe: false)
                   if ((authService?.isLoggedIn()) == true) {
-                      self.login(call:call, result:result);
+                      self.startMeeting(call:call, result:result);
                   }
               }
       }
+    
+        public func startMeetingNormal(call: FlutterMethodCall, result: @escaping FlutterResult) {
+                let authService = MobileRTC.shared().getAuthService()
+                  
+                if ((authService?.isLoggedIn()) == true) {
+                    self.startMeeting(call:call, result:result);
+                }else{
+                    let arguments = call.arguments as! Dictionary<String, String?>
+                    authService?.login(withEmail: arguments["userId"]!!, password: arguments["userPassword"]!!, rememberMe: false)
+                    if ((authService?.isLoggedIn()) == true) {
+                        self.startMeeting(call:call, result:result);
+                    }
+                }
+        }
 
        public func meetingStatus(call: FlutterMethodCall, result: FlutterResult) {
 
@@ -115,6 +135,20 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                result(["MEETING_STATUS_UNKNOWN", ""])
            }
        }
+    
+        public func meetingDetails(call: FlutterMethodCall, result: FlutterResult) {
+
+            let meetingService = MobileRTC.shared().getMeetingService()
+            if meetingService != nil {
+                let meetingPassword = MobileRTCInviteHelper.sharedInstance().rawMeetingPassword
+                let meetingNumber = MobileRTCInviteHelper.sharedInstance().ongoingMeetingNumber
+                
+                result([meetingNumber, meetingPassword])
+                
+            } else {
+                result(["MEETING_STATUS_UNKNOWN", "No status available"])
+            }
+        }
 
        public func joinMeeting(call: FlutterMethodCall, result: FlutterResult) {
 
@@ -133,8 +167,8 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                meetingSettings?.meetingTitleHidden = parseBoolean(data:arguments["disableTitlebar"]!, defaultValue: false)
                let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
                if(viewopts == true){
-                    meetingSettings?.meetingTitleHidden = true
-                    meetingSettings?.meetingPasswordHidden = true
+                   meetingSettings?.meetingTitleHidden = true
+                   meetingSettings?.meetingPasswordHidden = true
                }
                let joinMeetingParameters = MobileRTCMeetingJoinParam()
                joinMeetingParameters.userName = arguments["userId"]!!
@@ -157,7 +191,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
            }
        }
 
-       public func login(call: FlutterMethodCall, result: FlutterResult) {
+       public func startMeeting(call: FlutterMethodCall, result: FlutterResult) {
 
            let meetingService = MobileRTC.shared().getMeetingService()
            let meetingSettings = MobileRTC.shared().getMeetingSettings()
@@ -175,11 +209,10 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                    meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
                    let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
                    if(viewopts == true){
-                        meetingSettings?.meetingTitleHidden = true
-                        meetingSettings?.meetingPasswordHidden = true
+                       meetingSettings?.meetingTitleHidden = true
+                       meetingSettings?.meetingPasswordHidden = true
                    }
                    let startMeetingParameters = MobileRTCMeetingStartParam4LoginlUser()
-
                    //user.userType = .apiUser
                    //user.meetingNumber = arguments["meetingId"]!!
                    //user.userName = arguments["displayName"]!!
