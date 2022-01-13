@@ -30,7 +30,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.0.0+1` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0+2` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
@@ -39,7 +39,9 @@ flutter pub run flutter_zoom_sdk:unzip_zoom_sdk
 
 ### iOS
 
-*Note*: only Login function calls startMeeting.
+*Note*: only startMeeting function can start meeting.
+*Note*: correct login ID and Password needed at first attempt or need to reload app.
+*Note*: There is no error message for login failure like android.
 
 Add two rows to the `ios/Runner/Info.plist`:
 

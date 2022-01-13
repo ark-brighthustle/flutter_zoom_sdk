@@ -91,16 +91,16 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
            auth?.sdkAuth()
       }
 
-      public func login(call: FlutterMethodCall, result: @escaping FlutterResult) {
+      public func startMeeting(call: FlutterMethodCall, result: @escaping FlutterResult) {
               let authService = MobileRTC.shared().getAuthService()
                 
               if ((authService?.isLoggedIn()) == true) {
-                  self.startMeeting(call:call, result:result);
+                  self.login(call:call, result:result);
               }else{
                   let arguments = call.arguments as! Dictionary<String, String?>
                   authService?.login(withEmail: arguments["userId"]!!, password: arguments["userPassword"]!!, rememberMe: false)
                   if ((authService?.isLoggedIn()) == true) {
-                      self.startMeeting(call:call, result:result);
+                      self.login(call:call, result:result);
                   }
               }
       }
@@ -132,7 +132,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
                meetingSettings?.meetingTitleHidden = parseBoolean(data:arguments["disableTitlebar"]!, defaultValue: false)
                let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
-               if(viewopts){
+               if(viewopts == true){
                     meetingSettings?.meetingTitleHidden = true
                     meetingSettings?.meetingPasswordHidden = true
                }
@@ -157,7 +157,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
            }
        }
 
-       public func startMeeting(call: FlutterMethodCall, result: FlutterResult) {
+       public func login(call: FlutterMethodCall, result: FlutterResult) {
 
            let meetingService = MobileRTC.shared().getMeetingService()
            let meetingSettings = MobileRTC.shared().getMeetingSettings()
@@ -174,7 +174,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                    meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
                    meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
                    let viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
-                   if(viewopts){
+                   if(viewopts == true){
                         meetingSettings?.meetingTitleHidden = true
                         meetingSettings?.meetingPasswordHidden = true
                    }
