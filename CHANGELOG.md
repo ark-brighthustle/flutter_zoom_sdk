@@ -57,3 +57,7 @@
 
 - Web bug fixes
 - iOS startMeetingNormal bug fixed(https://github.com/evilrat/flutter_zoom_sdk/issues/44)
+
+## 1.0.0+7
+
+- iOS bug fixes(https://github.com/evilrat/flutter_zoom_sdk/issues/44) (Patch)
