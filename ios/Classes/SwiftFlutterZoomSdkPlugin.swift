@@ -165,7 +165,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
                meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
                meetingSettings?.meetingTitleHidden = parseBoolean(data:arguments["disableTitlebar"]!, defaultValue: false)
-               var viewopts : Bool? = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
+               var viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
 //               if viewopts {
                    meetingSettings?.meetingTitleHidden = viewopts
                    meetingSettings?.meetingPasswordHidden = viewopts
@@ -206,8 +206,8 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                    meetingSettings?.setMuteAudioWhenJoinMeeting(parseBoolean(data: arguments["noAudio"]!, defaultValue: false))
                    meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
                    meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
-                   var viewopts : Bool? = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
-                   i//f viewopts {
+                   var viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
+                   //f viewopts {
                        meetingSettings?.meetingTitleHidden = viewopts
                        meetingSettings?.meetingPasswordHidden = viewopts
                    //}
