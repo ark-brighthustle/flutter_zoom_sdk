@@ -251,7 +251,7 @@ public class SwiftFlutterZoomSdkPlugin: NSObject, FlutterPlugin,FlutterStreamHan
                 meetingSettings?.setMuteAudioWhenJoinMeeting(parseBoolean(data: arguments["noAudio"]!, defaultValue: false))
                 meetingSettings?.meetingShareHidden = parseBoolean(data: arguments["disableShare"]!, defaultValue: false)
                 meetingSettings?.meetingInviteHidden = parseBoolean(data: arguments["disableDrive"]!, defaultValue: false)
-                var viewopts : Bool? = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
+                var viewopts = parseBoolean(data:arguments["viewOptions"]!, defaultValue: false)
                 //if viewopts {
                     meetingSettings?.meetingTitleHidden = viewopts
                     meetingSettings?.meetingPasswordHidden = viewopts
