@@ -1,3 +1,4 @@
+//Basic Zoom Options required for plugin (WEB, iOS, Android)
 class ZoomOptions {
   String? domain;
   String? appKey;
@@ -74,6 +75,7 @@ class ZoomOptions {
       ]});
 }
 
+//Basic Zoom Meeting Options required for plugin (WEB, iOS, Android)
 class ZoomMeetingOptions {
   String? userId;
   String? userPassword;
