@@ -83,6 +83,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     methodChannel.setMethodCallHandler(null);
   }
 
+  //Initializing the Zoom SDK for Android
   private void init(final MethodCall methodCall, final MethodChannel.Result result) {
 
     Map<String, String> options = methodCall.arguments();
@@ -117,7 +118,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       }
     };
 
-
+    //Set custom Notification fro android
     final CustomizedNotificationData data = new CustomizedNotificationData();
     data.setContentTitleId(R.string.app_name_zoom_local);
     data.setLargeIconId(R.drawable.zm_mm_type_emoji);
@@ -153,6 +154,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     zoomSDK.initialize(context, listener, initParams);
   }
 
+  //Perform start meeting function with logging in to the zoom account
   private void login(final MethodCall methodCall, final MethodChannel.Result result){
     Map<String, String> options = methodCall.arguments();
 
@@ -202,7 +204,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     }
   }
 
-
+  //Join Meeting with passed Meeting ID and Passcode
   private void joinMeeting(MethodCall methodCall, MethodChannel.Result result) {
 
     Map<String, String> options = methodCall.arguments();
@@ -241,6 +243,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     result.success(true);
   }
 
+  // Basic Start Meeting Function called on startMeeting triggered via login function
   private void startMeeting(MethodCall methodCall, MethodChannel.Result result) {
 
     Map<String, String> options = methodCall.arguments();
@@ -278,6 +281,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     }
   }
 
+  //Perform start meeting function with logging in to the zoom account (Only for passed meeting id)
   private void startMeetingNormal(final MethodCall methodCall, final MethodChannel.Result result) {
 
     Map<String, String> options = methodCall.arguments();
@@ -329,6 +333,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     }
   }
 
+  // Meeting ID passed Start Meeting Function called on startMeetingNormal triggered via startMeetingNormal function
   private void startMeetingNormalInternal(MethodCall methodCall, MethodChannel.Result result) {
     Map<String, String> options = methodCall.arguments();
 
@@ -364,10 +369,12 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     }
   }
 
+  //Helper Function for parsing string to boolean value
   private boolean parseBoolean(Map<String, String> options, String property) {
     return options.get(property) != null && Boolean.parseBoolean(options.get(property));
   }
 
+  //Get Meeting Details Programmatically after Starting the Meeting
   private void meetingDetails(MethodChannel.Result result)  {
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
@@ -387,6 +394,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     result.success(status != null ? Arrays.asList(inMeetingService.getCurrentMeetingNumber(), inMeetingService.getMeetingPassword()) :  Arrays.asList("MEETING_STATUS_UNKNOWN", "No status available"));
   }
 
+  //Listen to meeting status on joinning and starting the mmeting
   private void meetingStatus(MethodChannel.Result result) {
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();

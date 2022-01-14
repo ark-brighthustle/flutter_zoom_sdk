@@ -18,6 +18,7 @@ class ZoomViewWeb extends ZoomPlatform {
     ZoomPlatform.instance = ZoomViewWeb();
   }
 
+  //Initialize Zoom SDK For Web
   @override
   Future<List> initZoom(ZoomOptions options) async {
     final Completer<List> completer = Completer();
@@ -65,6 +66,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
+  //Generate Signatue for zoom signate required to perform join and start functions
   String generateSignature(
       String apiKey, String apiSecret, String meetingNumber, int role) {
     final timestamp = DateTime.now().millisecondsSinceEpoch - 30000;
@@ -83,6 +85,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return signature.replaceAll(new RegExp("="), "");
   }
 
+  //Start Meeting Function for Zoom Web
   @override
   Future<List> startMeeting(ZoomMeetingOptions options) async {
     final Completer<List> completer = Completer();
@@ -102,6 +105,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
+  //Join Meeting Function for Zoom Web
   @override
   Future<bool> joinMeeting(ZoomMeetingOptions options) async {
     final Completer<bool> completer = Completer();
@@ -121,11 +125,13 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
+  //Listen to Ongoing Meeting Function for Zoom Web
   @override
   Future<List> meetingStatus(String meetingId) async {
     return ["a", "b"];
   }
 
+  //Meeting Status Response Function for Zoom Web
   @override
   Stream<dynamic> onMeetingStatus() {
     streamController?.close();

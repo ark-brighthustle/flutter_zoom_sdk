@@ -5,9 +5,11 @@ import 'package:flutter_zoom_sdk/zoom_platform_view.dart';
 class ZoomView extends ZoomPlatform {
   final MethodChannel channel = MethodChannel('com.evilratt/zoom_sdk');
 
-  /// The event channel used to interact with the native platform.
+  // The event channel used to interact with the native platform.
   final EventChannel eventChannel =
       EventChannel('com.evilratt/zoom_sdk_event_stream');
+
+  // The event channel used to interact with the native platform init function
   @override
   Future<List> initZoom(ZoomOptions options) async {
     var optionMap = new Map<String, String?>();
@@ -25,6 +27,7 @@ class ZoomView extends ZoomPlatform {
         .then<List>((List? value) => value ?? List.empty());
   }
 
+  // The event channel used to interact with the native platform startMeetingNormal function
   @override
   Future<List> startMeetingNormal(ZoomMeetingOptions options) async {
     var optionMap = new Map<String, String?>();
@@ -45,6 +48,7 @@ class ZoomView extends ZoomPlatform {
         .then<List>((List? value) => value ?? List.empty());
   }
 
+  // The event channel used to interact with the native platform joinMeeting function
   @override
   Future<bool> joinMeeting(ZoomMeetingOptions options) async {
     var optionMap = new Map<String, String?>();
@@ -65,6 +69,7 @@ class ZoomView extends ZoomPlatform {
         .then<bool>((bool? value) => value ?? false);
   }
 
+  // The event channel used to interact with the native platform startMeeting(login on iOS & Android) function
   @override
   Future<List> startMeeting(ZoomMeetingOptions options) async {
     var optionMap = new Map<String, String?>();
@@ -84,6 +89,7 @@ class ZoomView extends ZoomPlatform {
         .then<List>((List? value) => value ?? List.empty());
   }
 
+  // The event channel used to interact with the native platform meetingStatus function
   @override
   Future<List> meetingStatus(String meetingId) async {
     var optionMap = new Map<String, String>();
@@ -94,11 +100,13 @@ class ZoomView extends ZoomPlatform {
         .then<List>((List? value) => value ?? List.empty());
   }
 
+  // The event channel used to interact with the native platform onMeetingStatus(iOS & Android) function
   @override
   Stream<dynamic> onMeetingStatus() {
     return eventChannel.receiveBroadcastStream();
   }
 
+  // The event channel used to interact with the native platform meetinDetails(iOS & Android) function
   @override
   Future<List> meetinDetails() async {
     return channel

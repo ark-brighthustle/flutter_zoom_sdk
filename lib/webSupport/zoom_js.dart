@@ -39,6 +39,7 @@ class InitParams {
   external String get leaveUrl;
 }
 
+//Join Meeting helper
 @JS()
 @anonymous // needed along with factory constructor
 class JoinParams {
@@ -46,12 +47,14 @@ class JoinParams {
       {meetingNumber, userName, signature, apiKey, passWord, success, error});
 }
 
+//Signature helper
 @JS()
 @anonymous // needed along with factory constructor
 class SignatureParams {
   external factory SignatureParams({meetingNumber, apiKey, apiSecret, role});
 }
 
+//meeting status helper
 @JS()
 @anonymous
 class MeetingStatus {
@@ -59,6 +62,7 @@ class MeetingStatus {
   external int get meetingStatus;
 }
 
+//Basic Zoom SDK Web Functions helper
 @JS()
 class ZoomMtg {
   external static void setZoomJSLib(String path, String dir);

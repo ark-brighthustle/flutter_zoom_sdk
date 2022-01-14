@@ -12,6 +12,7 @@ Map jsToMap(jsObject) {
   );
 }
 
+/// A workaround to converting an object to a Dart.
 dynamic convertToDart(value) {
   // Value types.
   if (value == null) return null;
