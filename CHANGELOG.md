@@ -52,3 +52,8 @@
 
 - Web SDK bug fixes
 - minor improvments
+
+## 1.0.0+6
+
+- Web bug fixes
+- iOS startMeetingNormal bug fixed(https://github.com/evilrat/flutter_zoom_sdk/issues/44)

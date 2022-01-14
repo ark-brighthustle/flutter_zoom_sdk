@@ -1,5 +1,5 @@
 @JS()
-library flutter_zoom_sdk;
+library zoom_helper;
 
 import 'package:js/js.dart';
 

@@ -172,7 +172,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
       @Override
       public void onZoomSDKLoginResult(long results) {
-        Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
+        //Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
         if (results == ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
           //Once we verify that the request was successful, we may start the meeting
           startMeeting(methodCall, result);
@@ -298,7 +298,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
       @Override
       public void onZoomSDKLoginResult(long results) {
-        Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
+        //Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
         if (results == ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
           //Once we verify that the request was successful, we may start the meeting
           startMeetingNormalInternal(methodCall, result);
@@ -356,7 +356,6 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       }
 
       StartMeetingParams4NormalUser params = new StartMeetingParams4NormalUser();
-      Log.d("Zooom Flutter SDk", String.format("[Zoom MeetingID]: %s ", options.get("meetingId")));
       params.meetingNo = options.get("meetingId");
 
       meetingService.startMeetingWithParams(context, params, opts);

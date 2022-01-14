@@ -1,7 +1,7 @@
 # Flutter Zoom SDK
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![pub package](https://img.shields.io/pub/v/android_intent_plus.svg)](https://pub.dev/packages/android_intent_plus)
+[![pub package](https://img.shields.io/badge/pub-v1.0.0%2B6-brightgreen)](https://pub.dev/packages/flutter_zoom_sdk)
 
 A Flutter plugin for the Zoom SDK With all features and null safety support.
 
@@ -31,7 +31,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.0.0+5` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0+6` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
