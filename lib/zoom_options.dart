@@ -1,8 +1,8 @@
 //Basic Zoom Options required for plugin (WEB, iOS, Android)
 class ZoomOptions {
   String? domain;
-  String? appKey;
-  String? appSecret;
+  String? appKey; //--JWT key for web / SDK key for iOS / Android
+  String? appSecret; //--JWT secret for web / SDK secret for iOS / Android
   String? language; //--for web
   bool? showMeetingHeader; //--for web
   bool? disableInvite; //--for web
