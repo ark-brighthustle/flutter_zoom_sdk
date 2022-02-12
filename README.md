@@ -216,8 +216,8 @@ joinMeeting(BuildContext context) {
     if(meetingIdController.text.isNotEmpty && meetingPasswordController.text.isNotEmpty){
       ZoomOptions zoomOptions = new ZoomOptions(
         domain: "zoom.us",
-        appKey: "", //API KEY FROM ZOOM SDK
-        appSecret: "", //API SECRET FROM ZOOM SDK
+        appKey: "", //API KEY FROM ZOOM - Sdk API Key
+        appSecret: "", //API SECRET FROM ZOOM - Sdk API Secret
       );
       var meetingOptions = new ZoomMeetingOptions(
           userId: 'username', //pass username for join meeting only --- Any name eg:- EVILRATT.
@@ -449,8 +449,8 @@ startMeeting(BuildContext context) {
     }
     ZoomOptions zoomOptions = new ZoomOptions(
       domain: "zoom.us",
-      appKey: "", //API KEY FROM ZOOM SDK
-      appSecret: "", //API SECRET FROM ZOOM SDK
+      appKey: "", //API KEY FROM ZOOM - Sdk API Key
+      appSecret: "", //API SECRET FROM ZOOM - Sdk API Secret
     );
     var meetingOptions = new ZoomMeetingOptions(
         userId: '', //pass host email for zoom
