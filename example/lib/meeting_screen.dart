@@ -155,7 +155,8 @@ class _MeetingWidgetState extends State<MeetingWidget> {
         if (results[0] == 0) {
           zoom.onMeetingStatus().listen((status) {
             if (kDebugMode) {
-              print("[Meeting Status Stream] : " + status[0] + " - " + status[1]);
+              print(
+                  "[Meeting Status Stream] : " + status[0] + " - " + status[1]);
             }
             if (_isMeetingEnded(status[0])) {
               if (kDebugMode) {
@@ -172,9 +173,9 @@ class _MeetingWidgetState extends State<MeetingWidget> {
               zoom.meetingStatus(meetingOptions.meetingId!).then((status) {
                 if (kDebugMode) {
                   print("[Meeting Status Polling] : " +
-                    status[0] +
-                    " - " +
-                    status[1]);
+                      status[0] +
+                      " - " +
+                      status[1]);
                 }
               });
             });
@@ -249,14 +250,15 @@ class _MeetingWidgetState extends State<MeetingWidget> {
             zoom.meetinDetails().then((meetingDetailsResult) {
               if (kDebugMode) {
                 print("[MeetingDetailsResult] :- " +
-                  meetingDetailsResult.toString());
+                    meetingDetailsResult.toString());
               }
             });
           }
         });
         zoom.startMeeting(meetingOptions).then((loginResult) {
           if (kDebugMode) {
-            print("[LoginResult] :- " + loginResult[0] + " - " + loginResult[1]);
+            print(
+                "[LoginResult] :- " + loginResult[0] + " - " + loginResult[1]);
           }
           if (loginResult[0] == "SDK ERROR") {
             //SDK INIT FAILED
@@ -335,7 +337,7 @@ class _MeetingWidgetState extends State<MeetingWidget> {
             zoom.meetinDetails().then((meetingDetailsResult) {
               if (kDebugMode) {
                 print("[MeetingDetailsResult] :- " +
-                  meetingDetailsResult.toString());
+                    meetingDetailsResult.toString());
               }
             });
           }

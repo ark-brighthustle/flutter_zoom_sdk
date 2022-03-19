@@ -41,7 +41,7 @@ import 'package:flutter_zoom_sdk/flutter_zoom_web.dart';
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.0.0+8` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0+9` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
