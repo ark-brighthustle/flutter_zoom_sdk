@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_zoom_sdk/zoom_platform_view.dart';
 
 class ZoomView extends ZoomPlatform {
-  final MethodChannel channel = MethodChannel('com.evilratt/zoom_sdk');
+  final MethodChannel channel = const MethodChannel('com.evilratt/zoom_sdk');
 
   // The event channel used to interact with the native platform.
   final EventChannel eventChannel =
-      EventChannel('com.evilratt/zoom_sdk_event_stream');
+      const EventChannel('com.evilratt/zoom_sdk_event_stream');
 
   // The event channel used to interact with the native platform init function
   @override

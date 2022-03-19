@@ -3,9 +3,11 @@ import 'meeting_screen.dart';
 
 // for complete example see https://github.com/evilrat/flutter_zoom_sdk/tree/master/example
 
-void main() => runApp(ExampleApp());
+void main() => runApp(const ExampleApp());
 
 class ExampleApp extends StatelessWidget {
+  const ExampleApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,11 +15,11 @@ class ExampleApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      navigatorObservers: [],
+      navigatorObservers: const [],
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => MeetingWidget(),
+        '/': (context) => const MeetingWidget(),
       },
     );
   }

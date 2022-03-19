@@ -6,7 +6,7 @@ import 'package:js/js_util.dart';
 
 /// A workaround to converting an object from JS to a Dart Map.
 Map jsToMap(jsObject) {
-  return new Map.fromIterable(
+  return Map.fromIterable(
     _getKeysOfObject(jsObject),
     value: (key) => getProperty(jsObject, key),
   );
@@ -16,8 +16,9 @@ Map jsToMap(jsObject) {
 dynamic convertToDart(value) {
   // Value types.
   if (value == null) return null;
-  if (value is bool || value is num || value is DateTime || value is String)
+  if (value is bool || value is num || value is DateTime || value is String) {
     return value;
+  }
 
   // JsArray.
   if (value is Iterable) return value.map(convertToDart).toList();

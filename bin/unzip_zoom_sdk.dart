@@ -2,6 +2,9 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
 void main(List<String> args) async {
   var location = Platform.script.toString();
   var isNewFlutter = location.contains(".snapshot");
@@ -23,7 +26,7 @@ void main(List<String> args) async {
       }
     }
     if (zoomFileUri == null) {
-      print("flutter_zoom_sdk package not found!");
+      debugPrint("flutter_zoom_sdk package not found!");
       return;
     }
     location = zoomFileUri;
@@ -33,12 +36,15 @@ void main(List<String> args) async {
   } else {
     location = location.replaceFirst("file://", "");
   }
-  if (!isNewFlutter)
+  if (!isNewFlutter) {
     location = location.replaceFirst("/bin/unzip_zoom_sdk.dart", "");
+  }
 
   await checkAndDownloadSDK(location);
 
-  print('Complete');
+  if (kDebugMode) {
+    print('Complete');
+  }
 }
 
 Future<void> checkAndDownloadSDK(String location) async {
@@ -81,7 +87,9 @@ Future<void> checkAndDownloadSDK(String location) async {
 }
 
 Future<void> downloadFile(Uri uri, String savePath) async {
-  print('Download ${uri.toString()} to $savePath');
+  if (kDebugMode) {
+    print('Download ${uri.toString()} to $savePath');
+  }
   File destinationFile = await File(savePath).create(recursive: true);
 
   final request = await HttpClient().getUrl(uri);

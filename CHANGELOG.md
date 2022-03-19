@@ -61,3 +61,7 @@
 ## 1.0.0+7
 
 - iOS bug fixes(https://github.com/evilrat/flutter_zoom_sdk/issues/44) (Patch)
+
+## 1.0.0+8
+
+- Android api 31 added and web build bug fixed

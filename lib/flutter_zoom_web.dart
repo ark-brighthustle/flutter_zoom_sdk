@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:js';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:flutter_zoom_sdk/webSupport/zoom_js.dart';
 import 'package:flutter_zoom_sdk/zoom_platform_view.dart';
@@ -24,7 +25,9 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<List> completer = Completer();
     var sus = ZoomMtg.checkSystemRequirements();
     var susmap = convertToDart(sus);
-    print(susmap);
+    if (kDebugMode) {
+      print(susmap);
+    }
 
     ZoomMtg.i18n.load(options.language);
     ZoomMtg.preLoadWasm();
@@ -70,7 +73,7 @@ class ZoomViewWeb extends ZoomPlatform {
   String generateSignature(
       String apiKey, String apiSecret, String meetingNumber, int role) {
     final timestamp = DateTime.now().millisecondsSinceEpoch - 30000;
-    var str = '${apiKey}${meetingNumber}${timestamp}${role}';
+    var str = '$apiKey$meetingNumber$timestamp$role';
     var bytes = utf8.encode(str);
     final msg = base64.encode(bytes);
 
@@ -79,10 +82,10 @@ class ZoomViewWeb extends ZoomPlatform {
     final digest = hmacSha256.convert(utf8.encode(msg));
     final hash = base64.encode(digest.bytes);
 
-    str = '${apiKey}.${meetingNumber}.${timestamp}.${role}.${hash}';
+    str = '$apiKey.$meetingNumber.$timestamp.$role.$hash';
     bytes = utf8.encode(str);
     final signature = base64.encode(bytes);
-    return signature.replaceAll(new RegExp("="), "");
+    return signature.replaceAll(RegExp("="), "");
   }
 
   //Start Meeting Function for Zoom Web
@@ -91,8 +94,7 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<List> completer = Completer();
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
-        userName:
-            options.displayName != null ? options.displayName : options.userId,
+        userName: options.displayName != null ? options.displayName : options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,
@@ -111,8 +113,7 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<bool> completer = Completer();
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
-        userName:
-            options.displayName != null ? options.displayName : options.userId,
+        userName:options.displayName != null ? options.displayName : options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,

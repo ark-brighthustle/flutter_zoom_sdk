@@ -6,7 +6,17 @@
 A Flutter plugin for the Zoom SDK With all features and null safety support.
 
 *Note*: This plugin is still under active development, and some Zoom features might not be available yet. We are working to add more features.
-Feedback and iOS Version currently under development, Pull Requests are always welcome.
+Feedback, Pull Requests are always welcome.
+
+*Note*: For Android and iOS Build import.
+```shell script
+import 'package:flutter_zoom_sdk/zoom_options.dart';
+```
+
+*Note*: For Web Build import.
+```shell script
+import 'package:flutter_zoom_sdk/flutter_zoom_web.dart';
+```
 
 ## Features
 
@@ -31,7 +41,7 @@ Feedback and iOS Version currently under development, Pull Requests are always w
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.0.0+7` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.0.0+8` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
