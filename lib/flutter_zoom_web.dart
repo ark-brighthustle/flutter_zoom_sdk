@@ -94,7 +94,7 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<List> completer = Completer();
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
-        userName: options.displayName != null ? options.displayName : options.userId,
+        userName: options.displayName ?? options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,
@@ -113,7 +113,7 @@ class ZoomViewWeb extends ZoomPlatform {
     final Completer<bool> completer = Completer();
     ZoomMtg.join(JoinParams(
         meetingNumber: options.meetingId,
-        userName:options.displayName != null ? options.displayName : options.userId,
+        userName:options.displayName ?? options.userId,
         signature: options.jwtSignature!,
         apiKey: options.jwtAPIKey!,
         passWord: options.meetingPassword,
