@@ -69,3 +69,8 @@
 ## 1.0.0+9
 
 - Build bug fixed for android
+
+## 1.1.0+1
+
+- Android api 31 and 32 added and web build bug fixed
+- Unzip command not working bug fixed

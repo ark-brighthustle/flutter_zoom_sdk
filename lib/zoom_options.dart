@@ -1,4 +1,4 @@
-//Basic Zoom Options required for plugin (WEB, iOS, Android)
+/// Basic Zoom Options required for plugin (WEB, iOS, Android)
 class ZoomOptions {
   String? domain;
   String? appKey; //--JWT key for web / SDK key for iOS / Android
@@ -75,7 +75,7 @@ class ZoomOptions {
       ]});
 }
 
-//Basic Zoom Meeting Options required for plugin (WEB, iOS, Android)
+/// Basic Zoom Meeting Options required for plugin (WEB, iOS, Android)
 class ZoomMeetingOptions {
   String? userId;
   String? userPassword;

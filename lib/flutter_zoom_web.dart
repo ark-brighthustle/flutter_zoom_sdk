@@ -19,7 +19,7 @@ class ZoomViewWeb extends ZoomPlatform {
     ZoomPlatform.instance = ZoomViewWeb();
   }
 
-  //Initialize Zoom SDK For Web
+  /// Initialize Zoom SDK For Web
   @override
   Future<List> initZoom(ZoomOptions options) async {
     final Completer<List> completer = Completer();

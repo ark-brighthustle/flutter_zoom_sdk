@@ -1,7 +1,6 @@
 import 'dart:core';
 import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 void main(List<String> args) async {
   var location = Platform.script.toString();
@@ -24,7 +23,7 @@ void main(List<String> args) async {
       }
     }
     if (zoomFileUri == null) {
-      debugPrint("flutter_zoom_sdk package not found!");
+      print("flutter_zoom_sdk package not found!");
       return;
     }
     location = zoomFileUri;
@@ -40,9 +39,7 @@ void main(List<String> args) async {
 
   await checkAndDownloadSDK(location);
 
-  if (kDebugMode) {
-    print('Complete');
-  }
+  print('Complete');
 }
 
 Future<void> checkAndDownloadSDK(String location) async {
@@ -85,9 +82,7 @@ Future<void> checkAndDownloadSDK(String location) async {
 }
 
 Future<void> downloadFile(Uri uri, String savePath) async {
-  if (kDebugMode) {
-    print('Download ${uri.toString()} to $savePath');
-  }
+  print('Download ${uri.toString()} to $savePath');
   File destinationFile = await File(savePath).create(recursive: true);
 
   final request = await HttpClient().getUrl(uri);
