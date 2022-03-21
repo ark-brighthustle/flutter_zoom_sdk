@@ -78,3 +78,8 @@
 ## 1.1.0+2
 
 - API Documentations Improments
+
+## 1.1.0+2
+
+- API Documentations Improments
+- Big fixex on android
