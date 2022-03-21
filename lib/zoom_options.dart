@@ -1,35 +1,95 @@
 /// Basic Zoom Options required for plugin (WEB, iOS, Android)
 class ZoomOptions {
   String? domain;
-  String? appKey; //--JWT key for web / SDK key for iOS / Android
-  String? appSecret; //--JWT secret for web / SDK secret for iOS / Android
-  String? language; //--for web
-  bool? showMeetingHeader; //--for web
-  bool? disableInvite; //--for web
-  bool? disableCallOut; //--for web
-  bool? disableRecord; //--for web
-  bool? disableJoinAudio; //--for web
-  bool? audioPanelAlwaysOpen; //--for web
-  bool? isSupportAV; //--for web
-  bool? isSupportChat; //--for web
-  bool? isSupportQA; //--for web
-  bool? isSupportCC; //--for web
-  bool? isSupportPolling; //--for web
-  bool? isSupportBreakout; //--for web
-  bool? screenShare; //--for web
-  String? rwcBackup; //--for web
-  bool? videoDrag; //--for web
-  String? sharingMode; //--for web
-  bool? videoHeader; //--for web
-  bool? isLockBottom; //--for web
-  bool? isSupportNonverbal; //--for web
-  bool? isShowJoiningErrorDialog; //--for web
-  bool? disablePreview; //--for web
-  bool? disableCORP; //--for web
-  String? inviteUrlFormat; //--for web
-  bool? disableVOIP; //--for web
-  bool? disableReport; //--for web
-  List<String>? meetingInfo; //--for web
+
+  /// Domain For Zoom Web
+  String? appKey;
+
+  /// --JWT key for web / SDK key for iOS / Android
+  String? appSecret;
+
+  /// --JWT secret for web / SDK secret for iOS / Android
+  String? language;
+
+  /// --Language for web
+  bool? showMeetingHeader;
+
+  /// --Meeting Header for web
+  bool? disableInvite;
+
+  /// --Disable Invite Option for web
+  bool? disableCallOut;
+
+  /// --Disable CallOut Option for web
+  bool? disableRecord;
+
+  /// --Disable Record Option for web
+  bool? disableJoinAudio;
+
+  /// --Disable Join Audio for web
+  bool? audioPanelAlwaysOpen;
+
+  /// -- Allow Pannel Always Open for web
+  bool? isSupportAV;
+
+  /// --AV Support for web
+  bool? isSupportChat;
+
+  /// --Chat Suppport for web
+  bool? isSupportQA;
+
+  /// --QA Support for web
+  bool? isSupportCC;
+
+  /// --CC Support for web
+  bool? isSupportPolling;
+
+  /// --Polling Support for web
+  bool? isSupportBreakout;
+
+  /// -- Breakout Support for web
+  bool? screenShare;
+
+  /// --Screen Sharing Option for web
+  String? rwcBackup;
+
+  /// --RWC Backup Option for web
+  bool? videoDrag;
+
+  /// -- Drag Video Option for web
+  String? sharingMode;
+
+  /// --Sharing Mode for web
+  bool? videoHeader;
+
+  /// --Video Header for web
+  bool? isLockBottom;
+
+  /// --Lock Bottom Support for web
+  bool? isSupportNonverbal;
+
+  /// --Nonverbal Support for web
+  bool? isShowJoiningErrorDialog;
+
+  /// --Error Dialog Visibility for web
+  bool? disablePreview;
+
+  /// --Disable Preview for web
+  bool? disableCORP;
+
+  /// --Disable Crop for web
+  String? inviteUrlFormat;
+
+  /// --Invite Url Format for web
+  bool? disableVOIP;
+
+  /// --Disable VOIP for web
+  bool? disableReport;
+
+  /// --Disable Report for web
+  List<String>? meetingInfo;
+
+  /// --Meeting Info for web
 
   ZoomOptions(
       {required this.domain,
@@ -78,22 +138,56 @@ class ZoomOptions {
 /// Basic Zoom Meeting Options required for plugin (WEB, iOS, Android)
 class ZoomMeetingOptions {
   String? userId;
+
+  /// Username For Join Meeting & Host Email For Start Meeting
   String? userPassword;
+
+  /// Host Password For Start Meeting
   String? displayName;
+
+  /// Display Name
   String? meetingId;
+
+  /// Personal meeting id for start meeting required
   String? meetingPassword;
+
+  /// Personal meeting passcode for start meeting required
   String? disableDialIn;
+
+  /// Disable Dial In Mode
   String? disableDrive;
+
+  /// Disable Drive In Mode
   String? disableInvite;
+
+  /// Disable Invite Mode
   String? disableShare;
+
+  /// Disable Share Mode
   String? disableTitlebar;
+
+  /// Disable Title Bar Mode
   String? noDisconnectAudio;
+
+  /// No Disconnect Audio Mode
   String? viewOptions;
+
+  /// View option to disable zoom icon for Learning system
   String? noAudio;
+
+  /// Disable No Audio
   String? zoomToken;
+
+  /// Zoom token for SDK
   String? zoomAccessToken;
-  String? jwtAPIKey; //--for web
-  String? jwtSignature; //--for web
+
+  /// Zoom access token for SDK
+  String? jwtAPIKey;
+
+  /// JWT API KEY For Web Only
+  String? jwtSignature;
+
+  /// JWT API Signature For Web Only
 
   ZoomMeetingOptions({
     this.userId,

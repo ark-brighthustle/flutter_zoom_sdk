@@ -14,13 +14,13 @@ Map jsToMap(jsObject) {
 
 /// A workaround to converting an object to a Dart.
 dynamic convertToDart(value) {
-  // Value types.
+  /// Value types.
   if (value == null) return null;
   if (value is bool || value is num || value is DateTime || value is String) {
     return value;
   }
 
-  // JsArray.
+  /// JsArray.
   if (value is Iterable) return value.map(convertToDart).toList();
   return jsToMap(value);
 }

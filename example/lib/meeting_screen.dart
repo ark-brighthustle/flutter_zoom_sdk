@@ -135,12 +135,15 @@ class _MeetingWidgetState extends State<MeetingWidget> {
             "bT7N61pQzaLXU6VLj9TVl7eYuLbqAiB0KAdb", //API SECRET FROM ZOOM
       );
       var meetingOptions = ZoomMeetingOptions(
-          userId:
-              'username', //pass username for join meeting only --- Any name eg:- EVILRATT.
-          meetingId:
-              meetingIdController.text, //pass meeting id for join meeting only
-          meetingPassword: meetingPasswordController
-              .text, //pass meeting password for join meeting only
+          userId: 'username',
+
+          /// pass username for join meeting only --- Any name eg:- EVILRATT.
+          meetingId: meetingIdController.text,
+
+          /// pass meeting id for join meeting only
+          meetingPassword: meetingPasswordController.text,
+
+          /// pass meeting password for join meeting only
           disableDialIn: "true",
           disableDrive: "true",
           disableInvite: "true",

@@ -5,7 +5,7 @@ import 'package:js/js.dart';
 
 /// Initial Parameter Required For Zoom Web
 @JS()
-@anonymous // needed along with factory constructor
+@anonymous /// needed along with factory constructor
 class InitParams {
   external factory InitParams(
       {leaveUrl,
@@ -42,7 +42,7 @@ class InitParams {
 
 /// Join Meeting helper
 @JS()
-@anonymous // needed along with factory constructor
+@anonymous /// needed along with factory constructor
 class JoinParams {
   external factory JoinParams(
       {meetingNumber, userName, signature, apiKey, passWord, success, error});
@@ -50,7 +50,7 @@ class JoinParams {
 
 /// Signature helper
 @JS()
-@anonymous // needed along with factory constructor
+@anonymous /// needed along with factory constructor
 class SignatureParams {
   external factory SignatureParams({meetingNumber, apiKey, apiSecret, role});
 }

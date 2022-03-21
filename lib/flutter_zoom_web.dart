@@ -12,6 +12,7 @@ import 'webSupport/js_interop.dart';
 export 'package:flutter_zoom_sdk/zoom_platform_view.dart'
     show ZoomOptions, ZoomMeetingOptions;
 
+/// Web Function For Zoom Sdk for Flutter Web Implementation
 class ZoomViewWeb extends ZoomPlatform {
   StreamController<dynamic>? streamController;
 
@@ -69,7 +70,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
-  //Generate Signatue for zoom signate required to perform join and start functions
+  /// Generate Signatue for zoom signate required to perform join and start functions
   String generateSignature(
       String apiKey, String apiSecret, String meetingNumber, int role) {
     final timestamp = DateTime.now().millisecondsSinceEpoch - 30000;
@@ -88,7 +89,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return signature.replaceAll(RegExp("="), "");
   }
 
-  //Start Meeting Function for Zoom Web
+  /// Start Meeting Function for Zoom Web
   @override
   Future<List> startMeeting(ZoomMeetingOptions options) async {
     final Completer<List> completer = Completer();
@@ -107,7 +108,7 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
-  //Join Meeting Function for Zoom Web
+  /// Join Meeting Function for Zoom Web
   @override
   Future<bool> joinMeeting(ZoomMeetingOptions options) async {
     final Completer<bool> completer = Completer();
@@ -126,21 +127,20 @@ class ZoomViewWeb extends ZoomPlatform {
     return completer.future;
   }
 
-  //Listen to Ongoing Meeting Function for Zoom Web
+  /// Listen to Ongoing Meeting Function for Zoom Web
   @override
   Future<List> meetingStatus(String meetingId) async {
     return ["a", "b"];
   }
 
-  //Meeting Status Response Function for Zoom Web
+  /// Meeting Status Response Function for Zoom Web
   @override
   Stream<dynamic> onMeetingStatus() {
     streamController?.close();
     streamController = StreamController<dynamic>();
     ZoomMtg.inMeetingServiceListener('onMeetingStatus', allowInterop((status) {
-      //print(stringify(MeetingStatus status));
       var r = List<String>.filled(2, "");
-      // 1(connecting), 2(connected), 3(disconnected), 4(reconnecting)
+      /// 1(connecting), 2(connected), 3(disconnected), 4(reconnecting)
       switch (status.meetingStatus) {
         case 1:
           r[0] = "MEETING_STATUS_CONNECTING";

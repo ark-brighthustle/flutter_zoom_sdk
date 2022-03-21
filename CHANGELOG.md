@@ -74,3 +74,7 @@
 
 - Android api 31 and 32 added and web build bug fixed
 - Unzip command not working bug fixed
+
+## 1.1.0+2
+
+- API Documentations Improments
