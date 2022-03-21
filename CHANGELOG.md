@@ -79,7 +79,7 @@
 
 - API Documentations Improments
 
-## 1.1.0+2
+## 1.1.0+3
 
 - API Documentations Improments
 - Big fixex on android
