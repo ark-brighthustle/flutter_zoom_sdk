@@ -30,10 +30,7 @@ import 'package:flutter_zoom_sdk/flutter_zoom_web.dart';
 - [x] Hide Title bar or Hide Meeting info (Useful for e-learning platform).
 - [x] Change Meeting Notification App Name & Zoom Notification Icon Removed.
 - [x] iOS Support.
-- [x] Web Support
-- [ ] Schedule Meeting.
-- [ ] List, Delete & Update Scheduled Meeting.
-- [ ] Share Screen using Sharing key or Meeting ID directly.
+- [x] Web Support.
 
 ## Zoom SDK Versions
 
