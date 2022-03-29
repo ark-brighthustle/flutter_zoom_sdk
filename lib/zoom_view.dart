@@ -12,7 +12,7 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform init function
   @override
   Future<List> initZoom(ZoomOptions options) async {
-    var optionMap = new Map<String, String?>();
+    var optionMap = <String, String?>{};
 
     if (options.appKey != null) {
       optionMap.putIfAbsent("appKey", () => options.appKey!);
@@ -22,7 +22,7 @@ class ZoomView extends ZoomPlatform {
     }
 
     optionMap.putIfAbsent("domain", () => options.domain);
-    return channel
+    return await channel
         .invokeMethod<List>('init', optionMap)
         .then<List>((List? value) => value ?? List.empty());
   }
@@ -30,7 +30,7 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform startMeetingNormal function
   @override
   Future<List> startMeetingNormal(ZoomMeetingOptions options) async {
-    var optionMap = new Map<String, String?>();
+    var optionMap = <String, String?>{};
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("userPassword", () => options.userPassword);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
@@ -43,7 +43,7 @@ class ZoomView extends ZoomPlatform {
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
     optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
 
-    return channel
+    return await channel
         .invokeMethod<List>('startNormal', optionMap)
         .then<List>((List? value) => value ?? List.empty());
   }
@@ -51,7 +51,7 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform joinMeeting function
   @override
   Future<bool> joinMeeting(ZoomMeetingOptions options) async {
-    var optionMap = new Map<String, String?>();
+    var optionMap = <String, String?>{};
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("meetingId", () => options.meetingId);
     optionMap.putIfAbsent("meetingPassword", () => options.meetingPassword);
@@ -64,7 +64,7 @@ class ZoomView extends ZoomPlatform {
     optionMap.putIfAbsent("viewOptions", () => options.viewOptions);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
-    return channel
+    return await channel
         .invokeMethod<bool>('join', optionMap)
         .then<bool>((bool? value) => value ?? false);
   }
@@ -72,7 +72,7 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform startMeeting(login on iOS & Android) function
   @override
   Future<List> startMeeting(ZoomMeetingOptions options) async {
-    var optionMap = new Map<String, String?>();
+    var optionMap = <String, String?>{};
     optionMap.putIfAbsent("userId", () => options.userId);
     optionMap.putIfAbsent("userPassword", () => options.userPassword);
     optionMap.putIfAbsent("disableDialIn", () => options.disableDialIn);
@@ -84,7 +84,7 @@ class ZoomView extends ZoomPlatform {
     optionMap.putIfAbsent("noDisconnectAudio", () => options.noDisconnectAudio);
     optionMap.putIfAbsent("noAudio", () => options.noAudio);
 
-    return channel
+    return await channel
         .invokeMethod<List>('login', optionMap)
         .then<List>((List? value) => value ?? List.empty());
   }
@@ -92,10 +92,10 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform meetingStatus function
   @override
   Future<List> meetingStatus(String meetingId) async {
-    var optionMap = new Map<String, String>();
+    var optionMap = <String, String>{};
     optionMap.putIfAbsent("meetingId", () => meetingId);
 
-    return channel
+    return await channel
         .invokeMethod<List>('meeting_status', optionMap)
         .then<List>((List? value) => value ?? List.empty());
   }
@@ -109,7 +109,7 @@ class ZoomView extends ZoomPlatform {
   /// The event channel used to interact with the native platform meetinDetails(iOS & Android) function
   @override
   Future<List> meetinDetails() async {
-    return channel
+    return await channel
         .invokeMethod<List>('meeting_details')
         .then<List>((List? value) => value ?? List.empty());
   }

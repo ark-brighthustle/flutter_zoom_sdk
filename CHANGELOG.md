@@ -83,3 +83,8 @@
 
 - API Documentations Improments
 - Big fixex on android
+
+## 1.1.0+4
+
+- Android api 31 & 32 Bug fixed
+- App crash on second login attempt fixed (Android)

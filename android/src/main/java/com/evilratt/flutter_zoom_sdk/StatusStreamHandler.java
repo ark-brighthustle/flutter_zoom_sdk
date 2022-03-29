@@ -2,6 +2,7 @@ package com.evilratt.flutter_zoom_sdk;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import io.flutter.plugin.common.EventChannel;
 import us.zoom.sdk.MeetingError;
@@ -13,7 +14,7 @@ import us.zoom.sdk.MeetingStatus;
  * This class implements the handler for the Zoom meeting event in the flutter event channel
  */
 public class StatusStreamHandler implements EventChannel.StreamHandler {
-    private MeetingService meetingService;
+    private final MeetingService meetingService;
     private MeetingServiceListener statusListener;
 
     public StatusStreamHandler(MeetingService meetingService) {
@@ -22,18 +23,15 @@ public class StatusStreamHandler implements EventChannel.StreamHandler {
 
     @Override
     public void onListen(Object arguments, final EventChannel.EventSink events) {
-        statusListener = new MeetingServiceListener() {
-            @Override
-            public void onMeetingStatusChanged(MeetingStatus meetingStatus, int errorCode, int internalErrorCode) {
+        statusListener = (meetingStatus, errorCode, internalErrorCode) -> {
 
-                if(meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
-                        errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
-                    events.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "Version of ZoomSDK is too low"));
-                    return;
-                }
-
-                events.success(getMeetingStatusMessage(meetingStatus));
+            if(meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
+                    errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
+                events.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "Version of ZoomSDK is too low"));
+                return;
             }
+
+            events.success(getMeetingStatusMessage(meetingStatus));
         };
 
         this.meetingService.addListener(statusListener);
@@ -50,7 +48,7 @@ public class StatusStreamHandler implements EventChannel.StreamHandler {
 
         message[0] = meetingStatus != null ? meetingStatus.name() : "";
 
-        switch (meetingStatus) {
+        switch (Objects.requireNonNull(meetingStatus)) {
             case MEETING_STATUS_CONNECTING:
                 message[1] = "Connect to the meeting server.";
                 break;

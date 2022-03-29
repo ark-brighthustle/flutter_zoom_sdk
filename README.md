@@ -1,7 +1,7 @@
 # Flutter Zoom SDK
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![pub package](https://img.shields.io/badge/pub-v1.1.0%2B3-brightgreen)](https://pub.dev/packages/flutter_zoom_sdk)
+[![pub package](https://img.shields.io/badge/pub-v1.1.0%2B4-brightgreen)](https://pub.dev/packages/flutter_zoom_sdk)
 
 A Flutter plugin for the Zoom SDK With all features and null safety support.
 
@@ -41,7 +41,7 @@ import 'package:flutter_zoom_sdk/flutter_zoom_web.dart';
 
 ## Installation
 
-First, add `flutter_zoom_sdk: ^1.1.0+3` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
+First, add `flutter_zoom_sdk: ^1.1.0+4` as a [dependency in your pubspec.yaml file](https://flutter.io/using-packages/).
 
 After running pub get, you must run the follow script to get Zoom SDK for the first time:
 ```shell script
@@ -125,6 +125,7 @@ Disable shrinkResources for release buid
 
 
 ## Error Codes
+**NOTE ZoomError class has all the codes for comparison**
 
 | Error Response        | Error Reference                       |
 | :-------------------- |:-------------------------------------:|
@@ -497,6 +498,10 @@ startMeeting(BuildContext context) {
             print((loginResult[1]).toString());
           }else if(loginResult[0] == "LOGIN ERROR"){
             //LOGIN FAILED - WITH ERROR CODES
+            if (loginResult[1] ==
+                ZoomError.ZOOM_AUTH_ERROR_WRONG_ACCOUNTLOCKED) {
+              print("Multiple Failed Login Attempts");
+            }
             print((loginResult[1]).toString());
           }else{
             //LOGIN SUCCESS & MEETING STARTED - WITH SUCCESS CODE 200

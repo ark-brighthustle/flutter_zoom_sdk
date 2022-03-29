@@ -1,8 +1,8 @@
 package com.evilratt.flutter_zoom_sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import java.util.Arrays;
 import java.util.List;
@@ -30,14 +30,28 @@ import us.zoom.sdk.ZoomSDK;
 import us.zoom.sdk.ZoomSDKAuthenticationListener;
 import us.zoom.sdk.ZoomSDKInitParams;
 import us.zoom.sdk.ZoomSDKInitializeListener;
+import io.flutter.plugin.common.MethodChannel.Result;
 
 /** FlutterZoomPlugin */
 public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
+  Activity activity;
+  private Result pendingResult;
 
   private MethodChannel methodChannel;
   private Context context;
   private EventChannel meetingStatusChannel;
   private InMeetingService inMeetingService;
+
+
+  @Override
+  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+    this.activity = binding.getActivity();
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    this.activity = binding.getActivity();
+  }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -49,7 +63,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   @Override
-  public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result result) {
+  public void onMethodCall(@NonNull MethodCall methodCall, @NonNull final Result result) {
     switch (methodCall.method) {
       case "init":
         init(methodCall, result);
@@ -75,7 +89,6 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       default:
         result.notImplemented();
     }
-
   }
 
   @Override
@@ -83,9 +96,20 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     methodChannel.setMethodCallHandler(null);
   }
 
-  //Initializing the Zoom SDK for Android
-  private void init(final MethodCall methodCall, final MethodChannel.Result result) {
+  private void sendReply(List data) {
+    if (this.pendingResult == null) {
+      return;
+    }
+    this.pendingResult.success(data);
+    this.clearPendingResult();
+  }
 
+  private void clearPendingResult() {
+    this.pendingResult = null;
+  }
+
+  //Initializing the Zoom SDK for Android
+  private void init(final MethodCall methodCall, final Result result) {
     Map<String, String> options = methodCall.arguments();
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
@@ -102,20 +126,16 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     initParams.domain = options.get("domain");
     initParams.enableLog = true;
 
-    final InMeetingNotificationHandle handle=new InMeetingNotificationHandle() {
-
-      @Override
-      public boolean handleReturnToConfNotify(Context context, Intent intent) {
-        intent = new Intent(context, FlutterZoomSdkPlugin.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        if(context == null) {
-          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-        intent.setAction(InMeetingNotificationHandle.ACTION_RETURN_TO_CONF);
-        assert context != null;
-        context.startActivity(intent);
-        return true;
+    final InMeetingNotificationHandle handle= (context, intent) -> {
+      intent = new Intent(context, FlutterZoomSdkPlugin.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+      if(context == null) {
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       }
+      intent.setAction(InMeetingNotificationHandle.ACTION_RETURN_TO_CONF);
+      assert context != null;
+      context.startActivity(intent);
+      return true;
     };
 
     //Set custom Notification fro android
@@ -155,7 +175,8 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   //Perform start meeting function with logging in to the zoom account
-  private void login(final MethodCall methodCall, final MethodChannel.Result result){
+  private void login(final MethodCall methodCall, final Result result){
+    this.pendingResult = result;
     Map<String, String> options = methodCall.arguments();
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
@@ -166,21 +187,15 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       return;
     }
 
-    if(zoomSDK.isLoggedIn()){
-      startMeeting(methodCall, result);
-    }
-
     ZoomSDKAuthenticationListener authenticationListener = new ZoomSDKAuthenticationListener() {
 
       @Override
       public void onZoomSDKLoginResult(long results) {
-        //Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
-        if (results == ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
-          //Once we verify that the request was successful, we may start the meeting
-          startMeeting(methodCall, result);
-        }else{
-          result.success(Arrays.asList("LOGIN ERROR", String.valueOf(results)));
+        if (results != ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
+          sendReply(Arrays.asList("LOGIN ERROR", String.valueOf(results)));
+          return;
         }
+        startMeeting(methodCall);
       }
 
       @Override
@@ -198,14 +213,20 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
       }
     };
+
     if(!zoomSDK.isLoggedIn()){
       zoomSDK.loginWithZoom(options.get("userId"), options.get("userPassword"));
       zoomSDK.addAuthenticationListener(authenticationListener);
     }
+
+    if(zoomSDK.isLoggedIn()){
+      startMeeting(methodCall);
+    }
+
   }
 
   //Join Meeting with passed Meeting ID and Passcode
-  private void joinMeeting(MethodCall methodCall, MethodChannel.Result result) {
+  private void joinMeeting(MethodCall methodCall, Result result) {
 
     Map<String, String> options = methodCall.arguments();
 
@@ -213,6 +234,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
     if(!zoomSDK.isInitialized()) {
       System.out.println("Not initialized!!!!!!");
+
       result.success(false);
       return;
     }
@@ -244,7 +266,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   // Basic Start Meeting Function called on startMeeting triggered via login function
-  private void startMeeting(MethodCall methodCall, MethodChannel.Result result) {
+  private void startMeeting(MethodCall methodCall) {
 
     Map<String, String> options = methodCall.arguments();
 
@@ -252,50 +274,50 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
     if(!zoomSDK.isInitialized()) {
       System.out.println("Not initialized!!!!!!");
-      result.success(Arrays.asList("SDK ERROR", "001"));
+      sendReply(Arrays.asList("SDK ERROR", "001"));
       return;
     }
 
-    if(zoomSDK.isLoggedIn()){
-      MeetingService meetingService = zoomSDK.getMeetingService();
-      StartMeetingOptions opts= new StartMeetingOptions();
-      opts.no_invite = parseBoolean(options, "disableInvite");
-      opts.no_share = parseBoolean(options, "disableShare");
-      opts.no_driving_mode = parseBoolean(options, "disableDrive");
-      opts.no_dial_in_via_phone = parseBoolean(options, "disableDialIn");
-      opts.no_disconnect_audio = parseBoolean(options, "noDisconnectAudio");
-      opts.no_audio = parseBoolean(options, "noAudio");
-      opts.no_titlebar = parseBoolean(options, "disableTitlebar");
-      boolean view_options = parseBoolean(options, "viewOptions");
-      if(view_options){
-        opts.meeting_views_options = MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD;
-      }
-
-      meetingService.startInstantMeeting(context, opts);
-      inMeetingService = zoomSDK.getInMeetingService();
-      result.success(Arrays.asList("MEETING SUCCESS", "200"));
-    }else{
+    if(!zoomSDK.isLoggedIn()){
       System.out.println("Not LoggedIn!!!!!!");
-      result.success(Arrays.asList("LOGIN REQUIRED", "001"));
+      sendReply(Arrays.asList("LOGIN REQUIRED", "001"));
       return;
     }
+
+    MeetingService meetingService = zoomSDK.getMeetingService();
+    StartMeetingOptions opts= new StartMeetingOptions();
+    opts.no_invite = parseBoolean(options, "disableInvite");
+    opts.no_share = parseBoolean(options, "disableShare");
+    opts.no_driving_mode = parseBoolean(options, "disableDrive");
+    opts.no_dial_in_via_phone = parseBoolean(options, "disableDialIn");
+    opts.no_disconnect_audio = parseBoolean(options, "noDisconnectAudio");
+    opts.no_audio = parseBoolean(options, "noAudio");
+    opts.no_titlebar = parseBoolean(options, "disableTitlebar");
+    boolean view_options = parseBoolean(options, "viewOptions");
+    if(view_options){
+      opts.meeting_views_options = MeetingViewsOptions.NO_TEXT_MEETING_ID + MeetingViewsOptions.NO_TEXT_PASSWORD;
+    }
+
+    meetingService.startInstantMeeting(context, opts);
+    inMeetingService = zoomSDK.getInMeetingService();
+    sendReply(Arrays.asList("MEETING SUCCESS", "200"));
   }
 
   //Perform start meeting function with logging in to the zoom account (Only for passed meeting id)
-  private void startMeetingNormal(final MethodCall methodCall, final MethodChannel.Result result) {
-
+  private void startMeetingNormal(final MethodCall methodCall, final Result result) {
+    this.pendingResult = result;
     Map<String, String> options = methodCall.arguments();
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
     if(!zoomSDK.isInitialized()) {
       System.out.println("Not initialized!!!!!!");
-      result.success(Arrays.asList("SDK ERROR", "001"));
+      sendReply(Arrays.asList("SDK ERROR", "001"));
       return;
     }
 
     if(zoomSDK.isLoggedIn()){
-      startMeetingNormalInternal(methodCall, result);
+      startMeetingNormalInternal(methodCall);
     }
 
     ZoomSDKAuthenticationListener authenticationListener = new ZoomSDKAuthenticationListener() {
@@ -303,12 +325,11 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
       @Override
       public void onZoomSDKLoginResult(long results) {
         //Log.d("Zoom Flutter", String.format("[onLoginError] : %s", results));
-        if (results == ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
-          //Once we verify that the request was successful, we may start the meeting
-          startMeetingNormalInternal(methodCall, result);
-        }else{
-          result.success(Arrays.asList("LOGIN ERROR", String.valueOf(results)));
+        if (results != ZoomAuthenticationError.ZOOM_AUTH_ERROR_SUCCESS) {
+          sendReply(Arrays.asList("LOGIN ERROR", String.valueOf(results)));
+          return;
         }
+        startMeetingNormalInternal(methodCall);
       }
 
       @Override
@@ -334,14 +355,14 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   // Meeting ID passed Start Meeting Function called on startMeetingNormal triggered via startMeetingNormal function
-  private void startMeetingNormalInternal(MethodCall methodCall, MethodChannel.Result result) {
+  private void startMeetingNormalInternal(MethodCall methodCall) {
     Map<String, String> options = methodCall.arguments();
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
     if(!zoomSDK.isInitialized()) {
       System.out.println("Not initialized!!!!!!");
-      result.success(Arrays.asList("SDK ERROR", "001"));
+      sendReply(Arrays.asList("SDK ERROR", "001"));
       return;
     }
 
@@ -365,7 +386,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
 
       meetingService.startMeetingWithParams(context, params, opts);
       inMeetingService = zoomSDK.getInMeetingService();
-      result.success(Arrays.asList("MEETING SUCCESS", "200"));
+      sendReply(Arrays.asList("MEETING SUCCESS", "200"));
     }
   }
 
@@ -375,7 +396,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   //Get Meeting Details Programmatically after Starting the Meeting
-  private void meetingDetails(MethodChannel.Result result)  {
+  private void meetingDetails(Result result)  {
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
     if(!zoomSDK.isInitialized()) {
@@ -395,7 +416,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   //Listen to meeting status on joinning and starting the mmeting
-  private void meetingStatus(MethodChannel.Result result) {
+  private void meetingStatus(Result result) {
 
     ZoomSDK zoomSDK = ZoomSDK.getInstance();
 
@@ -421,22 +442,12 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
   }
 
   @Override
-  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-
-  }
-
-  @Override
   public void onDetachedFromActivityForConfigChanges() {
-
-  }
-
-  @Override
-  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-
+    this.activity = null;
   }
 
   @Override
   public void onDetachedFromActivity() {
-
+    this.activity = null;
   }
 }

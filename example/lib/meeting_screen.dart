@@ -232,7 +232,7 @@ class _MeetingWidgetState extends State<MeetingWidget> {
         disableInvite: "false",
         disableShare: "false",
         disableTitlebar: "false",
-        viewOptions: "false",
+        viewOptions: "true",
         noAudio: "false",
         noDisconnectAudio: "false");
 
@@ -268,16 +268,26 @@ class _MeetingWidgetState extends State<MeetingWidget> {
             if (kDebugMode) {
               print((loginResult[1]).toString());
             }
+            return;
           } else if (loginResult[0] == "LOGIN ERROR") {
             //LOGIN FAILED - WITH ERROR CODES
             if (kDebugMode) {
+              if (loginResult[1] ==
+                  ZoomError.ZOOM_AUTH_ERROR_WRONG_ACCOUNTLOCKED) {
+                print("Multiple Failed Login Attempts");
+              }
               print((loginResult[1]).toString());
             }
+            return;
           } else {
             //LOGIN SUCCESS & MEETING STARTED - WITH SUCCESS CODE 200
             if (kDebugMode) {
               print((loginResult[0]).toString());
             }
+          }
+        }).catchError((error) {
+          if (kDebugMode) {
+            print("[Error Generated] : " + error);
           }
         });
       }
