@@ -1,9 +1,31 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'meeting_screen.dart';
+import 'package:flutter_zoom_sdk_example/bottom_navbar.dart';
+import 'package:flutter_zoom_sdk_example/theme/material_colors.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:splash_screen_view/SplashScreenView.dart';
+import 'helpers/helpers.dart';
+import 'login.dart';
+import 'theme/colors.dart';
 
-// for complete example see https://github.com/evilrat/flutter_zoom_sdk/tree/master/example
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
-void main() => runApp(const ExampleApp());
+String? token;
+
+void main() async {
+  HttpOverrides.global = MyHttpOverrides();
+  WidgetsFlutterBinding.ensureInitialized();
+  token = await Helpers().getToken();
+  await initializeDateFormatting('id_ID', null).then((_) => runApp(ExampleApp()));
+}
 
 class ExampleApp extends StatelessWidget {
   const ExampleApp({Key? key}) : super(key: key);
@@ -11,16 +33,27 @@ class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Example Zoom SDK',
+      title: 'Smart School',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: colorCelticBlue, fontFamily: 'Montserrat'
       ),
-      navigatorObservers: const [],
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MeetingWidget(),
-      },
+      home: SplashScreens(),
     );
   }
 }
+
+class SplashScreens extends StatelessWidget {
+  const SplashScreens({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SplashScreenView(
+        backgroundColor: kWhite,
+        imageSrc: 'assets/logo_app.png',
+        imageSize: 320,
+        duration: 3000,
+        navigateRoute: token == null ? const Login() : const BottomNavbar());
+  }
+}
+

@@ -1,10 +1,7 @@
 name: flutter_zoom_sdk_example
-description: Demonstrates how to use the flutter_zoom_sdk plugin.
-
-# The following line prevents the package from being accidentally published to
-# pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+description: Aplikasi Smart School  
+publish_to: 'none'
+version: 1.0.9+10
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
@@ -13,60 +10,129 @@ dependencies:
     sdk: flutter
 
   flutter_zoom_sdk:
-    # When depending on this package from a real application you should use:
-    #   flutter_zoom_sdk: ^x.y.z
-    # See https://dart.dev/tools/pub/dependencies#version-constraints
-    # The example app is bundled with the plugin so we use a path dependency on
-    # the parent directory to use the current plugin's version.
     path: ../
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  splash_screen_view: ^3.0.0
+  package_info_plus: ^1.4.2
+  shared_preferences: ^2.0.6
+  flutter_svg: ^0.22.0
+  curved_navigation_bar: ^1.0.1
+  carousel_slider: ^4.1.1
+  url_launcher: ^6.1.3
+  quickalert: ^1.0.0
+  cached_network_image: ^3.1.0
+  intl: ^0.17.0
+  flutter_youtube_downloader: ^0.0.5
+  path_provider: ^2.0.2
+  youtube_player_flutter : ^8.1.0
+  flutter_inappwebview: ^5.3.2
+  webview_flutter: ^3.0.4
+  file_picker: ^4.2.2+1
+  syncfusion_flutter_pdfviewer: ^19.1.69-beta
+  wakelock: ^0.5.6
+  native_device_orientation: ^1.0.0
+  auto_orientation: ^2.1.0
+  image_picker: ^0.7.4
+  external_app_launcher: ^2.0.0
+  google_maps_flutter: ^2.0.4
+  file_manager: ^1.0.0
+  permission_handler: ^8.1.0
+  dio: ^4.0.1 
+  image_gallery_saver: ^1.7.1
+  flutter_vlc_player: ^6.0.0
+
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_lints: ^1.0.4
-  flutter_test:
+  flutter_test: 
     sdk: flutter
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  change_app_package_name: ^1.1.0
+  flutter_launcher_icons: "^0.9.2"
 
-# The following section is specific to Flutter.
+flutter_icons:
+  ios: true
+  android: "launcher_icon" 
+  image_path_ios: "assets/launcher/launcher_icon.png"
+  image_path_android: "assets/launcher/launcher_icon.png"
+
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Light.ttf
+          weight: 300
+        - asset: fonts/Montserrat-Regular.ttf
+          weight: 400
+        - asset: fonts/Montserrat-Medium.ttf
+          weight: 500
+        - asset: fonts/Montserrat-SemiBold.ttf
+          weight: 600
+        - asset: fonts/Montserrat-Bold.ttf
+          weight: 700
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  assets:
+    - assets/logo_app.png
+    - assets/logo.png
+    - assets/text_logo.png
+    - assets/ilustrasi_login.svg
+    - assets/ilustrasi_task.svg
+    - assets/ilustrasi_edu.svg
+    - assets/ilustrasi_exam.svg
+    - assets/ilustrasi_no_data.svg
+    - assets/ilustrasi_no_live_stream.svg
+    - assets/no_data.svg
+    - assets/icon/diary.png
+    - assets/icon/event.png
+    - assets/icon/game.png
+    - assets/icon/learning_resource.png
+    - assets/icon/library.png
+    - assets/icon/medical_record.png
+    - assets/icon/news.png
+    - assets/icon/passion.png
+    - assets/icon/virtual_experience.png
+    - assets/icon/karakter.png
+    - assets/icon/menonton.png
+    - assets/icon/membaca.png
+    - assets/icon/bank_soal.png
+    - assets/icon/matematika.png
+    - assets/icon/pohon_andalan.png
+    - assets/icon/pdf.png
+    - assets/icon/mp3.png
+    - assets/icon/mp4.png
+    - assets/icon/label.png
+    - assets/icon/upload.png
+    - assets/icon/text.png
+    - assets/icon/delay_streaming.png
+    - assets/icon/zikir_doa.png
+    - assets/icon/book.png
+    - assets/icon/download.png
+    - assets/icon/coming-soon.png
+    - assets/icon/clock.png
+    - assets/icon/quiz.png
+    - assets/event/podcast.png
+    - assets/event/kompetisi.png
+    - assets/event/talkshow.png
+    - assets/event/workshop.png
+    - assets/medical_record/vaksinasi.png
+    - assets/character/amaliah_keagamaan.png
+    - assets/character/baca_tulis_alquran.png
+    - assets/character/fiqih_dan_hadist.png
+    - assets/character/hafalan_surah_alquran.png
+    - assets/character/penguatan_karakter_tematik.png
+    - assets/pohon_andalan/pohon_di_sekolahku.png
+    - assets/pohon_andalan/pohonku.png
+    - assets/pohon_andalan/icon_tambah_pohon.png
+    - assets/pohon_andalan/upload.png
+    - assets/character/baca_tulis_alquran/TA_cukup_bisa_menulis.png
+    - assets/character/baca_tulis_alquran/TA_belum_bisa_menulis.png
+    - assets/character/baca_tulis_alquran/BA_belum_bisa_baca.png
+    - assets/character/baca_tulis_alquran/BA_hafal_5_juz.png
+    - assets/character/baca_tulis_alquran/BA_hafal_juz_30.png
+    - assets/character/baca_tulis_alquran/BA_lancar.png
+    - assets/character/baca_tulis_alquran/BA_mengeja.png
+    - assets/character/baca_tulis_alquran/BA_tajwid.png
+    - assets/surahs.json
