@@ -3,7 +3,7 @@ import 'package:flutter_zoom_sdk_example/theme/padding.dart';
 
 import '../../../../services/classroom/elearning_service.dart';
 import '../../../../theme/colors.dart';
-import 'detail_ujian_elearning.dart';
+import 'soal_ujian_elearning.dart';
 
 class UjianElearningPage extends StatefulWidget {
   final int kodeJadwal;
@@ -79,12 +79,19 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
               children: [
                 ListTile(
                       onTap: () {
-                        if (_dateTimeNow.isBefore(DateTime.parse(listUjianElearning[i].waktuMulai))) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
+                            id: listUjianElearning[i].id,
+                            judul: listUjianElearning[i].judul,
+                            waktuMulai: listUjianElearning[i].waktuMulai,
+                            waktuSelesai: listUjianElearning[i].waktuSelesai,
+                            duration: listUjianElearning[i].duration,
+                          )));
+                        /*if (_dateTimeNow.isBefore(DateTime.parse(listUjianElearning[i].waktuMulai))) {
                           alertDialogisBefore(listUjianElearning[i].waktuMulai);
                         } else if (_dateTimeNow.isAfter(DateTime.parse(listUjianElearning[i].waktuSelesai))) {
                           alertDialogisAfter(listUjianElearning[i].waktuSelesai);
                         } else {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => DetailUjianElearningPage(
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
                             id: listUjianElearning[i].id,
                             elearningCategoryId: listUjianElearning[i].elearningCategoryId,
                             namaKategori: listUjianElearning[i].namaKategori,
@@ -99,7 +106,7 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                             createdAt: listUjianElearning[i].createdAt,
                             updatedAt: listUjianElearning[i].updatedAt 
                           )));
-                        }
+                        }*/
                       },
                       leading: Image.asset("assets/icon/quiz.png", width: 40,), 
                       title: Text("${listUjianElearning[i].namaMataPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),

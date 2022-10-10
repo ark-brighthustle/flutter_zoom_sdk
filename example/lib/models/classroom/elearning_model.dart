@@ -10,6 +10,8 @@ class ElearningModel {
   String? videoUrl;
   String? waktuMulai;
   String? waktuSelesai;
+  String? statusWaktu;
+  int? duration; 
   String? createdAt;
   String? updatedAt;
 
@@ -25,6 +27,8 @@ class ElearningModel {
       required this.videoUrl,
       required this.waktuMulai,
       required this.waktuSelesai,
+      required this.statusWaktu,
+      required this.duration,
       required this.createdAt,
       required this.updatedAt});
 
@@ -40,7 +44,9 @@ class ElearningModel {
       fileUrl: json['file_url'], 
       videoUrl: json['video_url'], 
       waktuMulai: json['waktu_mulai'], 
-      waktuSelesai: json['waktu_selesai'], 
+      waktuSelesai: json['waktu_selesai'],
+      statusWaktu: json['status_waktu'],
+      duration: json['duration'], 
       createdAt: json['created_at'], 
       updatedAt: json['updatedAt']);
   }
