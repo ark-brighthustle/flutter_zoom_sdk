@@ -32,8 +32,12 @@ class DetailMenontonPage extends StatefulWidget {
 
 class _DetailMenontonPageState extends State<DetailMenontonPage> {
   List listLearningResource = [];
+  bool isLoading = true;
 
   getLearningResource() async {
+    setState((){
+      isLoading = true;
+    });
     final response = await LearningResourceService().getDataLearningResource(
         widget.topikId.toString(),
         widget.categoryId.toString(),
@@ -41,7 +45,12 @@ class _DetailMenontonPageState extends State<DetailMenontonPage> {
     if (!mounted) return;
     setState(() {
       listLearningResource = response;
+      isLoading = false;
     });
+  }
+
+  Future onRefresh() async{
+    await getLearningResource();
   }
 
   void _launchUrl(Uri _url) async {
@@ -66,11 +75,9 @@ class _DetailMenontonPageState extends State<DetailMenontonPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildHeader(), 
-            listLearningResource.isNotEmpty
-            ? buildListItem()
-            : buildNoData(size)
-            ],
+            buildHeader(),
+            buildListItem()
+          ],
         ),
       )),
     );
@@ -131,97 +138,109 @@ class _DetailMenontonPageState extends State<DetailMenontonPage> {
 
   Widget buildListItem() {
     return Expanded(
-      child: ListView.builder(
+      child: RefreshIndicator(
+          onRefresh: onRefresh,
+          color: kCelticBlue,
+          child: isLoading == true
+              ? Center(child: CircularProgressIndicator())
+              : Stack(
+            children: [
+              ListView.builder(
           itemCount: listLearningResource.length,
-          itemBuilder: (context, i) {
-            return Container(
-                width: double.infinity,
-                height: 90,
-                margin: const EdgeInsets.symmetric(
-                    vertical: 8, horizontal: padding),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8), color: kWhite),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => {
-                        _CekDurasiPlayYoutube(
-                            listLearningResource[i].id.toString(),
-                            listLearningResource[i]
-                                .youtubeUrl
-                                .substring(32, 43))
-                      },
-                      child: Container(
-                        width: 100,
-                        height: 50,
-                        padding: const EdgeInsets.only(
-                          left: 8,
-                        ),
-                        child: Stack(
-                          children: [
-                            listLearningResource[i].youtubeUrl == null
-                                ? const Center(child: Icon(Icons.error))
-                                : ClipRRect(
-                                    child: CachedNetworkImage(
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      imageUrl:
-                                          "https://img.youtube.com/vi/${listLearningResource[i].youtubeUrl.substring(32, 43)}/0.jpg",
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
+              itemBuilder: (context, i) {
+                return Container(
+                    width: double.infinity,
+                    height: 90,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8, horizontal: padding),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8), color: kWhite),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => {
+                            _CekDurasiPlayYoutube(
+                                listLearningResource[i].id.toString(),
+                                listLearningResource[i]
+                                    .youtubeUrl
+                                    .substring(32, 43))
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 50,
+                            padding: const EdgeInsets.only(
+                              left: 8,
+                            ),
+                            child: Stack(
+                              children: [
+                                listLearningResource[i].youtubeUrl == null
+                                    ? const Center(child: Icon(Icons.error))
+                                    : ClipRRect(
+                                  child: CachedNetworkImage(
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    imageUrl:
+                                    "https://img.youtube.com/vi/${listLearningResource[i].youtubeUrl.substring(32, 43)}/0.jpg",
+                                    errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                                   ),
-                            Align(
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.play_circle_fill_rounded,
-                                  size: 30,
-                                  color: kWhite.withOpacity(0.7),
-                                ))
-                          ],
+                                ),
+                                Align(
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.play_circle_fill_rounded,
+                                      size: 30,
+                                      color: kWhite.withOpacity(0.7),
+                                    ))
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    SizedBox(
-                      width: 180,
-                      height: 60,
-                      child: Center(
-                        child: Text(
-                          "${listLearningResource[i].judul}",
-                          style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w600),
+                        const SizedBox(
+                          width: 12,
                         ),
-                      ),
-                    ),
-                  ],
-                ));
-          }),
+                        SizedBox(
+                          width: 180,
+                          height: 60,
+                          child: Center(
+                            child: Text(
+                              "${listLearningResource[i].judul}",
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ));
+              }),
+              buildNoData()
+            ],
+          )
+      )
     );
   }
 
-  Widget buildNoData(Size size) {
-    return Expanded(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SvgPicture.asset(
-            'assets/no_data.svg',
-            width: 90,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          const Text(
-            "Belum Ada data",
-            style: TextStyle(fontSize: 12),
-          )
-        ]),
-      ),
-    );
+  Widget buildNoData() {
+    if (listLearningResource.length == 0) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_data.svg',
+                width: 90,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Belum Ada data",
+                style: TextStyle(fontSize: 12),
+              )
+            ]),
+      );
+    }else{
+      return Container();
+    }
   }
 
   Future<void> _CekDurasiPlayYoutube(String id, String YtId) async{
