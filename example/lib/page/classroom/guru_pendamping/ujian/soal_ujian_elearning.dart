@@ -34,10 +34,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   Curve curve = Curves.ease;
   List listSoalUjian = [];
   late Timer timer;
-  String? a;
-  String? b;
-  String? c;
-  String? d;
+  String? jawabanA;
+  String? jawabanB;
+  String? jawabanC;
+  String? jawabanD;
+
+  saveJawaban() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance(); 
+    await _preferences.setString('jawaban_a', jawabanA ?? "");
+    await _preferences.setString('jawaban_b', jawabanB ?? "");
+    await _preferences.setString('jawaban_c', jawabanC ?? "");
+    await _preferences.setString('jawaban_d', jawabanD ?? "");
+  }
 
   getSoalUjian() async {
     final response = await SoalUjianService().getDataSoalUjian(widget.id);
@@ -63,6 +71,28 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   stopTimer() {
     timer.cancel();
+  }
+
+  alertDialogHasilUjian() {
+    showDialog(
+      context: context, builder: (context) {
+       return Column(
+         mainAxisSize: MainAxisSize.min,
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+           AlertDialog(
+            content: Column(
+              children: [
+                Text("$jawabanA"),
+                Text("$jawabanB"),
+                Text("$jawabanC"),
+                Text("$jawabanD"),
+              ],
+            ),
+           ),
+         ],
+       );
+    });
   }
 
   @override
@@ -175,8 +205,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                         children: [
                           TextButton(
                               onPressed: () async {
-                                SharedPreferences _preferences = await SharedPreferences.getInstance();
-                                await _preferences.setString('a', a ?? "");
+                                 setState(() {
+                                   jawabanA = listSoalUjian[i].pilihanA;
+                                 });
                                 _pageController.nextPage(
                                     duration: duration, curve: curve);
                               },
@@ -186,6 +217,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                               )),
                           TextButton(
                               onPressed: () {
+                                setState(() {
+                                  jawabanB = listSoalUjian[i].pilihanB;
+                                });
                                 _pageController.nextPage(
                                     duration: duration, curve: curve);
                               },
@@ -193,6 +227,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   style: const TextStyle(color: kBlack))),
                           TextButton(
                               onPressed: () {
+                                setState(() {
+                                  jawabanC = listSoalUjian[i].pilihanC;
+                                });
                                 _pageController.nextPage(
                                     duration: duration, curve: curve);
                               },
@@ -200,6 +237,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   style: const TextStyle(color: kBlack))),
                           TextButton(
                               onPressed: () {
+                                setState(() {
+                                  jawabanD = listSoalUjian[i].pilihanD;
+                                });
                                 _pageController.nextPage(
                                     duration: duration, curve: curve);
                               },
@@ -254,6 +294,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                         size: 16,
                                       ),
                                     ))),
+                            GestureDetector(
+                              onTap: () {
+                                alertDialogHasilUjian();
+                              },
+                              child: Container(
+                                  width: 90,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                      color: kGreen,
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: const Center(child: Text("Selesai", style: TextStyle(color: kWhite),))),
+                            ),
                           ],
                         ),
                       ],
