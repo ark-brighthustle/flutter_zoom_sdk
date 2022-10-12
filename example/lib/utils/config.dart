@@ -29,8 +29,6 @@ const String API_POHON_ANDALAN = "https://pohon.e-andalan.id/api/v1/rekap/sekola
 // ignore: constant_identifier_names
 const String ApiKeyGDrive = "AIzaSyD1JGrTXVn98av7U49rKOsVa6K3pW-2tIY";
 // ignore: constant_identifier_names
-const String API_LEARNING_DURATION_PLAY = "https://learning-resource.e-andalan.id/api/v1";
+const String API_LEARNING_RESOUCE_TRACKING = "https://learning-resource.e-andalan.id/api/v1/tracking";
 // ignore: constant_identifier_names
 const String API_CHARACTER_DURATION_PLAY = "https://character.e-andalan.id/api/v1";
-// ignore: constant_identifier_names
-const String API_LEARNING_RESOUCE_DURATION_PLAY = "https://learning-resource.e-andalan.id/api/v1";

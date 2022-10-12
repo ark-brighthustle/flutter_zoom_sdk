@@ -152,8 +152,8 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8), color: kWhite),
                       child: ListTile(
-                        onTap: () =>
-                            _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
+                        onTap: () => eventClick(listLearningResource[i].id.toString()),
+                            // _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
                         leading: const Padding(
                           padding: EdgeInsets.only(top: 8),
                           child: Icon(
@@ -202,5 +202,9 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
     }else{
       return Container();
     }
+  }
+
+  Future<void> eventClick(String id) async{
+    print(id);
   }
 }
