@@ -1,4 +1,4 @@
-class SoalModel {
+class SoalUjianModel {
   int? id;
   int? elearningId;
   String? judul;
@@ -14,7 +14,7 @@ class SoalModel {
   String? createdAt;
   String? updatedAt;
 
-  SoalModel({
+  SoalUjianModel({
     required this.id,
     required this.elearningId,
     required this.judul,
@@ -31,8 +31,8 @@ class SoalModel {
     required this.updatedAt
   });
 
-  factory SoalModel.fromJson(Map<String, dynamic> json) {
-    return SoalModel(
+  factory SoalUjianModel.fromJson(Map<String, dynamic> json) {
+    return SoalUjianModel(
       id: json['id'], 
       elearningId: json['elearning_id'], 
       judul: json['judul'], 

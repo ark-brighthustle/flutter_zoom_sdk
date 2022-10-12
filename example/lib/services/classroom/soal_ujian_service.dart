@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_model.dart';
-import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_model.dart';
+import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
+import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
 import 'package:http/http.dart' as http;
 import '../../helpers/helpers.dart';
-import '../../models/classroom/soal_ujian/soal_model.dart';
+import '../../models/classroom/soal_ujian/soal_ujian_model.dart';
 import '../../utils/config.dart';
 
 class SoalUjianService {
@@ -15,7 +15,7 @@ class SoalUjianService {
     var responseJson = jsonDecode(response.body);
     if (response.statusCode == 200) {
       var data = responseJson['data'];
-      return data.map((p) => SoalModel.fromJson(p)).toList();
+      return data.map((p) => SoalUjianModel.fromJson(p)).toList();
     } else {
       throw Exception('Failed to load');
     }
@@ -23,7 +23,8 @@ class SoalUjianService {
 
   createJawabanSoalUjian(
       String elearningId,
-      String jawaban1
+      String nomorSoal,
+      String jawaban,
       ) async {
     String token = await Helpers().getToken() ?? "";
     var baseResponse;
@@ -32,7 +33,7 @@ class SoalUjianService {
       var request = http.MultipartRequest('POST', url);
       request.headers.addAll({'Authorization': 'Bearer $token'});
       request.fields['elearning_id'] = elearningId;
-      request.fields['jawaban[1]'] = jawaban1;
+      request.fields['jawaban[$nomorSoal]'] = jawaban;
 
       var response = await request.send();
       final responseStream = await http.Response.fromStream(response);
@@ -40,9 +41,9 @@ class SoalUjianService {
         if (responseStream.body == 'null') {
           return throw Exception('No result');
         } else {
-          baseResponse = ResponseJawabanSoal<JawabanSoalModel>.fromJson(
+          baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(
               json.decode(responseStream.body),
-              (data) => JawabanSoalModel.fromJson(data));
+              (data) => JawabanSoalUjianModel.fromJson(data));
           return baseResponse;
         }
       } else {

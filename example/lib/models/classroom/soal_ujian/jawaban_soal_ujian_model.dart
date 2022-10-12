@@ -1,4 +1,4 @@
-class JawabanSoalModel <T> {
+class JawabanSoalUjianModel <T> {
   int? elearningId;
   int? siswaId;
   int? jumlahJawabanBenar;
@@ -9,7 +9,7 @@ class JawabanSoalModel <T> {
   String? createdAt;
   int? id;
 
-  JawabanSoalModel({
+  JawabanSoalUjianModel({
     required this.elearningId,
     required this.siswaId,
     required this.jumlahJawabanBenar,
@@ -21,8 +21,8 @@ class JawabanSoalModel <T> {
     required this.id
   });
 
-  factory JawabanSoalModel.fromJson(Map<String, dynamic> json) {
-    return JawabanSoalModel(
+  factory JawabanSoalUjianModel.fromJson(Map<String, dynamic> json) {
+    return JawabanSoalUjianModel(
       elearningId: json['elearning_id'], 
       siswaId: json['siswa_id'], 
       jumlahJawabanBenar: json['jumlah_jawaban_benar'], 
