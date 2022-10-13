@@ -40,6 +40,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   String jawaban = '';
   int nomorSoal = 0;
   List svJawaban = [];
+  Future<JawabanSoalUjianModel>? _future;
 
   saveJawaban() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -88,12 +89,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AlertDialog(
-                content: Column(
-                  children: [
-                    //Text("Berhasil Terkirim!")
-                    Text("$nomorSoal $jawaban")
-                  ],
-                ),
+                content: buildJawabanSoalUjian()
               ),
             ],
           );
@@ -368,7 +364,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                     ))),
                             GestureDetector(
                               onTap: () async {
-                                /*var response = await SoalUjianService().createJawabanSoalUjian(
+                                var response = await SoalUjianService().createJawabanSoalUjian(
                                   listSoalUjian[i].elearningId.toString(),
                                   nomorSoal.toString(),
                                   jawaban,
@@ -382,8 +378,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   alertDialogHasilUjian();
                                 } else {
                                   showScaffoldMessage();
-                                }*/
-                                alertDialogHasilUjian();
+                                }
+                                //alertDialogHasilUjian();
                               },
                               child: Container(
                                   width: 90,
@@ -409,6 +405,26 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     );
   }
 
+  Widget buildJawabanSoalUjian() {
+    return SizedBox(
+      width: 400,
+      height: 400,
+      child: FutureBuilder<JawabanSoalUjianModel>(
+        future: _future,
+        builder: ((context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(),);
+          } else if (snapshot.hasError) {
+            return Center(child: Text("${snapshot.error}"),);
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text("Belum ada data"),);
+          }
+
+          return Text("${snapshot.data?.nilai}");
+      })),
+    );
+  }
+  
   showScaffoldMessage() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Maaf, Terjadi Kesalahan, Server Tidak Merespon")));

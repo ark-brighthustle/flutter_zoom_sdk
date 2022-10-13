@@ -24,7 +24,7 @@ import 'smart_event/kompetisi_page.dart';
 import 'smart_event/smart_event_page.dart';
 import 'smart_library/smart_library_page.dart';
 import 'smart_news/smart_news_page.dart';
-import 'smart_passion/smart_passion_page.dart'; 
+import 'smart_passion/smart_passion_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
   int? idIdentitasSekolah;
   String? foto;
   String? token;
-
   int _currentIndex = 0;
 
   List bannerGubList = [];
@@ -58,7 +57,6 @@ class _HomePageState extends State<HomePage> {
   Future<Profil>? _futureProfil;
   Future<UpdateAppModel>? _futureUpdate;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-  bool _flexibleUpdateAvailable = false;
 
   Future getSiswa() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -98,6 +96,41 @@ class _HomePageState extends State<HomePage> {
     if (!await launchUrl(_url)) throw 'Could not launch $_url';
   }
 
+  showEventNew() {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AlertDialog(
+                backgroundColor: kTransparent,
+                content: bannerEvent(),
+                actions: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: kCelticBlue),
+                      child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            color: kWhite,
+                          )),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +139,7 @@ class _HomePageState extends State<HomePage> {
     getBannerKompetisiList();
     _futureProfil = fetchProfil();
     _futureUpdate = fetchUpdateApp();
+    //Future.delayed(const Duration(seconds: 1), () => showEventNew());
   }
 
   @override
@@ -124,13 +158,13 @@ class _HomePageState extends State<HomePage> {
                   buildHeader(),
                   sliderBanner(),
                   gridKategori(),
-                  bannerNewsEvent(),
+                  itemEvent(),
                 ],
               ),
             )));
   }
 
-  buildHeader() {
+  Widget buildHeader() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 5.3,
@@ -434,7 +468,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
                 GestureDetector(
                   onTap: () => Navigator.push(
                       context,
@@ -543,11 +576,11 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                     onTap: () async {
                       await LaunchApp.openApp(
-                      androidPackageName: 'com.bekalislam.dzikirndoa',
-                      //iosUrlScheme: 'pulsesecure://',
-                      //appStoreLink: 'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
-                      //openStore: false
-                    );
+                        androidPackageName: 'com.bekalislam.dzikirndoa',
+                        //iosUrlScheme: 'pulsesecure://',
+                        //appStoreLink: 'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
+                        //openStore: false
+                      );
                     },
                     child: SizedBox(
                       child: Column(
@@ -604,7 +637,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget titleNewsEvent() {
+  Widget titleEvent() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -633,7 +666,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget bannerNewsEvent() {
+  Widget itemEvent() {
     return bannerKompetisiList.isEmpty
         ? Container()
         : SizedBox(
@@ -641,11 +674,11 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                titleNewsEvent(),
+                titleEvent(),
                 Expanded(
                     child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: bannerKompetisiList.length,
+                        itemCount: bannerKompetisiList.length < 3 ? bannerKompetisiList.length : 3,
                         itemBuilder: (context, i) {
                           return GestureDetector(
                             onTap: () {
@@ -726,5 +759,50 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           );
+  }
+
+  Widget bannerEvent() {
+    return SizedBox(
+      width: 400,
+      height: 400,
+      child: ListView.builder(
+          itemCount: bannerKompetisiList.length == 1 ? 1 : 1,
+          itemBuilder: (context, i) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailBannerNewsEvent(
+                            idSiswa: idSiswa.toString(),
+                            title: bannerKompetisiList[i].title,
+                            category: bannerKompetisiList[i].category,
+                            description: bannerKompetisiList[i].description,
+                            imageUrl: bannerKompetisiList[i].imageUrl,
+                            juknisUrl: bannerKompetisiList[i].technicalUrl,
+                          )),
+                );
+              },
+              child: SizedBox(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    bannerKompetisiList[0].imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          "Gagal Memuat Gambar!",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          }),
+    );
   }
 }

@@ -12,3 +12,4 @@ const Color kBlack = Color(0xFF222222);
 const Color kBlack26 = Colors.black26;
 const Color kBlack45 = Colors.black45;
 const Color kOrange = Colors.orange;
+const Color kTransparent = Colors.transparent;
