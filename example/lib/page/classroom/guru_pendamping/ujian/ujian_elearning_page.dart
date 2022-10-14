@@ -84,7 +84,6 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                             judul: listUjianElearning[i].judul,
                             waktuMulai: listUjianElearning[i].waktuMulai,
                             waktuSelesai: listUjianElearning[i].waktuSelesai,
-                            duration: listUjianElearning[i].duration,
                           )));
                         /*if (_dateTimeNow.isBefore(DateTime.parse(listUjianElearning[i].waktuMulai))) {
                           alertDialogisBefore(listUjianElearning[i].waktuMulai);
