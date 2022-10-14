@@ -28,8 +28,12 @@ class DetailMembacaPage extends StatefulWidget {
 
 class _DetailMembacaPageState extends State<DetailMembacaPage> {
   List listLearningResource = [];
+  bool isLoading = true;
 
   getLearningResource() async {
+    setState((){
+      isLoading = true;
+    });
     final response = await LearningResourceService().getDataLearningResource(
         widget.topikId.toString(),
         widget.categoryId.toString(),
@@ -37,6 +41,7 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
     if (!mounted) return;
     setState(() {
       listLearningResource = response;
+      isLoading = false;
     });
   }
 
@@ -48,6 +53,10 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
   void initState() {
     getLearningResource();
     super.initState();
+  }
+
+  Future onRefresh() async{
+    await getLearningResource();
   }
 
   @override
@@ -63,9 +72,7 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildHeader(),
-            listLearningResource.isNotEmpty
-                ? buildListItem()
-                : buildNoData(size)
+            buildListItem()
           ],
         ),
       )),
@@ -127,61 +134,77 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
 
   Widget buildListItem() {
     return Expanded(
-      child: ListView.builder(
-          itemCount: listLearningResource.length,
-          itemBuilder: (context, i) {
-            return Container(
-              width: double.infinity,
-              margin:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8), color: kWhite),
-              child: ListTile(
-                onTap: () =>
-                    _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
-                leading: const Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: Icon(
-                    Icons.picture_as_pdf_rounded,
-                    size: 36,
-                    color: kRed,
-                  ),
-                ),
-                title: Text(
-                  "${listLearningResource[i].judul}",
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                ),
-              ),
-            );
-          }),
+      child: RefreshIndicator(
+          onRefresh: onRefresh,
+          color: kCelticBlue,
+          child: isLoading == true
+              ? Center(child: CircularProgressIndicator())
+              : Stack(
+            children: [
+              ListView.builder(
+                  itemCount: listLearningResource.length,
+                  itemBuilder: (context, i) {
+                    return Container(
+                      width: double.infinity,
+                      margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8), color: kWhite),
+                      child: ListTile(
+                        onTap: () => eventClick(listLearningResource[i].id.toString()),
+                            // _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
+                        leading: const Padding(
+                          padding: EdgeInsets.only(top: 8),
+                          child: Icon(
+                            Icons.picture_as_pdf_rounded,
+                            size: 36,
+                            color: kRed,
+                          ),
+                        ),
+                        title: Text(
+                          "${listLearningResource[i].judul}",
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                        ),
+                      ),
+                    );
+                  }),
+              buildNoData()
+            ],
+          )
+      )
     );
   }
 
-  Widget buildNoData(Size size) {
-    return Expanded(
-      child: SizedBox(
-        width: size.width,
-        height: size.height,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SvgPicture.asset(
-            'assets/no_data.svg',
-            width: 90,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          const Text(
-            "Belum Ada data",
-            style: TextStyle(fontSize: 12),
-          )
-        ]),
-      ),
-    );
+  Widget buildNoData() {
+    if (listLearningResource.length == 0) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_data.svg',
+                width: 90,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Belum Ada data",
+                style: TextStyle(fontSize: 12),
+              )
+            ]),
+      );
+    }else{
+      return Container();
+    }
+  }
+
+  Future<void> eventClick(String id) async{
+    print(id);
   }
 }

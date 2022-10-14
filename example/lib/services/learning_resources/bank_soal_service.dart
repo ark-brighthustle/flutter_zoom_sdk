@@ -22,8 +22,25 @@ class BankSoalService {
     }
   }
 
+
+  eventClick(String id_siswa, String id) async{
+    var url = Uri.parse("$API_LEARNING_RESOUCE_TRACKING/bank-question/reading/${id_siswa}/${id}");
+    final response = await http.get(url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json'
+        },
+    );
+    var responseJson = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return EventClickModel.fromJson(responseJson);
+    } else {
+      return throw Exception('Failed to load');
+    }
+  }
+
   DurationPlayVideoBankSoal(String id_siswa, String id, String duration) async{
-    var url = Uri.parse("$API_LEARNING_RESOUCE_DURATION_PLAY/tracking/bank-question/watching/${id_siswa}/${id}");
+    var url = Uri.parse("$API_LEARNING_RESOUCE_TRACKING/bank-question/watching/${id_siswa}/${id}");
     print(url);
     final response = await http.post(url,
         headers: <String, String>{

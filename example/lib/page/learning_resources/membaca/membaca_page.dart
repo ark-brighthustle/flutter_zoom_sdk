@@ -26,6 +26,10 @@ class _MembacaPageState extends State<MembacaPage> {
     });
   }
 
+  Future onRefresh() async {
+    await getMapel();
+  }
+
   @override
   void initState() {
     getMapel();
@@ -90,44 +94,48 @@ class _MembacaPageState extends State<MembacaPage> {
 
   Widget buildListMapel() {
     return Expanded(
-      child: ListView.builder(
-          itemCount: listMapel.length,
-          itemBuilder: (context, i) {
-            return Container(
-              color: kWhite,
-              child: Column(
-                children: [
-                  ListTile(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailMembacaPage(
-                                topikId: topikId,
-                                categoryId: categoryId,
-                                title: widget.title,
-                                mapelId: listMapel[i].id,
-                                namaMapel: listMapel[i].namaPelajaran))),
-                    leading: Image.asset(
-                      "assets/icon/membaca.png",
-                      width: 36,
+      child: RefreshIndicator(
+        onRefresh: onRefresh,
+        color: kCelticBlue,
+        child: ListView.builder(
+            itemCount: listMapel.length,
+            itemBuilder: (context, i) {
+              return Container(
+                color: kWhite,
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailMembacaPage(
+                                  topikId: topikId,
+                                  categoryId: categoryId,
+                                  title: widget.title,
+                                  mapelId: listMapel[i].id,
+                                  namaMapel: listMapel[i].namaPelajaran))),
+                      leading: Image.asset(
+                        "assets/icon/membaca.png",
+                        width: 36,
+                      ),
+                      title: Text(
+                        "${listMapel[i].namaPelajaran}",
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                      ),
                     ),
-                    title: Text(
-                      "${listMapel[i].namaPelajaran}",
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600),
-                    ),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
-                    ),
-                  ),
-                  const Divider(
-                    thickness: 1,
-                  )
-                ],
-              ),
-            );
-          }),
+                    const Divider(
+                      thickness: 1,
+                    )
+                  ],
+                ),
+              );
+            }),
+      )
     );
   }
 }

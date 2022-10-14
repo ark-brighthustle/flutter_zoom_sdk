@@ -79,6 +79,10 @@ class _NonUmumViewState extends State<NonUmumView> {
     });
   }
 
+  Future onRefresh() async{
+    await getMapel();
+  }
+
   @override
   void initState() {
     getMapel();
@@ -89,80 +93,85 @@ class _NonUmumViewState extends State<NonUmumView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kGrey,
-        body: ListView.builder(
+        body: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView.builder(
             itemCount: listMapel.length,
             itemBuilder: (context, i) {
               return Container(
-              color: kWhite,
-              child: Column(
-              children: [
-                ListTile(
-                  onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailMenontonPage(
-                                topikId: topikId,
-                                categoryId: categoryId,
-                                title: title,
-                                mapelId: listMapel[i].id,
-                                namaMapel: listMapel[i].namaPelajaran))),
-                  leading: Image.asset("assets/icon/menonton.png", width: 36,),
-                  title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
+                color: kWhite,
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailMenontonPage(
+                                  topikId: topikId,
+                                  categoryId: categoryId,
+                                  title: title,
+                                  mapelId: listMapel[i].id,
+                                  namaMapel: listMapel[i].namaPelajaran))),
+                      leading: Image.asset("assets/icon/menonton.png", width: 36,),
+                      title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
+                    ),
+                    const Divider(thickness: 1,)
+                  ],
                 ),
-                const Divider(thickness: 1,)
-              ],
-          ),
-            );
-            }));
+              );
+            }),
+        )
+
+    );
   }
 
-  Future<void> _CekDurasiPlayYoutube(String id, String YtId) async{
-    late EventClickModel _eventClickModel;
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? idSiswa = preferences.getInt('idSiswa').toString();
-    String? idYoutube = preferences.getString('id_youtube_learning_resource');
-    String? durasiPutarYoutube = preferences.getString('durasi_putar_youtube_learning_resource');
-    if(idYoutube != null && durasiPutarYoutube != null) {
-      var response = await LearningResourceService().DurationPlayLearningResouce(
-          idSiswa, idYoutube, durasiPutarYoutube);
-      if(response != null && response != "Tidak ditemukan"){
-        _eventClickModel = response;
-        if (_eventClickModel.code == 200) {
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.remove("id_youtube_learning_resource");
-          preferences.remove("durasi_putar_youtube_learning_resource");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
-                      id: id,
-                      youtubeId:YtId)));
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
-        }
-      }else if(response == "Tidak ditemukan"){
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.remove("id_youtube_learning_resource");
-        preferences.remove("durasi_putar_youtube_learning_resource");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
-                    id: id,
-                    youtubeId:YtId)));
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
-      }
-    }else{
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
-                  id: id,
-                  youtubeId:YtId)));
-    }
-  }
+  // Future<void> _CekDurasiPlayYoutube(String id, String YtId) async{
+  //   late EventClickModel _eventClickModel;
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   String? idSiswa = preferences.getInt('idSiswa').toString();
+  //   String? idYoutube = preferences.getString('id_youtube_learning_resource');
+  //   String? durasiPutarYoutube = preferences.getString('durasi_putar_youtube_learning_resource');
+  //   if(idYoutube != null && durasiPutarYoutube != null) {
+  //     var response = await LearningResourceService().DurationPlayLearningResouce(
+  //         idSiswa, idYoutube, durasiPutarYoutube);
+  //     if(response != null && response != "Tidak ditemukan"){
+  //       _eventClickModel = response;
+  //       if (_eventClickModel.code == 200) {
+  //         SharedPreferences preferences = await SharedPreferences.getInstance();
+  //         preferences.remove("id_youtube_learning_resource");
+  //         preferences.remove("durasi_putar_youtube_learning_resource");
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
+  //                     id: id,
+  //                     youtubeId:YtId)));
+  //       }else{
+  //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+  //       }
+  //     }else if(response == "Tidak ditemukan"){
+  //       SharedPreferences preferences = await SharedPreferences.getInstance();
+  //       preferences.remove("id_youtube_learning_resource");
+  //       preferences.remove("durasi_putar_youtube_learning_resource");
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
+  //                   id: id,
+  //                   youtubeId:YtId)));
+  //     }else{
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+  //     }
+  //   }else{
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (context) => PlayYoutubeVideoWidget(jenis: "learning_resource",
+  //                 id: id,
+  //                 youtubeId:YtId)));
+  //   }
+  // }
 }
 
 class UmumView extends StatefulWidget {
