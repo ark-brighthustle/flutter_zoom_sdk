@@ -14,6 +14,7 @@ class SoalUjianService {
     final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
     var responseJson = jsonDecode(response.body);
     if (response.statusCode == 200) {
+      return responseJson;
       var data = responseJson['data'];
       return data.map((p) => SoalUjianModel.fromJson(p)).toList();
     } else {

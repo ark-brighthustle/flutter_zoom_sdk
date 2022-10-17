@@ -5,7 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
+import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/services/classroom/soal_ujian_service.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../theme/colors.dart';
@@ -17,14 +19,13 @@ class SoalUjianElearningPage extends StatefulWidget {
   final String judul;
   final String waktuMulai;
   final String waktuSelesai;
-  late int duration;
+  late int duration = 0;
   SoalUjianElearningPage(
       {Key? key,
       required this.id,
       required this.judul,
       required this.waktuMulai,
-      required this.waktuSelesai,
-      required this.duration})
+      required this.waktuSelesai,})
       : super(key: key);
 
   @override
@@ -59,8 +60,23 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   getSoalUjian() async {
     final response = await SoalUjianService().getDataSoalUjian(widget.id);
     if (!mounted) return;
+    DateTime dtmulai = DateTime.parse(widget.waktuMulai);
+    DateTime dtsekarang = DateTime.parse(response['waktu_sekarang']);
+    Duration diff = dtsekarang.difference(dtmulai);
+    // print("Waktu Mulai "+widget.waktuMulai);
+    // print("Waktu Sekarang "+response['waktu_sekarang']);
+    if(!diff.isNegative){
+      DateTime dtselesai = DateTime.parse(widget.waktuSelesai);
+      Duration waktuselesai = dtselesai.difference(dtsekarang);
+      // print("Waktu Sekarang "+response['waktu_sekarang']);
+      // print("Waktu Selesai "+widget.waktuSelesai);
+      setState((){
+        widget.duration = waktuselesai.inSeconds;
+      });
+    }
     setState(() {
-      listSoalUjian = response;
+      var data = response['data'];
+      listSoalUjian = data.map((p) => SoalUjianModel.fromJson(p)).toList();
     });
   }
 
@@ -149,6 +165,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   Widget iconBackPage() {
     int minutes = (widget.duration / 60).truncate();
+    int hours = (widget.duration / 3600).truncate();
+    String hoursStr = (hours % 60).toString().padLeft(2, '0');
     String minutesStr = (minutes % 60).toString().padLeft(2, '0');
     String secondsStr = (widget.duration % 60).toString().padLeft(2, '0');
     return Row(
@@ -173,7 +191,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
               Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
-                  "$minutesStr : $secondsStr ",
+                  "$hoursStr : $minutesStr : $secondsStr ",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -225,6 +243,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                 nomorSoal = listSoalUjian[i].id;
                                 jawaban = listSoalUjian[i].pilihanA;
                               });
+                              print(nomorSoal.toString());
+                              _pageController.nextPage(
+                                  duration: duration, curve: curve);
                             },
                             child: Container(
                               width: double.infinity,
@@ -252,6 +273,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                 nomorSoal = listSoalUjian[i].id;
                                 jawaban = listSoalUjian[i].pilihanB;
                               });
+                              print(nomorSoal.toString());
+                              _pageController.nextPage(
+                                  duration: duration, curve: curve);
                             },
                             child: Container(
                               width: double.infinity,
@@ -279,6 +303,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                 nomorSoal = listSoalUjian[i].id;
                                 jawaban = listSoalUjian[i].pilihanC;
                               });
+                              print(nomorSoal.toString());
+                              _pageController.nextPage(
+                                  duration: duration, curve: curve);
                             },
                             child: Container(
                               width: double.infinity,
@@ -306,6 +333,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                 nomorSoal = listSoalUjian[i].id;
                                 jawaban = listSoalUjian[i].pilihanD;
                               });
+                              print(nomorSoal.toString());
+                              _pageController.nextPage(
+                                  duration: duration, curve: curve);
                             },
                             child: Container(
                               width: double.infinity,
@@ -351,9 +381,11 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                     borderRadius: BorderRadius.circular(4)),
                                 child: IconButton(
                                     onPressed: () =>
-                                        _pageController.previousPage(
-                                            duration: duration, curve: curve),
-                                    icon: const Padding(
+                                    {
+                                      _pageController.previousPage(
+                                          duration: duration, curve: curve),
+                                    },
+                                    icon: Padding(
                                       padding: EdgeInsets.only(left: 4),
                                       child: Icon(
                                         Icons.arrow_back_ios,
