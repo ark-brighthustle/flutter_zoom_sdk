@@ -33,20 +33,29 @@ class SoalUjianService {
       var request = http.MultipartRequest('POST', url);
       request.headers.addAll({'Authorization': 'Bearer $token'});
       request.fields['elearning_id'] = elearningId;
-      request.fields['jawaban[$nomorSoal]'] = jawaban;
+      //request.fields['jawaban[$nomorSoal]'] = jawaban;
+
+      List<String> soal = ["1", "2", "3"];
+      List<String> jawaban = ["a", "d", "c"];
+      
+      for (String item in soal) {
+        for (String item2 in jawaban) {
+          request.files.add(http.MultipartFile.fromString('jawaban[$item]', item2));
+        } 
+      }
 
       var response = await request.send();
       final responseStream = await http.Response.fromStream(response);
+      var responseJson = jsonDecode(responseStream.body);
+      var message = responseJson['message'];
       if (response.statusCode == 200) {
-        if (responseStream.body == 'null') {
-          return throw Exception('No result');
-        } else {
+        print(message);
           baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(
               json.decode(responseStream.body),
               (data) => JawabanSoalUjianModel.fromJson(data));
-          return baseResponse;
-        }
+        return baseResponse;
       } else {
+        print(message);
         baseResponse;
       }
     } on Exception catch (_) {

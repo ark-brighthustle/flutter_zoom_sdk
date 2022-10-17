@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
@@ -82,6 +84,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   alertDialogHasilUjian() {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return Column(
@@ -89,7 +92,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AlertDialog(
-                content: buildJawabanSoalUjian()
+                content: Column(
+                  children: [
+                    Image.asset("assets/gif/success.gif", width: 60,),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text("Data berhasil disimpan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.popAndPushNamed(context, '/classroom'), child: Text("Selesai"))
+                ],
               ),
             ],
           );
@@ -377,7 +391,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
                                   alertDialogHasilUjian();
                                 } else {
-                                  showScaffoldMessage();
+                                  showScaffoldMessage(response);
                                 }
                                 //alertDialogHasilUjian();
                               },
@@ -404,29 +418,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           }),
     );
   }
-
-  Widget buildJawabanSoalUjian() {
-    return SizedBox(
-      width: 400,
-      height: 400,
-      child: FutureBuilder<JawabanSoalUjianModel>(
-        future: _future,
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(),);
-          } else if (snapshot.hasError) {
-            return Center(child: Text("${snapshot.error}"),);
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text("Belum ada data"),);
-          }
-
-          return Text("${snapshot.data?.nilai}");
-      })),
-    );
-  }
   
-  showScaffoldMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Maaf, Terjadi Kesalahan, Server Tidak Merespon")));
+  showScaffoldMessage(response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("$response")));
   }
 }
