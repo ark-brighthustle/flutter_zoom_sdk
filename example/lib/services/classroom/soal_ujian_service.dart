@@ -22,29 +22,24 @@ class SoalUjianService {
     }
   }
 
-  createJawabanSoalUjian(
-      String elearningId,
-      String nomorSoal,
-      String jawaban,
-      ) async {
+  createJawabanSoalUjian(Map<String,String> data) async {
     String token = await Helpers().getToken() ?? "";
     var baseResponse;
     var url = Uri.parse("$API_V2/elearning/ujian/soal/jawab");
     try {
-      var request = http.MultipartRequest('POST', url);
-      request.headers.addAll({'Authorization': 'Bearer $token'});
-      request.fields['elearning_id'] = elearningId;
-      request.fields['jawaban[$nomorSoal]'] = jawaban;
-
-      var response = await request.send();
-      final responseStream = await http.Response.fromStream(response);
+      var response = await http.post(url,
+          headers: <String, String>{
+            "Authorization": "Bearer $token"
+          },
+          body: data
+      );
+      var responseJson = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        if (responseStream.body == 'null') {
+        if (responseJson == 'null') {
           return throw Exception('No result');
         } else {
-          baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(
-              json.decode(responseStream.body),
-              (data) => JawabanSoalUjianModel.fromJson(data));
+          baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(responseJson,
+                  (data) => JawabanSoalUjianModel.fromJson(data));
           return baseResponse;
         }
       } else {
