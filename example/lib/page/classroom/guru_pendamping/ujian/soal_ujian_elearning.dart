@@ -144,10 +144,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                       padding: EdgeInsets.only(top: 8, bottom: 8),
                       child: Text(
                         "Nilai ${jawabanSoalUjianModel.nilai}",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Text("Benar ${jawabanSoalUjianModel.jumlahJawabanBenar}, Salah ${jawabanSoalUjianModel.jumlahJawabanSalah}, Tidak dijawab ${jawabanSoalUjianModel.jumlahTidakDijawab}")
+                    Text("Benar ${jawabanSoalUjianModel.jumlahJawabanBenar}, Salah ${jawabanSoalUjianModel.jumlahJawabanSalah}, Tidak dijawab ${jawabanSoalUjianModel.jumlahTidakDijawab}", style: TextStyle(fontSize: 14),)
                   ],
                 ),
                 actions: [
