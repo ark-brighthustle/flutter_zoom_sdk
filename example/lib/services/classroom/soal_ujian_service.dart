@@ -22,39 +22,26 @@ class SoalUjianService {
     }
   }
 
-  createJawabanSoalUjian(
-      String elearningId,
-      String nomorSoal,
-      String jawaban,
-      ) async {
+  createJawabanSoalUjian(Map<String,String> data) async {
     String token = await Helpers().getToken() ?? "";
     var baseResponse;
     var url = Uri.parse("$API_V2/elearning/ujian/soal/jawab");
     try {
-      var request = http.MultipartRequest('POST', url);
-      request.headers.addAll({'Authorization': 'Bearer $token'});
-      request.fields['elearning_id'] = elearningId;
-      //request.fields['jawaban[$nomorSoal]'] = jawaban;
-
-      List<String> soal = ["1", "2", "3"];
-      List<String> jawaban = ["a", "d", "c"];
-      
-      for (String item in soal) {
-        for (String item2 in jawaban) {
-          request.files.add(http.MultipartFile.fromString('jawaban[$item]', item2));
-        } 
-      }
-
-      var response = await request.send();
-      final responseStream = await http.Response.fromStream(response);
-      var responseJson = jsonDecode(responseStream.body);
-      var message = responseJson['message'];
+      var response = await http.post(url,
+          headers: <String, String>{
+            "Authorization": "Bearer $token"
+          },
+          body: data
+      );
+      var responseJson = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        print(message);
-          baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(
-              json.decode(responseStream.body),
-              (data) => JawabanSoalUjianModel.fromJson(data));
-        return baseResponse;
+        if (responseJson == 'null') {
+          return throw Exception('No result');
+        } else {
+          baseResponse = ResponseJawabanSoalUjianModel<JawabanSoalUjianModel>.fromJson(responseJson,
+                  (data) => JawabanSoalUjianModel.fromJson(data));
+          return baseResponse;
+        }
       } else {
         print(message);
         baseResponse;

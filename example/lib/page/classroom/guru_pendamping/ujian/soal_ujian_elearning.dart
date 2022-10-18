@@ -22,10 +22,10 @@ class SoalUjianElearningPage extends StatefulWidget {
   late int duration = 0;
   SoalUjianElearningPage(
       {Key? key,
-      required this.id,
-      required this.judul,
-      required this.waktuMulai,
-      required this.waktuSelesai,})
+        required this.id,
+        required this.judul,
+        required this.waktuMulai,
+        required this.waktuSelesai,})
       : super(key: key);
 
   @override
@@ -37,25 +37,23 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   Duration duration = const Duration(milliseconds: 500);
   Curve curve = Curves.ease;
   List listSoalUjian = [];
+  Map<String,String>data = {"elearning_id": '20'};
   ResponseJawabanSoalUjianModel? responseJawabanSoalUjian;
   JawabanSoalUjianModel? jawabanSoalUjianModel;
   late Timer timer;
-  String jawaban = '';
-  int nomorSoal = 0;
-  List svJawaban = [];
   Future<JawabanSoalUjianModel>? _future;
 
-  saveJawaban() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> stringList = [];
-    stringList.add(jawaban);
-
-    setState(() {
-      preferences.setStringList(
-          "save_jawaban", stringList); // qrText need to be a Stringlist
-      svJawaban = preferences.getStringList("save_jawaban")!;
-    });
-  }
+  // saveJawaban() async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   List<String> stringList = [];
+  //   stringList.add(jawaban);
+  //
+  //   setState(() {
+  //     preferences.setStringList(
+  //         "save_jawaban", stringList); // qrText need to be a Stringlist
+  //     svJawaban = preferences.getStringList("save_jawaban")!;
+  //   });
+  // }
 
   getSoalUjian() async {
     final response = await SoalUjianService().getDataSoalUjian(widget.id);
@@ -67,12 +65,16 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     // print("Waktu Sekarang "+response['waktu_sekarang']);
     if(!diff.isNegative){
       DateTime dtselesai = DateTime.parse(widget.waktuSelesai);
-      Duration waktuselesai = dtselesai.difference(dtsekarang);
-      // print("Waktu Sekarang "+response['waktu_sekarang']);
-      // print("Waktu Selesai "+widget.waktuSelesai);
-      setState((){
-        widget.duration = waktuselesai.inSeconds;
-      });
+      if(DateFormat('dd-MM-yyyy').format(dtsekarang) == DateFormat('dd-MM-yyyy').format(dtselesai)){
+        Duration waktuselesai = dtselesai.difference(dtsekarang);
+        // print("Waktu Sekarang "+response['waktu_sekarang']);
+        // print("Waktu Selesai "+widget.waktuSelesai);
+        setState((){
+          widget.duration = waktuselesai.inSeconds;
+        });
+      }else{
+        // Navigator.pop(context);
+      }
     }
     setState(() {
       var data = response['data'];
@@ -108,7 +110,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AlertDialog(
-                content: Column(
+                  content: Column(
                   children: [
                     Image.asset("assets/gif/success.gif", width: 60,),
                     const Padding(
@@ -240,10 +242,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                nomorSoal = listSoalUjian[i].id;
-                                jawaban = listSoalUjian[i].pilihanA;
+                                data.addAll({"jawaban[${listSoalUjian[i].id}]":'a'});
                               });
-                              print(nomorSoal.toString());
                               _pageController.nextPage(
                                   duration: duration, curve: curve);
                             },
@@ -256,10 +256,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       width: 2.0,
-                                      color:
-                                          jawaban == listSoalUjian[i].pilihanA
-                                              ? kGreen
-                                              : kGrey),
+                                      color: data['jawaban[${listSoalUjian[i].id}]'] == 'a'
+                                          ? kGreen
+                                          : kGrey),
                                   color: kGrey),
                               child: Text(
                                 "A. ${listSoalUjian[i].pilihanA}",
@@ -270,10 +269,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                nomorSoal = listSoalUjian[i].id;
-                                jawaban = listSoalUjian[i].pilihanB;
+                                data.addAll({"jawaban[${listSoalUjian[i].id}]":'b'});
                               });
-                              print(nomorSoal.toString());
                               _pageController.nextPage(
                                   duration: duration, curve: curve);
                             },
@@ -286,10 +283,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       width: 2.0,
-                                      color:
-                                          jawaban == listSoalUjian[i].pilihanB
-                                              ? kGreen
-                                              : kGrey),
+                                      color:data['jawaban[${listSoalUjian[i].id}]'] == 'b'
+                                      ? kGreen
+                                      : kGrey
+                                  ),
                                   color: kGrey),
                               child: Text(
                                 "B. ${listSoalUjian[i].pilihanB}",
@@ -300,10 +297,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                nomorSoal = listSoalUjian[i].id;
-                                jawaban = listSoalUjian[i].pilihanC;
+                                data.addAll({"jawaban[${listSoalUjian[i].id}]":'c'});
                               });
-                              print(nomorSoal.toString());
                               _pageController.nextPage(
                                   duration: duration, curve: curve);
                             },
@@ -316,10 +311,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       width: 2.0,
-                                      color:
-                                          jawaban == listSoalUjian[i].pilihanC
-                                              ? kGreen
-                                              : kGrey),
+                                      color: data['jawaban[${listSoalUjian[i].id}]'] == 'c'
+                                          ? kGreen
+                                          : kGrey),
                                   color: kGrey),
                               child: Text(
                                 "C. ${listSoalUjian[i].pilihanC}",
@@ -330,10 +324,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                nomorSoal = listSoalUjian[i].id;
-                                jawaban = listSoalUjian[i].pilihanD;
+                                data.addAll({"jawaban[${listSoalUjian[i].id}]":'d'});
                               });
-                              print(nomorSoal.toString());
                               _pageController.nextPage(
                                   duration: duration, curve: curve);
                             },
@@ -346,10 +338,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                       width: 2.0,
-                                      color:
-                                          jawaban == listSoalUjian[i].pilihanD
-                                              ? kGreen
-                                              : kGrey),
+                                      color: data['jawaban[${listSoalUjian[i].id}]'] == 'd'
+                                          ? kGreen
+                                          : kGrey),
                                   color: kGrey),
                               child: Text(
                                 "D. ${listSoalUjian[i].pilihanD}",
@@ -364,63 +355,58 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                 ),
                 Positioned.fill(
                     child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 90,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 90,
+                        child: Column(
                           children: [
-                            Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kBlack26),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: IconButton(
-                                    onPressed: () =>
-                                    {
-                                      _pageController.previousPage(
-                                          duration: duration, curve: curve),
-                                    },
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 16,
-                                      ),
-                                    ))),
-                            Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kBlack26),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: IconButton(
-                                    onPressed: () => _pageController.nextPage(
-                                        duration: duration, curve: curve),
-                                    icon: const Padding(
-                                      padding: EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 16,
-                                      ),
-                                    ))),
-                            GestureDetector(
-                              onTap: () async {
-                                var response = await SoalUjianService().createJawabanSoalUjian(
-                                  listSoalUjian[i].elearningId.toString(),
-                                  nomorSoal.toString(),
-                                  jawaban,
-                                ); 
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: kBlack26),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: IconButton(
+                                        onPressed: () =>
+                                        {
+                                          _pageController.previousPage(
+                                              duration: duration, curve: curve),
+                                        },
+                                        icon: Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            Icons.arrow_back_ios,
+                                            size: 16,
+                                          ),
+                                        ))),
+                                Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: kBlack26),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: IconButton(
+                                        onPressed: () => _pageController.nextPage(
+                                            duration: duration, curve: curve),
+                                        icon: const Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 16,
+                                          ),
+                                        ))),
+                                GestureDetector(
+                                  onTap: () async {
+                                    var response = await SoalUjianService().createJawabanSoalUjian(data);
 
-                                if (response != null) {
-                                  setState(() {
-                                    jawabanSoalUjianModel = response.data;
-                                  });
-
+                                    if (response != null) {
+                                      setState(() {
+                                        jawabanSoalUjianModel = response.data;
+                                      });
                                   alertDialogHasilUjian();
                                 } else {
                                   showScaffoldMessage(response);
@@ -438,19 +424,37 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                     "Check",
                                     style: TextStyle(color: kWhite),
                                   ))),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ))
+                      ),
+                    ))
               ],
             );
           }),
     );
   }
-  
+  Widget buildJawabanSoalUjian() {
+    return SizedBox(
+      width: 400,
+      height: 400,
+      child: FutureBuilder<JawabanSoalUjianModel>(
+          future: _future,
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator(),);
+            } else if (snapshot.hasError) {
+              return Center(child: Text("${snapshot.error}"),);
+            } else if (!snapshot.hasData) {
+              return const Center(child: Text("Belum ada data"),);
+            }
+
+            return Text("${snapshot.data?.nilai}");
+          })),
+    );
+  }
   showScaffoldMessage(response) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("$response")));
