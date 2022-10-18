@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/soal_ujian_model.dart';
+import 'package:flutter_zoom_sdk_example/models/jadwal_siswa/jadwal_siswa_model.dart';
 import 'package:flutter_zoom_sdk_example/services/classroom/soal_ujian_service.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,10 +38,9 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   Duration duration = const Duration(milliseconds: 500);
   Curve curve = Curves.ease;
   List listSoalUjian = [];
+  late JawabanSoalUjianModel jawabanSoalUjianModel;
   ResponseJawabanSoalUjianModel? responseJawabanSoalUjian;
-  JawabanSoalUjianModel? jawabanSoalUjianModel;
   late Timer timer;
-  Future<JawabanSoalUjianModel>? _future;
   late Map<String, String> data;
 
   getDataMap() {
@@ -87,12 +87,17 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     });
   }
 
-  getHasilUjian() async {
+  Future<bool> _getHasilUjian() async {
     final response = await SoalUjianService().getDataHasilUjian(widget.id);
-    if (!mounted) return;
-    setState(() {
-      
-    });
+    if(response != null) {
+      setState(() {
+        var data = response['data'];
+        jawabanSoalUjianModel = JawabanSoalUjianModel.fromJson(data);
+      });
+      return true;
+    }else{
+      return false;
+    }
   }
 
   startTimer() {
@@ -122,7 +127,29 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AlertDialog(
-                content: buildHasilUjian(),
+                content: Column(
+                  children: [
+                    Image.asset(
+                      "assets/gif/success.gif",
+                      width: 60,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text(
+                        "Data berhasil disimpan",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 8, bottom: 8),
+                      child: Text(
+                        "Nilai ${jawabanSoalUjianModel.nilai}",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Text("Benar ${jawabanSoalUjianModel.jumlahJawabanBenar}, Salah ${jawabanSoalUjianModel.jumlahJawabanSalah}, Tidak dijawab ${jawabanSoalUjianModel.jumlahTidakDijawab}")
+                  ],
+                ),
                 actions: [
                   TextButton(
                       onPressed: () {
@@ -422,15 +449,20 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                             listSoalUjian[i].id == listSoalUjian.length
                             ? GestureDetector(
                               onTap: () async {
+                                showAlertDialogLoading(context);
                                 var response = await SoalUjianService()
                                     .createJawabanSoalUjian(data);
-
                                 if (response != null) {
-                                  setState(() {
-                                    jawabanSoalUjianModel = response.data;
-                                  });
-                                  alertDialogHasilUjian();
+                                  bool hasilUjian = await _getHasilUjian();
+                                  if(hasilUjian == true){
+                                    Navigator.pop(context);
+                                    alertDialogHasilUjian();
+                                  }else{
+                                    Navigator.pop(context);
+                                    showScaffoldMessage();
+                                  }
                                 } else {
+                                  Navigator.pop(context);
                                   showScaffoldMessage();
                                 }
                                 //alertDialogHasilUjian();
@@ -460,39 +492,6 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     );
   }
 
-  Widget buildHasilUjian() {
-    return FutureBuilder<JawabanSoalUjianModel>(
-        future: _future,
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text("${snapshot.error}"),
-            );
-          }
-
-          return Column(
-            children: [
-              Image.asset(
-                "assets/gif/success.gif",
-                width: 60,
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text(
-                  "Data berhasil disimpan",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
-              ),
-              Text("${snapshot.data?.nilai}")
-            ],
-          );
-        }));
-  }
-
   showScaffoldMessage() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
@@ -508,5 +507,21 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
         ),
       ],
     )));
+  }
+
+  showAlertDialogLoading(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: Row(
+        children: [
+          const CircularProgressIndicator(),
+          Container(margin: const EdgeInsets.only(left: 15), child: const Text("Loading...", style: TextStyle(fontSize: 12),)),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
   }
 }
