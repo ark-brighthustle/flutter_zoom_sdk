@@ -49,7 +49,7 @@ class SoalUjianService {
   }
 
    getDataHasilUjian(int id) async {
-    var url = Uri.parse("$API_V2/elearning/ujian/soal/$id");
+    var url = Uri.parse("$API_V2/elearning/ujian/hasil/$id");
     String? token = await Helpers().getToken();
     final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
     var responseJson = jsonDecode(response.body);
