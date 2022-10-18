@@ -40,10 +40,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: colorCelticBlue, fontFamily: 'Montserrat'
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/classroom': (_) => ClassRoomPage()
-      },
       home: const SplashScreens(),
     );
   }

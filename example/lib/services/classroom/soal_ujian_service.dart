@@ -15,8 +15,6 @@ class SoalUjianService {
     var responseJson = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return responseJson;
-      var data = responseJson['data'];
-      return data.map((p) => SoalUjianModel.fromJson(p)).toList();
     } else {
       throw Exception('Failed to load');
     }
@@ -43,11 +41,22 @@ class SoalUjianService {
           return baseResponse;
         }
       } else {
-        print(message);
         baseResponse;
       }
     } on Exception catch (_) {
       return baseResponse;
+    }
+  }
+
+   getDataHasilUjian(int id) async {
+    var url = Uri.parse("$API_V2/elearning/ujian/soal/$id");
+    String? token = await Helpers().getToken();
+    final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
+    var responseJson = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception('Failed to load');
     }
   }
 }
