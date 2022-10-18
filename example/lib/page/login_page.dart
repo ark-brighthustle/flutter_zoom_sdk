@@ -1,24 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/bottom_navbar.dart';
-import 'package:flutter_zoom_sdk_example/page/live_streaming_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import 'theme/colors.dart';
-import 'theme/padding.dart';
-import 'utils/config.dart';
-import 'utils/constant.dart';
+import '../theme/colors.dart';
+import '../theme/padding.dart';
+import '../utils/config.dart';
+import '../utils/constant.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _nisn = TextEditingController();
@@ -77,7 +76,8 @@ class _LoginState extends State<Login> {
             user['id_kelas'],
             user['kelas'],
             user['jurusan'],
-            user['foto']);
+            user['foto'],
+            true);
 
         saveAuth(
           200,
@@ -98,6 +98,7 @@ class _LoginState extends State<Login> {
         await preferences.setString("kelas", user['kelas']);
         await preferences.setString("jurusan", user['jurusan']);
         await preferences.setString("foto", user['foto']);
+        await preferences.setBool("banner", true);
         Navigator.pop(context);
         Navigator.pushAndRemoveUntil(
           context,
@@ -131,7 +132,9 @@ class _LoginState extends State<Login> {
       int idKelas,
       String kelas,
       String jurusan,
-      String foto) async {
+      String foto,
+      bool banner
+      ) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.setInt("code", kode);
     await preferences.setInt("id_siswa", idSiswa);
@@ -148,6 +151,7 @@ class _LoginState extends State<Login> {
     await preferences.setString("kelas", kelas);
     await preferences.setString("jurusan", jurusan);
     await preferences.setString("foto", foto);
+    await preferences.setBool("banner", banner);
     // ignore: deprecated_member_use
     await preferences.commit();
   }
@@ -176,7 +180,7 @@ class _LoginState extends State<Login> {
                 (route) => false,
               );
             })
-          : const Login();
+          : const LoginPage();
     });
   }
 

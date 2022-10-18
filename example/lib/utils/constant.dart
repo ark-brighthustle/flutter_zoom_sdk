@@ -9,6 +9,7 @@ const String kIdUjian = '3';
 const String textInfoLogin = "Jika NISN dan Password sudah benar namun belum bisa Login segera hubungi OPS/Admin Sekolah";
 const String textSubtitleLogin = "Silahkan masukkan informasi akun anda";
 
+const String titleApp = "Smart School";
 const String titlePageLogin = "Login";
 const String titleAppBarLiveStream = "Live Streaming";
 const String titleAppBarClassRoom = "Classroom";

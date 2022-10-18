@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   String? foto;
   String? token;
   int _currentIndex = 0;
+  bool? banner;
 
   List bannerGubList = [];
   List bannerKompetisiList = [];
@@ -73,6 +74,7 @@ class _HomePageState extends State<HomePage> {
       idIdentitasSekolah = preferences.getInt("idIdentitasSekolah");
       foto = preferences.getString("foto");
       token = preferences.getString("access_token");
+      banner = preferences.getBool("banner");
     });
   }
 
@@ -92,7 +94,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _launchUrl(Uri _url) async {
+  void launchsUrl(Uri _url) async {
     if (!await launchUrl(_url)) throw 'Could not launch $_url';
   }
 
@@ -117,7 +119,12 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(50),
                           color: kCelticBlue),
                       child: IconButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            setState(() {
+                              banner = false;
+                            }); 
+                            Navigator.pop(context);
+                          },
                           icon: const Icon(
                             Icons.close_rounded,
                             color: kWhite,
@@ -139,7 +146,9 @@ class _HomePageState extends State<HomePage> {
     getBannerKompetisiList();
     _futureProfil = fetchProfil();
     _futureUpdate = fetchUpdateApp();
-    //Future.delayed(const Duration(seconds: 1), () => showEventNew());
+    /*if (banner = true) {{
+      Future.delayed(const Duration(seconds: 1), () => showEventNew());
+    }}*/ 
   }
 
   @override
@@ -196,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AccountPage())),
+                                builder: (context) => const AccountPage())),
                         child: Padding(
                           padding: const EdgeInsets.only(right: padding),
                           child: CircleAvatar(
@@ -221,9 +230,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          const SizedBox(
-            height: 8,
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -231,18 +237,24 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: padding),
-                    child: Text("Halo, $nama",
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: kWhite)),
-                  ),
-                  const SizedBox(
-                    height: 4,
+                    padding: const EdgeInsets.only(left: padding, top: 4),
+                    child: Row(
+                      children: [
+                        const Text("Halo",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: kWhite)),
+                        Image.asset("assets/icon/halo.png", width: 24,),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Text("$nama", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kWhite),),
+                        ) 
+                      ],
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: padding),
+                    padding: const EdgeInsets.only(left: padding, top: 4),
                     child: Text(
                       "$kelas",
                       style: const TextStyle(fontSize: 10, color: kWhite),

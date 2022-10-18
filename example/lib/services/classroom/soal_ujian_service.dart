@@ -43,6 +43,7 @@ class SoalUjianService {
           return baseResponse;
         }
       } else {
+        print(message);
         baseResponse;
       }
     } on Exception catch (_) {

@@ -4,7 +4,7 @@ class JawabanSoalUjianModel <T> {
   int? jumlahJawabanBenar;
   int? jumlahJawabanSalah;
   int? jumlahTidakDijawab;
-  double? nilai;
+  int? nilai;
   String? updatedAt;
   String? createdAt;
   int? id;

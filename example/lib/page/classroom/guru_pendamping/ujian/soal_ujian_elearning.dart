@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
@@ -100,6 +102,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   alertDialogHasilUjian() {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (context) {
           return Column(
@@ -107,7 +110,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AlertDialog(
-                  content: buildJawabanSoalUjian()
+                  content: Column(
+                  children: [
+                    Image.asset("assets/gif/success.gif", width: 60,),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text("Data berhasil disimpan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(onPressed: () => Navigator.popAndPushNamed(context, '/classroom'), child: Text("Selesai"))
+                ],
               ),
             ],
           );
@@ -393,24 +407,23 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                       setState(() {
                                         jawabanSoalUjianModel = response.data;
                                       });
-
-                                      alertDialogHasilUjian();
-                                    } else {
-                                      showScaffoldMessage();
-                                    }
-                                    //alertDialogHasilUjian();
-                                  },
-                                  child: Container(
-                                      width: 90,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                          color: kGreen,
-                                          borderRadius: BorderRadius.circular(4)),
-                                      child: const Center(
-                                          child: Text(
-                                            "Check",
-                                            style: TextStyle(color: kWhite),
-                                          ))),
+                                  alertDialogHasilUjian();
+                                } else {
+                                  showScaffoldMessage(response);
+                                }
+                                //alertDialogHasilUjian();
+                              },
+                              child: Container(
+                                  width: 90,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                      color: kGreen,
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: const Center(
+                                      child: Text(
+                                    "Check",
+                                    style: TextStyle(color: kWhite),
+                                  ))),
                                 ),
                               ],
                             ),
@@ -423,7 +436,6 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           }),
     );
   }
-
   Widget buildJawabanSoalUjian() {
     return SizedBox(
       width: 400,
@@ -443,9 +455,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           })),
     );
   }
-
-  showScaffoldMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Maaf, Terjadi Kesalahan, Server Tidak Merespon")));
+  showScaffoldMessage(response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("$response")));
   }
 }
