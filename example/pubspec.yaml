@@ -113,6 +113,8 @@ flutter:
     - assets/icon/coming-soon.png
     - assets/icon/clock.png
     - assets/icon/quiz.png
+    - assets/icon/halo.png
+    - assets/gif/success.gif
     - assets/event/podcast.png
     - assets/event/kompetisi.png
     - assets/event/talkshow.png

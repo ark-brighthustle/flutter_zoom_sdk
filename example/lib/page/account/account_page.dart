@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../login.dart';
+import '../login_page.dart';
 import '../../models/account/profil_model.dart';
 import '../../services/account/profil_services.dart';
 import '../../theme/colors.dart';
@@ -299,7 +299,7 @@ class _AccountPageState extends State<AccountPage> {
       preferences.clear();
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const Login()),
+          MaterialPageRoute(builder: (context) => const LoginPage()),
           (route) => false);
     });
   }

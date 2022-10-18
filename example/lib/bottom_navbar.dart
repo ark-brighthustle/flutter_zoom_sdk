@@ -5,7 +5,7 @@ import 'page/classroom/classroom_page.dart';
 import 'page/delay_streaming/delay_streaming_page.dart';
 import 'page/downloads/download_page.dart';
 import 'page/home_page.dart';
-import 'page/live_streaming_page.dart';
+import 'page/live_streaming/live_streaming_page.dart';
 import 'theme/colors.dart';
 
 class BottomNavbar extends StatefulWidget {
