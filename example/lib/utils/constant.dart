@@ -35,6 +35,9 @@ const String titleTalkshow = "Talkshow";
 const String titleWorkshop = "Workshop/Seminar";
 const String titleFotoProfil = "Foto Profil";
 
+const String textTitleJuaraKompetisi = "Juara Film Pendek";
+const String textTitleNewEvent = "New Event";
+const String textTitleLihatSemua = "Lihat Semua";
 const String textDataPribadi = "Data Pribadi";
 const String textTentang = "Tentang";
 const String textLogOut = "Log out";

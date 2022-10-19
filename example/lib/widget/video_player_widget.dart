@@ -97,7 +97,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return Positioned.fill(
       child: Align(
       alignment: Alignment.center,
-      child: VlcPlayer(controller: _videoPlayerController, aspectRatio: 16/9, placeholder: Center(child: CircularProgressIndicator(),),),
+      child: VlcPlayer(controller: _videoPlayerController, aspectRatio: 16/9, placeholder: Center(child: CircularProgressIndicator(color: kWhite,),),),
     ));
   }
 

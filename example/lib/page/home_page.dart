@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_sdk_example/services/event/event_service.dart';
+import 'package:flutter_zoom_sdk_example/utils/constant.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,6 +59,7 @@ class _HomePageState extends State<HomePage> {
 
   List bannerGubList = [];
   List bannerKompetisiList = [];
+  List juaraKompetisiList = [];
   Future<Profil>? _futureProfil;
   Future<UpdateAppModel>? _futureUpdate;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -94,6 +99,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future getJuaraVideoKompetisi() async {
+    var response = await EventService().getDataJuaraKompetisi();
+    if (!mounted) return;
+    setState(() {
+      juaraKompetisiList = response;
+    });
+  }
+
   void launchsUrl(Uri _url) async {
     if (!await launchUrl(_url)) throw 'Could not launch $_url';
   }
@@ -122,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             setState(() {
                               banner = false;
-                            }); 
+                            });
                             Navigator.pop(context);
                           },
                           icon: const Icon(
@@ -144,30 +157,34 @@ class _HomePageState extends State<HomePage> {
     getSiswa();
     getBannerGubList();
     getBannerKompetisiList();
+    getJuaraVideoKompetisi();
     _futureProfil = fetchProfil();
     _futureUpdate = fetchUpdateApp();
     /*if (banner = true) {{
       Future.delayed(const Duration(seconds: 1), () => showEventNew());
-    }}*/ 
+    }}*/
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     setState(() {
       _futureProfil = fetchProfil();
     });
 
     return Scaffold(
         body: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: size.width,
+            height: size.height,
             child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   buildHeader(),
                   sliderBanner(),
                   gridKategori(),
-                  itemEvent(),
+                  listJuaraKompetisi(size),
+                  itemEvent(size),
                 ],
               ),
             )));
@@ -245,11 +262,20 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: kWhite)),
-                        Image.asset("assets/icon/halo.png", width: 24,),
+                        Image.asset(
+                          "assets/icon/halo.png",
+                          width: 24,
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
-                          child: Text("$nama", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: kWhite),),
-                        ) 
+                          child: Text(
+                            "$nama",
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: kWhite),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -267,6 +293,69 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  Widget titleJuaraKompetisi() {
+    return Row(
+      children: const [
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 0, 16),
+          child: Text(textTitleJuaraKompetisi,
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.bold, color: kBlack)),
+        ),
+      ],
+    );
+  }
+
+  Widget listJuaraKompetisi(size) {
+    return juaraKompetisiList.isEmpty
+        ? Container()
+        : SizedBox(
+            height: size.height / 4.5,
+            child: Column(
+              children: [
+                titleJuaraKompetisi(),
+                Expanded(
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: juaraKompetisiList.length,
+                        itemBuilder: (context, i) {
+                          return GestureDetector(
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(
+                              id: juaraKompetisiList[i].id.toString(), 
+                              fileVideo: juaraKompetisiList[i].video))),
+                            child: Container(
+                              width: 240,
+                              height: 100,
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      imageUrl: juaraKompetisiList[i].thumbnail,
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                                  ),
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.play_circle,
+                                        size: 60,
+                                        color: kBlack.withOpacity(0.5),
+                                      ))
+                                ],
+                              ),
+                            ),
+                          );
+                        })),
+              ],
+            ),
+          );
   }
 
   Widget sliderBanner() {
@@ -655,7 +744,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         const Padding(
           padding: EdgeInsets.fromLTRB(16, 16, 0, 8),
-          child: Text('Terbaru Untukmu',
+          child: Text(textTitleNewEvent,
               style: TextStyle(
                   fontSize: 14, fontWeight: FontWeight.bold, color: kBlack)),
         ),
@@ -667,7 +756,7 @@ class _HomePageState extends State<HomePage> {
                       KompetisiPage(idSiswa: idSiswa.toString()))),
           child: const Padding(
             padding: EdgeInsets.fromLTRB(0, 16, 16, 8),
-            child: Text('Lihat Semua',
+            child: Text(textTitleLihatSemua,
                 style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -678,11 +767,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget itemEvent() {
+  Widget itemEvent(size) {
     return bannerKompetisiList.isEmpty
         ? Container()
         : SizedBox(
-            height: MediaQuery.of(context).size.height / 1.3,
+            height: size.height / 1.3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -690,7 +779,9 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                     child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: bannerKompetisiList.length < 3 ? bannerKompetisiList.length : 3,
+                        itemCount: bannerKompetisiList.length < 3
+                            ? bannerKompetisiList.length
+                            : 3,
                         itemBuilder: (context, i) {
                           return GestureDetector(
                             onTap: () {
