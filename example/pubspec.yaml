@@ -1,7 +1,7 @@
 name: flutter_zoom_sdk_example
 description: Aplikasi Smart School  
 publish_to: 'none'
-version: 1.0.9+10
+version: 1.0.10+11
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
