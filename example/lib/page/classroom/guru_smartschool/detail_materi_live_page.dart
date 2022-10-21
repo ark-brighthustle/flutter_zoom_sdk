@@ -287,6 +287,8 @@ class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
                    urlFileModul: widget.urlFileModul.toString(),
                  )));
        }
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal terhubung keserver")));
     }
   }
 

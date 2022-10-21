@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/classroom/event_click_model.dart';
 import '../../../services/learning_resources/bank_soal_service.dart';
+import '../../../services/learning_resources/learning_resource_service.dart';
 import '../../../theme/colors.dart';
 import '../../../theme/padding.dart';
 import '../../../widget/open_pdf_widget.dart';
@@ -120,12 +121,12 @@ class _BankSoalPageState extends State<BankSoalPage> {
 
   Widget buildListItem() {
     return Expanded(
-      child: RefreshIndicator(
-        onRefresh: onRefresh,
-        color: kCelticBlue,
-        child: isLoading == true
-            ? Center(child: CircularProgressIndicator())
-            : Stack(
+        child: RefreshIndicator(
+            onRefresh: onRefresh,
+            color: kCelticBlue,
+            child: isLoading == true
+                ? Center(child: CircularProgressIndicator())
+                : Stack(
               children: [
                 ListView.builder(
                     itemCount: _bankSoalList.length,
@@ -161,14 +162,9 @@ class _BankSoalPageState extends State<BankSoalPage> {
                                             : Padding(
                                           padding: const EdgeInsets.only(top: 4),
                                           child: TextButton(
-                                              onPressed: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          OpenPdfWidget(
-                                                              urlFilePdf:
-                                                              _bankSoalList[i]
-                                                                  .fileSoal))),
+                                              onPressed: () => eventClick(_bankSoalList[i]
+                                                  .id.toString(),_bankSoalList[i]
+                                                  .fileSoal),
                                               child: const Text("Lihat")),
                                         ),
                                       ],
@@ -207,9 +203,9 @@ class _BankSoalPageState extends State<BankSoalPage> {
                       );
                     }),
                 buildNoData()
-            ],
+              ],
+            )
         )
-      )
     );
   }
 
@@ -285,6 +281,24 @@ class _BankSoalPageState extends State<BankSoalPage> {
                   VideoBankSoalPage(
                       id: idBankSoal,
                       fileVideo:UrlVideo.toString())));*/
+    }
+  }
+
+  Future<void> eventClick(String id, String urlFile) async{
+    late EventClickModel _eventClickModel;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? idSiswa = preferences.getInt('idSiswa').toString();
+    var response = await BankSoalService().eventClick(idSiswa,id);
+    _eventClickModel = response;
+    if(_eventClickModel.code == 200){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OpenPdfWidget(
+                      urlFilePdf:urlFile)));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal terhubung keserver")));
     }
   }
 }
