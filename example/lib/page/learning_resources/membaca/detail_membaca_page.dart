@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_zoom_sdk_example/models/classroom/event_click_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../services/learning_resources/learning_resource_service.dart';
@@ -152,7 +154,7 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8), color: kWhite),
                       child: ListTile(
-                        onTap: () => eventClick(listLearningResource[i].id.toString()),
+                        onTap: () => eventClick(listLearningResource[i].id.toString(),listLearningResource[i].fileUrl),
                             // _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
                         leading: const Padding(
                           padding: EdgeInsets.only(top: 8),
@@ -204,7 +206,16 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
     }
   }
 
-  Future<void> eventClick(String id) async{
-    print(id);
+  Future<void> eventClick(String id, String urlFile) async{
+    late EventClickModel _eventClickModel;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? idSiswa = preferences.getInt('idSiswa').toString();
+    var response = await LearningResourceService().eventClick(idSiswa,id);
+    _eventClickModel = response;
+    if(_eventClickModel.code == 200){
+      _launchUrl(Uri.parse(urlFile));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal terhubung keserver")));
+    }
   }
 }
