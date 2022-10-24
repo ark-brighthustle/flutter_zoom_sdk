@@ -9,6 +9,8 @@ import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/soal_ujian_
 import 'package:flutter_zoom_sdk_example/models/jadwal_siswa/jadwal_siswa_model.dart';
 import 'package:flutter_zoom_sdk_example/services/classroom/soal_ujian_service.dart';
 import 'package:flutter_zoom_sdk_example/widget/open_image.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget_log.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -302,6 +304,34 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                                 ),
                                               );
                                             },
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                  if(listSoalUjian[i].video != null)...[
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: GestureDetector(
+                                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(title: "Vidio soal no. ${listSoalUjian[i].id}",
+                                              fileVideo: listSoalUjian[i].video))),
+                                          child: Container(
+                                            width: 340,
+                                            height: 150,
+                                            color: Colors.grey,
+                                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                                            child: Stack(
+                                              children: [
+                                                Align(
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                      Icons.play_circle,
+                                                      size: 60,
+                                                      color: kBlack.withOpacity(0.5),
+                                                    ))
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
