@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_zoom_sdk_example/page/classroom/guru_pendamping/ujian/hasil_ujian_elearning_page.dart';
 import 'package:flutter_zoom_sdk_example/theme/padding.dart';
 
 import '../../../../services/classroom/elearning_service.dart';
@@ -96,7 +97,12 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                           children: [
                             ListTile(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
+                                listUjianElearning[i].statusWaktu == "Ujian Selesai"
+                                ? Navigator.push(context, MaterialPageRoute(builder: (context) => HasilUjianElearningPage(
+                                  id: listUjianElearning[i].id,
+                                  judul: listUjianElearning[i].judul,
+                                )))
+                                : Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
                                   id: listUjianElearning[i].id,
                                   judul: listUjianElearning[i].judul,
                                   waktuMulai: listUjianElearning[i].waktuMulai,

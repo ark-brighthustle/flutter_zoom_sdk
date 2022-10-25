@@ -20,6 +20,18 @@ class SoalUjianService {
     }
   }
 
+  getDetailHasilUjian(int id) async {
+    var url = Uri.parse("$API_V2/elearning/ujian/detail_hasil/$id");
+    String? token = await Helpers().getToken();
+    final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
+    var responseJson = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return responseJson;
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
+
   createJawabanSoalUjian(Map<String,String> data) async {
     String token = await Helpers().getToken() ?? "";
     var baseResponse;
