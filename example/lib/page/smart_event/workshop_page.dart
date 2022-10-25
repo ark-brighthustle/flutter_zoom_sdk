@@ -14,12 +14,13 @@ class WorkshopPage extends StatefulWidget {
 class _WorkshopPageState extends State<WorkshopPage> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kGrey,
       body: SafeArea(
           child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: size.width,
+        height: size.height,
         child: itemEventWorkshopList(),
       )),
     );
@@ -27,18 +28,25 @@ class _WorkshopPageState extends State<WorkshopPage> {
 
   Widget itemEventWorkshopList() {
     return Column(
-     crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Row(
-          children: [
-            IconButton(
-              padding: const EdgeInsets.only(left: padding),
-              onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back, size: 20,)),
-            const Padding(
-              padding: EdgeInsets.only(left: padding),
-              child: Text(titleWorkshop, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),),
-            ),
-          ],
+        Container(
+          padding: const EdgeInsets.fromLTRB(8, 12, 0, 12),
+          child: Row(
+            children: [
+              IconButton(
+                  padding: const EdgeInsets.only(left: padding, right: padding),
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 20,
+                  )),
+              const Text(
+                titleWorkshop,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       ],
     );
