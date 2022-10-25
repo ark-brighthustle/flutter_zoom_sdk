@@ -63,7 +63,9 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
   @override
   void initState() {
     getSoalUjian();
-    getDetailHasilUjian();
+    if(widget.detailHasilUjian == true) {
+      getDetailHasilUjian();
+    }
     super.initState();
   }
 
