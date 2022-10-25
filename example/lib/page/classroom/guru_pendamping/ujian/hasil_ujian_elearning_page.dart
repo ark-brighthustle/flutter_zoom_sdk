@@ -22,10 +22,12 @@ import '../../../../theme/padding.dart';
 class HasilUjianElearningPage extends StatefulWidget {
   final int id;
   final String judul;
+  final bool detailHasilUjian;
   HasilUjianElearningPage({
     Key? key,
     required this.id,
     required this.judul,
+    required this.detailHasilUjian
   }) : super(key: key);
 
   @override
@@ -194,138 +196,230 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                       ),
                                     )
                                   ],
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                          margin: const EdgeInsets.only(bottom: padding),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color: listSoalUjian[i].jawaban ==
-                                                      'a'
-                                                      ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                  if(widget.detailHasilUjian == true)...[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'a'
+                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
                                                         ? kGreen
                                                         : kRed
-                                                      : listDetailHasilUjian[i].jawaban_benar == 'a'
+                                                        : listDetailHasilUjian[i].jawaban_benar == 'a'
                                                         ? kGreen
                                                         : kGrey),
-                                              color: kGrey),
-                                          child: Text(
-                                            "A. ${listSoalUjian[i].pilihanA}",
-                                            style: const TextStyle(color: kBlack),
+                                                color: kGrey),
+                                            child: Text(
+                                              "A. ${listSoalUjian[i].pilihanA}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                          margin: const EdgeInsets.only(bottom: padding),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color: listSoalUjian[i].jawaban ==
-                                                      'b'
-                                                      ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'b'
+                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
                                                         ? kGreen
                                                         : kRed
-                                                      : listDetailHasilUjian[i].jawaban_benar == 'b'
+                                                        : listDetailHasilUjian[i].jawaban_benar == 'b'
                                                         ? kGreen
                                                         : kGrey),
-                                              color: kGrey),
-                                          child: Text(
-                                            "B. ${listSoalUjian[i].pilihanB}",
-                                            style: const TextStyle(color: kBlack),
+                                                color: kGrey),
+                                            child: Text(
+                                              "B. ${listSoalUjian[i].pilihanB}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                          margin: const EdgeInsets.only(bottom: padding),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color: listSoalUjian[i].jawaban ==
-                                                      'c'
-                                                      ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'c'
+                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
                                                         ? kGreen
                                                         : kRed
-                                                      : listDetailHasilUjian[i].jawaban_benar == 'c'
+                                                        : listDetailHasilUjian[i].jawaban_benar == 'c'
                                                         ? kGreen
                                                         : kGrey),
-                                              color: kGrey),
-                                          child: Text(
-                                            "C. ${listSoalUjian[i].pilihanC}",
-                                            style: const TextStyle(color: kBlack),
+                                                color: kGrey),
+                                            child: Text(
+                                              "C. ${listSoalUjian[i].pilihanC}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                          margin: const EdgeInsets.only(bottom: padding),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color: listSoalUjian[i].jawaban ==
-                                                      'd'
-                                                      ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'd'
+                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
                                                         ? kGreen
                                                         : kRed
-                                                      : listDetailHasilUjian[i].jawaban_benar == 'd'
+                                                        : listDetailHasilUjian[i].jawaban_benar == 'd'
                                                         ? kGreen
                                                         : kGrey),
-                                              color: kGrey),
-                                          child: Text(
-                                            "D. ${listSoalUjian[i].pilihanD}",
-                                            style: const TextStyle(color: kBlack),
+                                                color: kGrey),
+                                            child: Text(
+                                              "D. ${listSoalUjian[i].pilihanD}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: kGrey
+                                      ],
                                     ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(padding),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Penjelasan soal",
-                                            style: const TextStyle(
-                                                fontSize: 14, fontWeight: FontWeight.bold, fontStyle:FontStyle.italic),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8),
+                                            color: kGrey
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(padding),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Penjelasan soal",
+                                                style: const TextStyle(
+                                                    fontSize: 14, fontWeight: FontWeight.bold, fontStyle:FontStyle.italic),
+                                              ),
+                                              SizedBox(
+                                                height: 5.0,
+                                              ),
+                                              Text("${listDetailHasilUjian[i].penjelasan_jawaban}"),
+                                            ],
                                           ),
-                                          SizedBox(
-                                            height: 5.0,
+                                        )
+                                    ),
+                                  ]else...[
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'a'
+                                                        ? kGreen
+                                                        : kGrey),
+                                                color: kGrey),
+                                            child: Text(
+                                              "A. ${listSoalUjian[i].pilihanA}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
                                           ),
-                                          Text("${listDetailHasilUjian[i].penjelasan_jawaban}"),
-                                        ],
-                                      ),
-                                    )
-                                  ),
+                                        ),
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'b'
+                                                        ? kGreen
+                                                        : kGrey),
+                                                color: kGrey),
+                                            child: Text(
+                                              "B. ${listSoalUjian[i].pilihanB}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'c'
+                                                        ? kGreen
+                                                        : kGrey),
+                                                color: kGrey),
+                                            child: Text(
+                                              "C. ${listSoalUjian[i].pilihanC}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 16),
+                                            margin: const EdgeInsets.only(bottom: padding),
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    width: 2.0,
+                                                    color: listSoalUjian[i].jawaban ==
+                                                        'd'
+                                                        ? kGreen
+                                                        : kGrey),
+                                                color: kGrey),
+                                            child: Text(
+                                              "D. ${listSoalUjian[i].pilihanD}",
+                                              style: const TextStyle(color: kBlack),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ]
                                 ],
                               ),
                             ),

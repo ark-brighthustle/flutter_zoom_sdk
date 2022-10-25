@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/page/classroom/guru_pendamping/ujian/hasil_ujian_elearning_page.dart';
 import 'package:flutter_zoom_sdk_example/theme/padding.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../services/classroom/elearning_service.dart';
 import '../../../../theme/colors.dart';
@@ -92,22 +93,35 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                 ListView.builder(
                     itemCount: listUjianElearning.length,
                     itemBuilder: (context, i){
+                      DateTime dateTimeMulai = DateTime.parse(listUjianElearning[i].waktuMulai);
+                      String waktuMulai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeMulai);
+                      DateTime dateTimeSelesai = DateTime.parse(listUjianElearning[i].waktuSelesai);
+                      String waktuSelesai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeSelesai);
                       return SizedBox(
                         child: Column(
                           children: [
                             ListTile(
                               onTap: () {
-                                listUjianElearning[i].statusWaktu == "Ujian Selesai"
-                                ? Navigator.push(context, MaterialPageRoute(builder: (context) => HasilUjianElearningPage(
-                                  id: listUjianElearning[i].id,
-                                  judul: listUjianElearning[i].judul,
-                                )))
-                                : Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
-                                  id: listUjianElearning[i].id,
-                                  judul: listUjianElearning[i].judul,
-                                  waktuMulai: listUjianElearning[i].waktuMulai,
-                                  waktuSelesai: listUjianElearning[i].waktuSelesai,
-                                )));
+                                if(listUjianElearning[i].statusWaktu == "Belum Dimulai"){
+                                  alertDialogisBefore(waktuMulai);
+                                }else if(listUjianElearning[i].statusWaktu == "Sementara Berlangsung"){
+                                   if(listUjianElearning[i].statusKerjakan == true){
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) => HasilUjianElearningPage(
+                                       detailHasilUjian: false,
+                                       id: listUjianElearning[i].id,
+                                       judul: listUjianElearning[i].judul,
+                                     )));
+                                   }else{
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) => SoalUjianElearningPage(
+                                       id: listUjianElearning[i].id,
+                                       judul: listUjianElearning[i].judul,
+                                       waktuMulai: listUjianElearning[i].waktuMulai,
+                                       waktuSelesai: listUjianElearning[i].waktuSelesai,
+                                     )));
+                                   }
+                                }else if(listUjianElearning[i].statusWaktu == "Ujian Selesai"){
+                                  alertDialogisAfter(waktuSelesai, listUjianElearning[i].id, listUjianElearning[i].judul);
+                                }
                                 /*if (_dateTimeNow.isBefore(DateTime.parse(listUjianElearning[i].waktuMulai))) {
                           alertDialogisBefore(listUjianElearning[i].waktuMulai);
                         } else if (_dateTimeNow.isAfter(DateTime.parse(listUjianElearning[i].waktuSelesai))) {
@@ -132,7 +146,7 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                               },
                               leading: Image.asset("assets/icon/quiz.png", width: 40,),
                               title: Text("${listUjianElearning[i].namaMataPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                              subtitle: Text("${listUjianElearning[i].judul}", style: const TextStyle(fontSize: 12),),
+                              subtitle: Text("${waktuMulai} - ${waktuSelesai}\n${listUjianElearning[i].judul}", style: const TextStyle(fontSize: 12),),
                               trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
                             ),
                             const Divider(thickness: 1,)
@@ -171,7 +185,7 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
     }
   }
 
-  alertDialogisBefore(waktuMulai) {
+  alertDialogisBefore(String waktuMulai) {
     showDialog(
         context: context,
         builder: (_) {
@@ -209,7 +223,7 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
         });
   }
 
-  alertDialogisAfter(waktuSelesai) {
+  alertDialogisAfter(String waktuSelesai, int id, String judul) {
     showDialog(
         context: context,
         builder: (_) {
@@ -243,7 +257,14 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
             ),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => {
+                    Navigator.pop(context),
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HasilUjianElearningPage(
+                      detailHasilUjian: true,
+                      id: id,
+                      judul: judul,
+                    )))
+                  },
                   child: const Center(child: Text('OK')))
             ],
           );
