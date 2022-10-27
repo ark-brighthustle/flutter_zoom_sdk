@@ -356,14 +356,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                           margin: const EdgeInsets.only(bottom: padding),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color:
-                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                      'a'
-                                                      ? kGreen
-                                                      : kGrey),
-                                              color: kGrey),
+                                              color: data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                  'a'
+                                                  ? kGreen
+                                                  : kGrey),
                                           child: Text(
                                             "A. ${listSoalUjian[i].pilihanA}",
                                             style: const TextStyle(color: kBlack),
@@ -386,14 +382,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                           margin: const EdgeInsets.only(bottom: padding),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color:
-                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                      'b'
-                                                      ? kGreen
-                                                      : kGrey),
-                                              color: kGrey),
+                                              color: data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                  'b'
+                                                  ? kGreen
+                                                  : kGrey),
                                           child: Text(
                                             "B. ${listSoalUjian[i].pilihanB}",
                                             style: const TextStyle(color: kBlack),
@@ -416,14 +408,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                           margin: const EdgeInsets.only(bottom: padding),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color:
-                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                      'c'
-                                                      ? kGreen
-                                                      : kGrey),
-                                              color: kGrey),
+                                              color: data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                  'c'
+                                                  ? kGreen
+                                                  : kGrey),
                                           child: Text(
                                             "C. ${listSoalUjian[i].pilihanC}",
                                             style: const TextStyle(color: kBlack),
@@ -446,14 +434,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                           margin: const EdgeInsets.only(bottom: padding),
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  width: 2.0,
-                                                  color:
-                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                      'd'
-                                                      ? kGreen
-                                                      : kGrey),
-                                              color: kGrey),
+                                              color: data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                  'd'
+                                                  ? kGreen
+                                                  : kGrey),
                                           child: Text(
                                             "D. ${listSoalUjian[i].pilihanD}",
                                             style: const TextStyle(color: kBlack),

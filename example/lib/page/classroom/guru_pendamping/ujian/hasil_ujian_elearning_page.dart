@@ -124,12 +124,21 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: Text(
-                              "Soal ${listSoalUjian[i].id} / ${listSoalUjian.length}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Soal ${listSoalUjian[i].id} / ${listSoalUjian.length}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                      "Nilai ${listDetailHasilUjian[i].nilai}",
+                                      style: const TextStyle(fontSize: 16)
+                                  )
+                                ],
+                              )
                           ),
                           Expanded(
                             child: SingleChildScrollView(
@@ -210,17 +219,14 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                             margin: const EdgeInsets.only(bottom: padding),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    width: 2.0,
-                                                    color: listSoalUjian[i].jawaban ==
-                                                        'a'
-                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
-                                                        ? kGreen
-                                                        : kRed
-                                                        : listDetailHasilUjian[i].jawaban_benar == 'a'
-                                                        ? kGreen
-                                                        : kGrey),
-                                                color: kGrey),
+                                                color: listSoalUjian[i].jawaban ==
+                                                    'a'
+                                                    ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                                    ? kGreen
+                                                    : kRed
+                                                    : listDetailHasilUjian[i].jawaban_benar == 'a'
+                                                    ? kGreen
+                                                    : kGrey),
                                             child: Text(
                                               "A. ${listSoalUjian[i].pilihanA}",
                                               style: const TextStyle(color: kBlack),
@@ -235,17 +241,14 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                             margin: const EdgeInsets.only(bottom: padding),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    width: 2.0,
-                                                    color: listSoalUjian[i].jawaban ==
-                                                        'b'
-                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
-                                                        ? kGreen
-                                                        : kRed
-                                                        : listDetailHasilUjian[i].jawaban_benar == 'b'
-                                                        ? kGreen
-                                                        : kGrey),
-                                                color: kGrey),
+                                                color: listSoalUjian[i].jawaban ==
+                                                    'b'
+                                                    ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                                    ? kGreen
+                                                    : kRed
+                                                    : listDetailHasilUjian[i].jawaban_benar == 'b'
+                                                    ? kGreen
+                                                    : kGrey),
                                             child: Text(
                                               "B. ${listSoalUjian[i].pilihanB}",
                                               style: const TextStyle(color: kBlack),
@@ -260,17 +263,14 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                             margin: const EdgeInsets.only(bottom: padding),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    width: 2.0,
-                                                    color: listSoalUjian[i].jawaban ==
-                                                        'c'
-                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
-                                                        ? kGreen
-                                                        : kRed
-                                                        : listDetailHasilUjian[i].jawaban_benar == 'c'
-                                                        ? kGreen
-                                                        : kGrey),
-                                                color: kGrey),
+                                                color: listSoalUjian[i].jawaban ==
+                                                    'c'
+                                                    ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                                    ? kGreen
+                                                    : kRed
+                                                    : listDetailHasilUjian[i].jawaban_benar == 'c'
+                                                    ? kGreen
+                                                    : kGrey),
                                             child: Text(
                                               "C. ${listSoalUjian[i].pilihanC}",
                                               style: const TextStyle(color: kBlack),
@@ -285,17 +285,14 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                             margin: const EdgeInsets.only(bottom: padding),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(8),
-                                                border: Border.all(
-                                                    width: 2.0,
-                                                    color: listSoalUjian[i].jawaban ==
-                                                        'd'
-                                                        ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
-                                                        ? kGreen
-                                                        : kRed
-                                                        : listDetailHasilUjian[i].jawaban_benar == 'd'
-                                                        ? kGreen
-                                                        : kGrey),
-                                                color: kGrey),
+                                                color: listSoalUjian[i].jawaban ==
+                                                    'd'
+                                                    ? listSoalUjian[i].jawaban == listDetailHasilUjian[i].jawaban_benar
+                                                    ? kGreen
+                                                    : kRed
+                                                    : listDetailHasilUjian[i].jawaban_benar == 'd'
+                                                    ? kGreen
+                                                    : kGrey),
                                             child: Text(
                                               "D. ${listSoalUjian[i].pilihanD}",
                                               style: const TextStyle(color: kBlack),
@@ -310,7 +307,7 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                     Container(
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
+                                            // borderRadius: BorderRadius.circular(8),
                                             color: kGrey
                                         ),
                                         child: Padding(
@@ -323,10 +320,37 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                                 style: const TextStyle(
                                                     fontSize: 14, fontWeight: FontWeight.bold, fontStyle:FontStyle.italic),
                                               ),
-                                              SizedBox(
-                                                height: 5.0,
-                                              ),
-                                              Text("${listDetailHasilUjian[i].penjelasan_jawaban}"),
+                                              if(listDetailHasilUjian[i].penjelasan_jawaban != null)...[
+                                                SizedBox(
+                                                  height: 5.0,
+                                                ),
+                                                Text("${listDetailHasilUjian[i].penjelasan_jawaban}", style: const TextStyle(
+                                                    fontSize: 13),),
+                                              ],
+                                              if(listDetailHasilUjian[i].penjelasan_jawaban != null)...[
+                                                SizedBox(
+                                                  height: 5.0,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => OpenImagePage(title: "Gambar penjelasan soal no. ${listSoalUjian[i].id}", img: listDetailHasilUjian[i].gambar_penjelasan_jawaban))),
+                                                  child: Image.network(
+                                                    listDetailHasilUjian[i].gambar_penjelasan_jawaban,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        alignment: Alignment.center,
+                                                        child: const Text(
+                                                          "Gagal Memuat Gambar!",
+                                                          style: TextStyle(fontSize: 12),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ]
                                             ],
                                           ),
                                         )
