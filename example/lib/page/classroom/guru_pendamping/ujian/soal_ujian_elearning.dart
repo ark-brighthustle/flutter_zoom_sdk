@@ -8,6 +8,9 @@ import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_ja
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/jadwal_siswa/jadwal_siswa_model.dart';
 import 'package:flutter_zoom_sdk_example/services/classroom/soal_ujian_service.dart';
+import 'package:flutter_zoom_sdk_example/widget/open_image.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget_log.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -248,244 +251,310 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: listSoalUjian.length,
           itemBuilder: (context, i) {
-            return Stack(
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8, horizontal: padding),
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 24),
-                        child: Text(
-                          "Soal ${listSoalUjian[i].id} / ${listSoalUjian.length}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          "${listSoalUjian[i].soal}",
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                      Column(
+                Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: padding),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                data.addAll(
-                                    {"jawaban[${listSoalUjian[i].id}]": 'a'});
-                              });
-                              _pageController.nextPage(
-                                  duration: duration, curve: curve);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              margin: const EdgeInsets.only(bottom: padding),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 2.0,
-                                      color:
-                                          data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                  'a'
-                                              ? kGreen
-                                              : kGrey),
-                                  color: kGrey),
-                              child: Text(
-                                "A. ${listSoalUjian[i].pilihanA}",
-                                style: const TextStyle(color: kBlack),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Text(
+                              "Soal ${listSoalUjian[i].id} / ${listSoalUjian.length}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                data.addAll(
-                                    {"jawaban[${listSoalUjian[i].id}]": 'b'});
-                              });
-                              _pageController.nextPage(
-                                  duration: duration, curve: curve);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              margin: const EdgeInsets.only(bottom: padding),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 2.0,
-                                      color:
-                                          data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                  'b'
-                                              ? kGreen
-                                              : kGrey),
-                                  color: kGrey),
-                              child: Text(
-                                "B. ${listSoalUjian[i].pilihanB}",
-                                style: const TextStyle(color: kBlack),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                data.addAll(
-                                    {"jawaban[${listSoalUjian[i].id}]": 'c'});
-                              });
-                              _pageController.nextPage(
-                                  duration: duration, curve: curve);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              margin: const EdgeInsets.only(bottom: padding),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 2.0,
-                                      color:
-                                          data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                  'c'
-                                              ? kGreen
-                                              : kGrey),
-                                  color: kGrey),
-                              child: Text(
-                                "C. ${listSoalUjian[i].pilihanC}",
-                                style: const TextStyle(color: kBlack),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                data.addAll(
-                                    {"jawaban[${listSoalUjian[i].id}]": 'd'});
-                              });
-                              _pageController.nextPage(
-                                  duration: duration, curve: curve);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              margin: const EdgeInsets.only(bottom: padding),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      width: 2.0,
-                                      color:
-                                          data['jawaban[${listSoalUjian[i].id}]'] ==
-                                                  'd'
-                                              ? kGreen
-                                              : kGrey),
-                                  color: kGrey),
-                              child: Text(
-                                "D. ${listSoalUjian[i].pilihanD}",
-                                style: const TextStyle(color: kBlack),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: Text(
+                                      "${listSoalUjian[i].soal}",
+                                      style: const TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  if(listSoalUjian[i].image != null)...[
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: GestureDetector(
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => OpenImagePage(title: "Gambar soal no. ${listSoalUjian[i].id}", img: listSoalUjian[i].image))),
+                                          child: Image.network(
+                                            listSoalUjian[i].image,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Container(
+                                                alignment: Alignment.center,
+                                                child: const Text(
+                                                  "Gagal Memuat Gambar!",
+                                                  style: TextStyle(fontSize: 12),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                  if(listSoalUjian[i].video != null)...[
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: GestureDetector(
+                                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(title: "Vidio soal no. ${listSoalUjian[i].id}",
+                                              fileVideo: listSoalUjian[i].video))),
+                                          child: Container(
+                                            width: 340,
+                                            height: 150,
+                                            color: Colors.grey,
+                                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                                            child: Stack(
+                                              children: [
+                                                Align(
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                      Icons.play_circle,
+                                                      size: 60,
+                                                      color: kBlack.withOpacity(0.5),
+                                                    ))
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            data.addAll(
+                                                {"jawaban[${listSoalUjian[i].id}]": 'a'});
+                                          });
+                                          _pageController.nextPage(
+                                              duration: duration, curve: curve);
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 16),
+                                          margin: const EdgeInsets.only(bottom: padding),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  width: 2.0,
+                                                  color:
+                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                      'a'
+                                                      ? kGreen
+                                                      : kGrey),
+                                              color: kGrey),
+                                          child: Text(
+                                            "A. ${listSoalUjian[i].pilihanA}",
+                                            style: const TextStyle(color: kBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            data.addAll(
+                                                {"jawaban[${listSoalUjian[i].id}]": 'b'});
+                                          });
+                                          _pageController.nextPage(
+                                              duration: duration, curve: curve);
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 16),
+                                          margin: const EdgeInsets.only(bottom: padding),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  width: 2.0,
+                                                  color:
+                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                      'b'
+                                                      ? kGreen
+                                                      : kGrey),
+                                              color: kGrey),
+                                          child: Text(
+                                            "B. ${listSoalUjian[i].pilihanB}",
+                                            style: const TextStyle(color: kBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            data.addAll(
+                                                {"jawaban[${listSoalUjian[i].id}]": 'c'});
+                                          });
+                                          _pageController.nextPage(
+                                              duration: duration, curve: curve);
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 16),
+                                          margin: const EdgeInsets.only(bottom: padding),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  width: 2.0,
+                                                  color:
+                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                      'c'
+                                                      ? kGreen
+                                                      : kGrey),
+                                              color: kGrey),
+                                          child: Text(
+                                            "C. ${listSoalUjian[i].pilihanC}",
+                                            style: const TextStyle(color: kBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            data.addAll(
+                                                {"jawaban[${listSoalUjian[i].id}]": 'd'});
+                                          });
+                                          _pageController.nextPage(
+                                              duration: duration, curve: curve);
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 16),
+                                          margin: const EdgeInsets.only(bottom: padding),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  width: 2.0,
+                                                  color:
+                                                  data['jawaban[${listSoalUjian[i].id}]'] ==
+                                                      'd'
+                                                      ? kGreen
+                                                      : kGrey),
+                                              color: kGrey),
+                                          child: Text(
+                                            "D. ${listSoalUjian[i].pilihanD}",
+                                            style: const TextStyle(color: kBlack),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ],
-                      ),
-                    ],
+                      )
                   ),
                 ),
                 Positioned.fill(
                     child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 90,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 40,
+                        child: Column(
                           children: [
-                            Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kBlack26),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: IconButton(
-                                    onPressed: () => {
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: kBlack26),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: IconButton(
+                                        onPressed: () => {
                                           _pageController.previousPage(
                                               duration: duration, curve: curve),
                                         },
-                                    icon: Padding(
-                                      padding: EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 16,
-                                      ),
-                                    ))),
-                            Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kBlack26),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: IconButton(
-                                    onPressed: () => _pageController.nextPage(
-                                        duration: duration, curve: curve),
-                                    icon: const Padding(
-                                      padding: EdgeInsets.only(left: 4),
-                                      child: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 16,
-                                      ),
-                                    ))),
-                            listSoalUjian[i].id == listSoalUjian.length
-                            ? GestureDetector(
-                              onTap: () async {
-                                showAlertDialogLoading(context);
-                                var response = await SoalUjianService()
-                                    .createJawabanSoalUjian(data);
-                                if (response != null) {
-                                  bool hasilUjian = await _getHasilUjian();
-                                  if(hasilUjian == true){
-                                    Navigator.pop(context);
-                                    alertDialogHasilUjian();
-                                  }else{
-                                    Navigator.pop(context);
-                                    showScaffoldMessage();
-                                  }
-                                } else {
-                                  Navigator.pop(context);
-                                  showScaffoldMessage();
-                                }
-                                //alertDialogHasilUjian();
-                              },
-                              child: Container(
-                                  width: 90,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                      color: kGreen,
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: const Center(
-                                      child: Text(
-                                    "Selesai",
-                                    style: TextStyle(color: kWhite),
-                                  ))),
-                            )
-                            : Container()
+                                        icon: Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            Icons.arrow_back_ios,
+                                            size: 16,
+                                          ),
+                                        ))),
+                                Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: kBlack26),
+                                        borderRadius: BorderRadius.circular(4)),
+                                    child: IconButton(
+                                        onPressed: () => _pageController.nextPage(
+                                            duration: duration, curve: curve),
+                                        icon: const Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 16,
+                                          ),
+                                        ))),
+                                if(listSoalUjian[i].id == listSoalUjian.length)...[
+                                  GestureDetector(
+                                    onTap: () async {
+                                      showAlertDialogLoading(context);
+                                      var response = await SoalUjianService()
+                                          .createJawabanSoalUjian(data);
+                                      if (response != null) {
+                                        bool hasilUjian = await _getHasilUjian();
+                                        if(hasilUjian == true){
+                                          Navigator.pop(context);
+                                          alertDialogHasilUjian();
+                                        }else{
+                                          Navigator.pop(context);
+                                          showScaffoldMessage();
+                                        }
+                                      } else {
+                                        Navigator.pop(context);
+                                        showScaffoldMessage();
+                                      }
+                                      //alertDialogHasilUjian();
+                                    },
+                                    child: Container(
+                                        width: 90,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                            color: kGreen,
+                                            borderRadius: BorderRadius.circular(4)),
+                                        child: const Center(
+                                            child: Text(
+                                              "Selesai",
+                                              style: TextStyle(color: kWhite),
+                                            ))),
+                                  )
+                                ]
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ))
+                      ),
+                    ))
               ],
             );
           }),
@@ -495,18 +564,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   showScaffoldMessage() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
-      children: const [
-        Icon(
-          Icons.info,
-          size: 20,
-          color: kWhite,
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Text("Gagal Mengirim Data"),
-        ),
-      ],
-    )));
+          children: const [
+            Icon(
+              Icons.info,
+              size: 20,
+              color: kWhite,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Text("Gagal Mengirim Data"),
+            ),
+          ],
+        )));
   }
 
   showAlertDialogLoading(BuildContext context){

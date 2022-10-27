@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/theme/colors.dart';
 import 'package:flutter_zoom_sdk_example/theme/padding.dart';
 
@@ -30,12 +31,16 @@ class ElearningPage extends StatefulWidget {
 
 class _ElearningPageState extends State<ElearningPage> {
   List listElearning = [];
-
+  bool isLoading = true;
   Future getCategoryElearning() async {
+    setState((){
+      isLoading = true;
+    });
     var response = await CategoryElearningService().getDataCategoryElearning();
     if (!mounted) return;
     setState(() {
       listElearning = response;
+      isLoading = false;
     });
   }
 
@@ -43,6 +48,10 @@ class _ElearningPageState extends State<ElearningPage> {
   void initState() {
     getCategoryElearning();
     super.initState();
+  }
+
+  Future onRefresh() async{
+    await getCategoryElearning();
   }
 
   @override
@@ -128,60 +137,95 @@ class _ElearningPageState extends State<ElearningPage> {
 
   Widget buildItemElearning() {
     return Expanded(
-        child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-      child: GridView.builder(
-          itemCount: listElearning.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: 2.5, crossAxisCount: 1, mainAxisSpacing: 12),
-          itemBuilder: (context, i) {
-            String idLink = listElearning[i].image.substring(32, 65);
-            return GestureDetector(
-              onTap: () {
-                if (listElearning[i].id == 1) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BahanElearningPage(
-                              id: listElearning[i].id,
-                              namaKategori: listElearning[i].namaKategori)));
-                } else if (listElearning[i].id == 2) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TugasElearningPage(
-                              id: listElearning[i].id,
-                              namaKategori: listElearning[i].namaKategori)));
-                } else if (listElearning[i].id == 3) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UjianElearningPage(
-                              kodeJadwal: widget.kodeJadwal,
-                              id: listElearning[i].id,
-                              namaKategori: listElearning[i].namaKategori)));
-                }
-              },
-              child: SizedBox(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    "https://drive.google.com/uc?export=download&id=$idLink",
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Gagal Memuat Gambar!",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      );
-                    },
-                  ),
+        child: RefreshIndicator(
+            onRefresh: onRefresh,
+            color: kCelticBlue,
+            child: isLoading == true
+                ? Center(child: CircularProgressIndicator())
+                : Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  child: GridView.builder(
+                      itemCount: listElearning.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 2.5, crossAxisCount: 1, mainAxisSpacing: 12),
+                      itemBuilder: (context, i) {
+                        String idLink = listElearning[i].image.substring(32, 65);
+                        return GestureDetector(
+                          onTap: () {
+                            if (listElearning[i].id == 1) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BahanElearningPage(
+                                          id: listElearning[i].id,
+                                          namaKategori: listElearning[i].namaKategori)));
+                            } else if (listElearning[i].id == 2) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TugasElearningPage(
+                                          id: listElearning[i].id,
+                                          namaKategori: listElearning[i].namaKategori)));
+                            } else if (listElearning[i].id == 3) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UjianElearningPage(
+                                          kodeJadwal: widget.kodeJadwal,
+                                          id: listElearning[i].id,
+                                          namaKategori: listElearning[i].namaKategori)));
+                            }
+                          },
+                          child: SizedBox(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                "https://drive.google.com/uc?export=download&id=$idLink",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "Gagal Memuat Gambar!",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
+                buildNoData()
+              ],
+            )
+        )
+    );
+  }
+
+  Widget buildNoData() {
+    if (listElearning.length == 0) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_data.svg',
+                width: 90,
               ),
-            );
-          }),
-    ));
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Belum Ada data",
+                style: TextStyle(fontSize: 12),
+              )
+            ]),
+      );
+    }else{
+      return Container();
+    }
   }
 }

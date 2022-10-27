@@ -4,16 +4,16 @@ import 'package:flutter_zoom_sdk_example/theme/colors.dart';
 import 'package:flutter_zoom_sdk_example/theme/padding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class VideoPlayerWidget extends StatefulWidget {
-  String? title;
+class VideoPlayerLogWidget extends StatefulWidget {
+  String? id;
   String? fileVideo;
-  VideoPlayerWidget({Key? key, required this.title, required this.fileVideo}) : super(key: key);
+  VideoPlayerLogWidget({Key? key, required this.id, required this.fileVideo}) : super(key: key);
 
   @override
-  State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+  State<VideoPlayerLogWidget> createState() => _VideoPlayerLogWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class _VideoPlayerLogWidgetState extends State<VideoPlayerLogWidget> {
   late VlcPlayerController _videoPlayerController;
   late Stopwatch _stopwatch;
   bool _isPlaying = true;
@@ -40,11 +40,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       _stopwatch.stop();
       print("Buffering");
     }
-    // if(formatTime(_stopwatch.elapsedMilliseconds) != "00:00:00") {
-    //   SharedPreferences preferences = await SharedPreferences.getInstance();
-    //   preferences.setString("id_video_class_room_guruss", widget.id.toString());
-    //   preferences.setString("durasi_video_class_room_guruss", formatTime(_stopwatch.elapsedMilliseconds));
-    // }
+    if(formatTime(_stopwatch.elapsedMilliseconds) != "00:00:00") {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString("id_video_class_room_guruss", widget.id.toString());
+      preferences.setString("durasi_video_class_room_guruss", formatTime(_stopwatch.elapsedMilliseconds));
+    }
   }
 
   String formatTime(int milliseconds) {
@@ -90,12 +90,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Widget buildIconBack() {
-    return Row(
-      children: [
-        IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: kWhite,)),
-        Text(widget.title!, style: TextStyle(color: kWhite,fontSize: 18),),
-      ],
-    );
+    return IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back, color: kWhite,));
   }
 
   Widget buildVideo() {

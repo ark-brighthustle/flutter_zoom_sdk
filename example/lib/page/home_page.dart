@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/services/event/event_service.dart';
 import 'package:flutter_zoom_sdk_example/utils/constant.dart';
 import 'package:flutter_zoom_sdk_example/widget/video_player_widget.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -322,13 +323,8 @@ class _HomePageState extends State<HomePage> {
                         itemCount: juaraKompetisiList.length,
                         itemBuilder: (context, i) {
                           return GestureDetector(
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => VideoPlayerWidget(
-                                        id: juaraKompetisiList[i].id.toString(),
-                                        fileVideo:
-                                            juaraKompetisiList[i].video))),
+                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(title: juaraKompetisiList[i].title,
+                                                          fileVideo: juaraKompetisiList[i].video))),
                             child: Container(
                               width: 240,
                               height: 100,

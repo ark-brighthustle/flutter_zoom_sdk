@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:flutter_zoom_sdk_example/widget/video_player_widget.dart';
+import 'package:flutter_zoom_sdk_example/widget/video_player_widget_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/classroom/event_click_model.dart';
@@ -309,7 +309,7 @@ class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      VideoPlayerWidget(id: widget.id.toString(), fileVideo: widget.urlVideoBahan)));
+                      VideoPlayerLogWidget(id: widget.id.toString(), fileVideo: widget.urlVideoBahan)));
         }else{
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
         }
@@ -321,7 +321,7 @@ class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    VideoPlayerWidget(id: widget.id.toString(),fileVideo: widget.urlVideoBahan)));
+                    VideoPlayerLogWidget(id: widget.id.toString(),fileVideo: widget.urlVideoBahan)));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
       }
@@ -330,7 +330,7 @@ class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  VideoPlayerWidget(id: widget.id.toString(),fileVideo: widget.urlVideoBahan)));
+                  VideoPlayerLogWidget(id: widget.id.toString(),fileVideo: widget.urlVideoBahan)));
     }
   }
 

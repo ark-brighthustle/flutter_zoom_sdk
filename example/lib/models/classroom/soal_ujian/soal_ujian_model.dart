@@ -10,9 +10,7 @@ class SoalUjianModel {
   String? pilihanB;
   String? pilihanC;
   String? pilihanD;
-  String? pilihanE;
-  String? createdAt;
-  String? updatedAt;
+  String? jawaban;
 
   SoalUjianModel({
     required this.id,
@@ -26,9 +24,7 @@ class SoalUjianModel {
     required this.pilihanB,
     required this.pilihanC,
     required this.pilihanD,
-    required this.pilihanE,
-    required this.createdAt,
-    required this.updatedAt
+    required this.jawaban,
   });
 
   factory SoalUjianModel.fromJson(Map<String, dynamic> json) {
@@ -44,8 +40,6 @@ class SoalUjianModel {
       pilihanB: json['pilihan_b'], 
       pilihanC: json['pilihan_c'], 
       pilihanD: json['pilihan_d'], 
-      pilihanE: json['pilihan_e'], 
-      createdAt: json['created_at'], 
-      updatedAt: json['updated_at']);
+      jawaban: json['jawaban']);
   }
 }

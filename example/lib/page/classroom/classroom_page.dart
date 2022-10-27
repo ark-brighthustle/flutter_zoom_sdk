@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/page/classroom/guru_pendamping/elearning_page.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,10 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
   List listElearning = [];
   List listMapel = [];
   List listJadwalSiswa = [];
+
+  bool isLoadingguruss = true;
+  bool isLoadinggurupendamping = true;
+
   late final TabController _tabController = TabController(length: 2, vsync: this);
 
   getToken() async {
@@ -41,27 +46,35 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
   }
 
    Future getDataMapel() async {
+    setState((){
+      isLoadingguruss = true;
+    });
     var response = await MapelService().getDataMapel();
     if (!mounted) return;
     setState(() {
       listMapel = response;
+      isLoadingguruss = false;
     });
   }
 
   Future getJadwalSiswa() async {
+    setState((){
+      isLoadinggurupendamping = true;
+    });
     var response = await JadwalSiswaService().getDataJadwalSiswa();
     if (!mounted) return;
     setState(() {
       listJadwalSiswa = response;
+      isLoadinggurupendamping = false;
     });
   }
 
   Future refreshGuruSmartSchool() async {
-    await MapelService().getDataMapel();
+    await getDataMapel();
   }
 
   Future refreshGuruPendamping() async {
-    await JadwalSiswaService().getDataJadwalSiswa();
+    await getJadwalSiswa();
   }
 
   getLogActivity() async {
@@ -177,310 +190,351 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
   }
 
   Widget guruSmartSchool() {
-    return RefreshIndicator(
-      onRefresh: refreshGuruSmartSchool,
-      color: kCelticBlue,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ListView.builder(
-          itemCount: listMapel.length,
-          itemBuilder: (context, i){
-          return Column(
-            children: [
-              ListTile(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MateriLivePage(
-                  id: listMapel[i].id,
-                  kodeTingkat: listMapel[i].kodeTingkat,
-                  namaMataPelajaran: listMapel[i].namaPelajaran 
-                ))),
-                leading: Image.asset("assets/icon/book.png", width: 24,),
-                title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
-              ),
-              const Divider(thickness: 1,)
-            ],
-          );
-        }),
-      ),
+    return Expanded(
+        child: RefreshIndicator(
+            onRefresh: refreshGuruSmartSchool,
+            color: kCelticBlue,
+            child: isLoadingguruss == true
+                ? Center(child: CircularProgressIndicator())
+                : Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Stack(
+                  children: [
+                    ListView.builder(
+                        itemCount: listMapel.length,
+                        itemBuilder: (context, i){
+                          return Column(
+                            children: [
+                              ListTile(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MateriLivePage(
+                                    id: listMapel[i].id,
+                                    kodeTingkat: listMapel[i].kodeTingkat,
+                                    namaMataPelajaran: listMapel[i].namaPelajaran
+                                ))),
+                                leading: Image.asset("assets/icon/book.png", width: 24,),
+                                title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                                trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
+                              ),
+                              const Divider(thickness: 1,)
+                            ],
+                          );
+                        }),
+                    buildNoData()
+                  ],
+                )
+            )
+        )
     );
   }
 
   Widget guruPendamping() { 
-    return RefreshIndicator(
-      onRefresh: refreshGuruPendamping,
-      color: kCelticBlue,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: ListView.builder(
-              itemCount: listJadwalSiswa.length,
-              itemBuilder: (context, i) {
-                String jamMulai = listJadwalSiswa[i].jamMulai.substring(0, 5);
-                String jamSelesai = listJadwalSiswa[i].jamSelesai.substring(0, 5);
+    return Expanded(
+        child: RefreshIndicator(
+            onRefresh: refreshGuruPendamping,
+            color: kCelticBlue,
+            child: isLoadinggurupendamping == true
+                ? Center(child: CircularProgressIndicator())
+                : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: Stack(
+                    children: [
+                      ListView.builder(
+                          itemCount: listJadwalSiswa.length,
+                          itemBuilder: (context, i) {
+                            String jamMulai = listJadwalSiswa[i].jamMulai.substring(0, 5);
+                            String jamSelesai = listJadwalSiswa[i].jamSelesai.substring(0, 5);
 
-                if (listJadwalSiswa[i].hari == "Senin") {
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
-                      kodeJadwal: listJadwalSiswa[i].kodejdwl, 
-                      hari: listJadwalSiswa[i].hari,
-                      jamKe: listJadwalSiswa[i].jamKe,
-                      mapel: listJadwalSiswa[i].namaMataPelajaran,
-                      jamMulai: jamMulai,
-                      jamSelesai: jamSelesai))),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kGreen.withOpacity(0.3)
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              "${listJadwalSiswa[i].hari}",
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),
-                            ),
-                          ),
-                         Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12,),),
-                          const Divider(thickness: 1,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "${listJadwalSiswa[i].namaMataPelajaran}",
-                                  style:
-                                      const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,), 
-                                      textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                "$jamMulai - $jamSelesai WITA",
-                                style:
-                                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500,),
-                              ),
-                              
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (listJadwalSiswa[i].hari == "Selasa") {
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
-                      kodeJadwal: listJadwalSiswa[i].kodejdwl, 
-                      hari: listJadwalSiswa[i].hari,
-                      jamKe: listJadwalSiswa[i].jamKe,
-                      mapel: listJadwalSiswa[i].namaMataPelajaran,
-                      jamMulai: jamMulai,
-                      jamSelesai: jamSelesai))),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kRed.withOpacity(0.3)
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              "${listJadwalSiswa[i].hari}",
-                              style: const TextStyle( fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                         Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
-                          const Divider(thickness: 1,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "${listJadwalSiswa[i].namaMataPelajaran}",
-                                  style:
-                                      const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                "$jamMulai - $jamSelesai WITA",
-                                style:
-                                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                              
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (listJadwalSiswa[i].hari == "Rabu") {
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
-                      kodeJadwal: listJadwalSiswa[i].kodejdwl, 
-                      hari: listJadwalSiswa[i].hari,
-                      jamKe: listJadwalSiswa[i].jamKe,
-                      mapel: listJadwalSiswa[i].namaMataPelajaran,
-                      jamMulai: jamMulai,
-                      jamSelesai: jamSelesai))),
-                    child: Container(
-                       padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kYellow.withOpacity(0.3)
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              "${listJadwalSiswa[i].hari}",
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
-                          const Divider(thickness: 1,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                               Flexible(
-                                child: Text(
-                                  "${listJadwalSiswa[i].namaMataPelajaran}",
-                                  style:
-                                      const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                "$jamMulai - $jamSelesai WITA",
-                                style:
-                                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                             
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (listJadwalSiswa[i].hari == "Kamis") {
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
-                      kodeJadwal: listJadwalSiswa[i].kodejdwl, 
-                      hari: listJadwalSiswa[i].hari,
-                      jamKe: listJadwalSiswa[i].jamKe,
-                      mapel: listJadwalSiswa[i].namaMataPelajaran,
-                      jamMulai: jamMulai,
-                      jamSelesai: jamSelesai))),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kCelticBlue.withOpacity(0.3)
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              "${listJadwalSiswa[i].hari}",
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
-                          const Divider(thickness: 1,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "${listJadwalSiswa[i].namaMataPelajaran}",
-                                  style:
-                                      const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                "$jamMulai - $jamSelesai WITA",
-                                style:
-                                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                              
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (listJadwalSiswa[i].hari == "Jumat") {
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
-                      kodeJadwal: listJadwalSiswa[i].kodejdwl, 
-                      hari: listJadwalSiswa[i].hari,
-                      jamKe: listJadwalSiswa[i].jamKe,
-                      mapel: listJadwalSiswa[i].namaMataPelajaran,
-                      jamMulai: jamMulai,
-                      jamSelesai: jamSelesai))),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: kOrange.withOpacity(0.3)
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              "${listJadwalSiswa[i].hari}",
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                         Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
-                          const Divider(thickness: 1,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "${listJadwalSiswa[i].namaMataPelajaran}",
-                                  style:
-                                      const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.start,
-                                ),
-                              ),
-                              Text(
-                                "$jamMulai - $jamSelesai WITA",
-                                style:
-                                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                              ),
-                              
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
+                            if (listJadwalSiswa[i].hari == "Senin") {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
+                                    kodeJadwal: listJadwalSiswa[i].kodejdwl,
+                                    hari: listJadwalSiswa[i].hari,
+                                    jamKe: listJadwalSiswa[i].jamKe,
+                                    mapel: listJadwalSiswa[i].namaMataPelajaran,
+                                    jamMulai: jamMulai,
+                                    jamSelesai: jamSelesai))),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kGreen.withOpacity(0.3)
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "${listJadwalSiswa[i].hari}",
+                                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),
+                                        ),
+                                      ),
+                                      Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12,),),
+                                      const Divider(thickness: 1,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${listJadwalSiswa[i].namaMataPelajaran}",
+                                              style:
+                                              const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$jamMulai - $jamSelesai WITA",
+                                            style:
+                                            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500,),
+                                          ),
 
-                return const Text("Jadwal Tidak Ditemukan");
-              }),
-      ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (listJadwalSiswa[i].hari == "Selasa") {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
+                                    kodeJadwal: listJadwalSiswa[i].kodejdwl,
+                                    hari: listJadwalSiswa[i].hari,
+                                    jamKe: listJadwalSiswa[i].jamKe,
+                                    mapel: listJadwalSiswa[i].namaMataPelajaran,
+                                    jamMulai: jamMulai,
+                                    jamSelesai: jamSelesai))),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kRed.withOpacity(0.3)
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "${listJadwalSiswa[i].hari}",
+                                          style: const TextStyle( fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
+                                      const Divider(thickness: 1,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${listJadwalSiswa[i].namaMataPelajaran}",
+                                              style:
+                                              const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$jamMulai - $jamSelesai WITA",
+                                            style:
+                                            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (listJadwalSiswa[i].hari == "Rabu") {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
+                                    kodeJadwal: listJadwalSiswa[i].kodejdwl,
+                                    hari: listJadwalSiswa[i].hari,
+                                    jamKe: listJadwalSiswa[i].jamKe,
+                                    mapel: listJadwalSiswa[i].namaMataPelajaran,
+                                    jamMulai: jamMulai,
+                                    jamSelesai: jamSelesai))),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kYellow.withOpacity(0.3)
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "${listJadwalSiswa[i].hari}",
+                                          style: const TextStyle(
+                                              fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
+                                      const Divider(thickness: 1,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${listJadwalSiswa[i].namaMataPelajaran}",
+                                              style:
+                                              const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$jamMulai - $jamSelesai WITA",
+                                            style:
+                                            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (listJadwalSiswa[i].hari == "Kamis") {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
+                                    kodeJadwal: listJadwalSiswa[i].kodejdwl,
+                                    hari: listJadwalSiswa[i].hari,
+                                    jamKe: listJadwalSiswa[i].jamKe,
+                                    mapel: listJadwalSiswa[i].namaMataPelajaran,
+                                    jamMulai: jamMulai,
+                                    jamSelesai: jamSelesai))),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kCelticBlue.withOpacity(0.3)
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "${listJadwalSiswa[i].hari}",
+                                          style: const TextStyle(
+                                              fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
+                                      const Divider(thickness: 1,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${listJadwalSiswa[i].namaMataPelajaran}",
+                                              style:
+                                              const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$jamMulai - $jamSelesai WITA",
+                                            style:
+                                            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (listJadwalSiswa[i].hari == "Jumat") {
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ElearningPage(
+                                    kodeJadwal: listJadwalSiswa[i].kodejdwl,
+                                    hari: listJadwalSiswa[i].hari,
+                                    jamKe: listJadwalSiswa[i].jamKe,
+                                    mapel: listJadwalSiswa[i].namaMataPelajaran,
+                                    jamMulai: jamMulai,
+                                    jamSelesai: jamSelesai))),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kOrange.withOpacity(0.3)
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8),
+                                        child: Text(
+                                          "${listJadwalSiswa[i].hari}",
+                                          style: const TextStyle(
+                                              fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text("Jam Ke- ${listJadwalSiswa[i].jamKe}", style: const TextStyle(fontSize: 12),),
+                                      const Divider(thickness: 1,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "${listJadwalSiswa[i].namaMataPelajaran}",
+                                              style:
+                                              const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$jamMulai - $jamSelesai WITA",
+                                            style:
+                                            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return const Text("Jadwal Tidak Ditemukan");
+                          }),
+                      buildNoData()
+                    ],
+                )
+            )
+        )
     );
+  }
+
+  Widget buildNoData() {
+    if (listMapel.length == 0) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_data.svg',
+                width: 90,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Belum Ada data",
+                style: TextStyle(fontSize: 12),
+              )
+            ]),
+      );
+    }else{
+      return Container();
+    }
   }
 
   /*Widget guruPendamping() { 
