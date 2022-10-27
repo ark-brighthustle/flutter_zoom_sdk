@@ -25,7 +25,7 @@ class _KompetisiPageState extends State<KompetisiPage> {
     });
   }
 
-  Future refreshPodcast() async{
+  Future refreshPodcast() async {
     _kompetisi();
   }
 
@@ -37,35 +37,36 @@ class _KompetisiPageState extends State<KompetisiPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kGrey,
       body: SafeArea(
           child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: size.width,
+        height: size.height,
         child: itemEventKompetisiList(),
       )),
     );
   }
 
   Widget headerPage() {
-    return Row(
-      children: [
-        IconButton(
-          padding: const EdgeInsets.only(left: padding),
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back,
-              size: 20,
-            )),
-        const Padding(
-          padding: EdgeInsets.only(left: padding),
-          child: Text(
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 12, 0, 12),
+      child: Row(
+        children: [
+          IconButton(
+              padding: const EdgeInsets.only(left: padding, right: padding),
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.arrow_back,
+                size: 20,
+              )),
+          const Text(
             titleEventKompetisi,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -100,14 +101,14 @@ class _KompetisiPageState extends State<KompetisiPage> {
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                       width: double.infinity,
-                      height: 180,
+                      height: 140,
                       decoration: const BoxDecoration(
                           color: kWhite,
                           borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: Stack(
+                      child: Row(
                         children: [
                           SizedBox(
-                            width: double.infinity,
+                            width: 90,
                             height: 120,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
@@ -117,41 +118,25 @@ class _KompetisiPageState extends State<KompetisiPage> {
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
                                     alignment: Alignment.center,
-                                    child: const Text(
-                                      "Gagal Memuat Gambar!",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
+                                    child: const Icon(Icons.broken_image, color: kGrey,)
                                   );
                                 },
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 16,
-                            right: 4,
-                            child: Container(
-                              width: 60,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                  color: kYellow,
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: const Center(
-                                  child: Text(
-                                "Lihat",
-                                style: TextStyle(
-                                    color: kWhite,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600),
-                              )),
+                          const SizedBox(width: 12,),
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${kompetisiList[i].title}",
+                                  style: const TextStyle(
+                                      fontSize: 14, fontWeight: FontWeight.w600),
+                                ),
+                              ],
                             ),
                           ),
-                          Positioned(
-                              bottom: 0,
-                              child: Text(
-                                "${kompetisiList[i].title}",
-                                style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w600),
-                              ))
                         ],
                       ),
                     ),

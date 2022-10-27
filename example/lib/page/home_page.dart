@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   buildHeader(),
                   sliderBanner(),
-                  gridKategori(),
+                  gridKategori(size),
                   listJuaraKompetisi(size),
                   itemEvent(size),
                 ],
@@ -323,8 +323,8 @@ class _HomePageState extends State<HomePage> {
                         itemCount: juaraKompetisiList.length,
                         itemBuilder: (context, i) {
                           return GestureDetector(
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(title: juaraKompetisiList[i].title,
-                              fileVideo: juaraKompetisiList[i].video))),
+                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => VideoPlayerWidget(title: juaraKompetisiList[i].title,
+                                                          fileVideo: juaraKompetisiList[i].video))),
                             child: Container(
                               width: 240,
                               height: 100,
@@ -433,16 +433,16 @@ class _HomePageState extends State<HomePage> {
 
   Widget titleKategori() {
     return const Padding(
-      padding: EdgeInsets.only(left: padding, top: padding, bottom: 8),
+      padding: EdgeInsets.only(left: padding),
       child: Text('Ekosistem Andalan',
           style: TextStyle(
               fontSize: 14, fontWeight: FontWeight.bold, color: kBlack)),
     );
   }
 
-  Widget gridKategori() {
+  Widget gridKategori(Size size) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 3.2,
+      height: size.height / 3.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -452,9 +452,9 @@ class _HomePageState extends State<HomePage> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: (const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
-                  childAspectRatio: 0.7,
-                  crossAxisSpacing: padding,
-                  mainAxisSpacing: padding)),
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16)),
               padding: const EdgeInsets.all(padding),
               children: [
                 GestureDetector(
@@ -771,7 +771,7 @@ class _HomePageState extends State<HomePage> {
     return bannerKompetisiList.isEmpty
         ? Container()
         : SizedBox(
-            height: size.height / 1.3,
+            height: size.height / 1.1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -803,58 +803,23 @@ class _HomePageState extends State<HomePage> {
                               );
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(8),
+                              height: size.height/4,
                               margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                              width: double.infinity,
-                              height: 168,
-                              decoration: const BoxDecoration(
-                                  color: kGrey,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 120,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        bannerKompetisiList[i].imageUrl,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Container(
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              "Gagal Memuat Gambar!",
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                          );
-                                        },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  bannerKompetisiList[i].imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "Gagal Memuat Gambar!",
+                                        style: TextStyle(fontSize: 12),
                                       ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 4,
-                                    child: Container(
-                                      width: 60,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                          color: kYellow,
-                                          borderRadius:
-                                              BorderRadius.circular(12)),
-                                      child: const Center(
-                                          child: Text(
-                                        "Lihat",
-                                        style: TextStyle(
-                                            color: kWhite,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600),
-                                      )),
-                                    ),
-                                  )
-                                ],
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           );

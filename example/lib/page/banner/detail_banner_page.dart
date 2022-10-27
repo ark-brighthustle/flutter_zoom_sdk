@@ -79,21 +79,6 @@ class _DetailBannerNewsEventState extends State<DetailBannerNewsEvent> {
         });
   }
 
-  lihatFullBanner() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: SizedBox(
-              width: double.infinity,
-              child: ClipRRect(
-                child: Image.network(widget.imageUrl, fit: BoxFit.cover),
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   void dispose() {
     _controllerDeskripsi.dispose();
@@ -114,7 +99,7 @@ class _DetailBannerNewsEventState extends State<DetailBannerNewsEvent> {
                   bannerHeader(size),
                   title(),
                   description(),
-                  linkJuknis(),
+                  //linkJuknis(),
                   //formSubmit(context),
                 ],
               ),
@@ -144,14 +129,9 @@ class _DetailBannerNewsEventState extends State<DetailBannerNewsEvent> {
   Widget bannerHeader(Size size) {
     return Stack(
       children: [
-        GestureDetector(
-          onTap: lihatFullBanner,
-          child: SizedBox(
-            width: size.width,
-            height: size.height / 4,
-            child: ClipRRect(
-              child: Image.network(widget.imageUrl, fit: BoxFit.cover),
-            ),
+        SizedBox(
+          child: ClipRRect(
+            child: Image.network(widget.imageUrl, fit: BoxFit.cover),
           ),
         ),
         Positioned(left: 16, top: 16, child: buildIconBack())
