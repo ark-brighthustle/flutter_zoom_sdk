@@ -40,7 +40,7 @@ dependencies:
   dio: ^4.0.1 
   image_gallery_saver: ^1.7.1
   flutter_vlc_player: ^6.0.0
-
+  audioplayers: ^0.20.1
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
