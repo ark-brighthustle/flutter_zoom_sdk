@@ -41,3 +41,4 @@ const String textTitleLihatSemua = "Lihat Semua";
 const String textDataPribadi = "Data Pribadi";
 const String textTentang = "Tentang";
 const String textLogOut = "Log out";
+const String textGagalMemuatData = "Gagal memuat data!";

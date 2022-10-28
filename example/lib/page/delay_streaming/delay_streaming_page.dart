@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../helpers/helpers.dart';
+import '../../models/classroom/event_click_model.dart';
 import '../../services/classroom/mapel_service.dart';
+import '../../services/delay_streaming/delay_streaming_service.dart';
 import '../../theme/colors.dart';
 import '../../theme/material_colors.dart';
 import '../../utils/config.dart';
@@ -24,12 +27,17 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List mapelList = [];
+  bool isLoading = true;
 
   Future getDataMapel() async {
+    setState(() {
+      isLoading = true;
+    });
     var response = await MapelService().getDataMapel();
     if (!mounted) return;
     setState(() {
       mapelList = response;
+      isLoading = false;
     });
   }
 
@@ -63,22 +71,22 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
   void initState() {
     super.initState();
     getDataMapel();
-    //durasiPlayYoutube();
+    durasiPlayYoutube();
     Future.delayed(const Duration(seconds: 1), () {
       getLogActivity();
     });
   }
 
-  /*durasiPlayYoutube() async{
-    bool playYoutube = await _CekDurasiPlayYoutube();
+  durasiPlayYoutube() async{
+    bool playYoutube = await cekDurasiPlayYoutube();
     if(playYoutube == true){
-      //getDataMapel();
+      getDataMapel();
     }else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
-  }*/
+  }
 
-  /*Future<bool> _CekDurasiPlayYoutube() async{
+  Future<bool> cekDurasiPlayYoutube() async{
     late EventClickModel _eventClickModel;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? idSiswa = preferences.getInt('idSiswa').toString();
@@ -108,7 +116,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
     }else{
       return true;
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +133,17 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
         body: SizedBox(
           width: size.width,
           height: size.height,
-          child: ListView.builder(
+          child: buildMapel()
+        ));
+  }
+
+  Widget buildMapel() {
+    return isLoading == true
+    ? const Center(child: CircularProgressIndicator(),)
+    : Stack(children: [
+      mapelList.isEmpty
+      ? const Center(child: Text(textGagalMemuatData))
+      : ListView.builder(
               itemCount: mapelList.length,
               itemBuilder: (context, i) {
                 return Container(
@@ -150,6 +168,6 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
                   ),
                 );
               }),
-        ));
+    ],);
   }
 }
