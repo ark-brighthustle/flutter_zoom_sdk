@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_youtube_downloader/flutter_youtube_downloader.dart';
+import 'package:flutter_zoom_sdk_example/utils/constant.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,12 +30,17 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
   List liveDelayList = [];
   String? tingkat;
   bool? loadVideoYoutube;
+  bool isLoading = true;
 
   Future getLiveDelay() async {
+    setState(() {
+      isLoading = true;
+    });
     var response = await DelayStreamingService().getDataLiveDelay();
     if (!mounted) return;
     setState(() {
       liveDelayList = response;
+      isLoading = false;
     });
   }
 
@@ -82,152 +88,186 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
         ),
       ),
       body: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: ListView.builder(
-              itemCount: liveDelayList.length,
-              itemBuilder: (context, i) {
-                String ytId = liveDelayList[i].youtubeUrl.substring(32, 43);
-                youtube_link = liveDelayList[i].youtubeUrl;
-
-                DateTime dateTime = DateTime.parse(liveDelayList[i].createdAt);
-                String createdAt = DateFormat('dd-MM-yyyy hh:mm').format(dateTime);
-
-                return tingkat.toString() == liveDelayList[i].kodeTingkat &&
-                        widget.kodeMapel == liveDelayList[i].kodeMataPelajaran
-                    ? GestureDetector(
-                        onTap: () {
-                          _bottomSheet(
-                              liveDelayList[i].id.toString(),
-                              liveDelayList[i].kodeMataPelajaran,
-                              liveDelayList[i].judul,
-                              liveDelayList[i].deskripsi,
-                              liveDelayList[i].gdriveUrl,
-                              liveDelayList[i].youtubeUrl,
-                              ytId);
-                        },
-                        child: Container(
-                          width: 300,
-                          color: kWhite,
-                          padding: const EdgeInsets.only(bottom: padding),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                height: 168,
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      child: CachedNetworkImage(
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        imageUrl:
-                                            "https://img.youtube.com/vi/$ytId/0.jpg",
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
-                                    ),
-                                    Align(
-                                        alignment: Alignment.center,
-                                        child: Icon(
-                                          Icons.play_circle,
-                                          size: 60,
-                                          color: kBlack.withOpacity(0.5),
-                                        ))
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 4, 12, 4),
-                                  child: Text(liveDelayList[i].judul,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ))),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(12, 0, 12, 4),
-                                child: Text(liveDelayList[i].deskripsi,
-                                    style: const TextStyle(fontSize: 12)),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                    child: Text("Created : $createdAt",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                        )),
-                                  ),
-                                  liveDelayList[i].liveAt == null
-                                      ? const Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                          child: Text("Live : -",
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                              )),
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 12, 0),
-                                          child: Text(
-                                              "Live : ${DateFormat('dd-MM-yyyy').format(DateTime.parse(liveDelayList[i].liveAt))}",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                              ))),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ))
-                    : Container();
-              })),
+          width: size.width, height: size.height, child: buildLiveDelay()),
     );
   }
 
-  Future<bool> _CekDurasiPlayYoutube() async{
+  Widget buildLiveDelay() {
+    return isLoading == true
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Stack(
+            children: [
+              liveDelayList.isEmpty
+                  ? const Center(
+                      child: Text(textGagalMemuatData),
+                    )
+                  : ListView.builder(
+                      itemCount: liveDelayList.length,
+                      itemBuilder: (context, i) {
+                        String ytId =
+                            liveDelayList[i].youtubeUrl.substring(32, 43);
+                        youtube_link = liveDelayList[i].youtubeUrl;
+
+                        DateTime dateTime =
+                            DateTime.parse(liveDelayList[i].createdAt);
+                        String createdAt =
+                            DateFormat('dd-MM-yyyy hh:mm').format(dateTime);
+
+                        return tingkat.toString() ==
+                                    liveDelayList[i].kodeTingkat &&
+                                widget.kodeMapel ==
+                                    liveDelayList[i].kodeMataPelajaran
+                            ? GestureDetector(
+                                onTap: () {
+                                  _bottomSheet(
+                                      liveDelayList[i].id.toString(),
+                                      liveDelayList[i].kodeMataPelajaran,
+                                      liveDelayList[i].judul,
+                                      liveDelayList[i].deskripsi,
+                                      liveDelayList[i].gdriveUrl,
+                                      liveDelayList[i].youtubeUrl,
+                                      ytId);
+                                },
+                                child: Container(
+                                  width: 300,
+                                  color: kWhite,
+                                  padding:
+                                      const EdgeInsets.only(bottom: padding),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 168,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              child: CachedNetworkImage(
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                imageUrl:
+                                                    "https://img.youtube.com/vi/$ytId/0.jpg",
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                              ),
+                                            ),
+                                            Align(
+                                                alignment: Alignment.center,
+                                                child: Icon(
+                                                  Icons.play_circle,
+                                                  size: 60,
+                                                  color:
+                                                      kBlack.withOpacity(0.5),
+                                                ))
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              12, 4, 12, 4),
+                                          child: Text(liveDelayList[i].judul,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w700,
+                                              ))),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            12, 0, 12, 4),
+                                        child: Text(liveDelayList[i].deskripsi,
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                12, 0, 0, 0),
+                                            child: Text("Created : $createdAt",
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                )),
+                                          ),
+                                          liveDelayList[i].liveAt == null
+                                              ? const Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 12, 0),
+                                                  child: Text("Live : -",
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                      )),
+                                                )
+                                              : Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 0, 12, 0),
+                                                  child: Text(
+                                                      "Live : ${DateFormat('dd-MM-yyyy').format(DateTime.parse(liveDelayList[i].liveAt))}",
+                                                      style: const TextStyle(
+                                                        fontSize: 10,
+                                                      ))),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                            : Container();
+                      })
+            ],
+          );
+  }
+
+  Future<bool> _CekDurasiPlayYoutube() async {
     late EventClickModel _eventClickModel;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? idSiswa = preferences.getInt('idSiswa').toString();
     String? idYoutube = preferences.getString('id_youtube_delay_streaming');
-    String? durasiPutarYoutube = preferences.getString('durasi_putar_youtube_delay_streaming');
-    if(idYoutube != null && durasiPutarYoutube != null) {
-      var response = await DelayStreamingService().DurationPlay(
-          idSiswa, idYoutube, durasiPutarYoutube);
-      if(response != null && response != "Tidak ditemukan"){
+    String? durasiPutarYoutube =
+        preferences.getString('durasi_putar_youtube_delay_streaming');
+    if (idYoutube != null && durasiPutarYoutube != null) {
+      var response = await DelayStreamingService()
+          .DurationPlay(idSiswa, idYoutube, durasiPutarYoutube);
+      if (response != null && response != "Tidak ditemukan") {
         _eventClickModel = response;
         if (_eventClickModel.code == 200) {
           SharedPreferences preferences = await SharedPreferences.getInstance();
           preferences.remove("id_youtube_delay_streaming");
           preferences.remove("durasi_putar_youtube_delay_streaming");
           return true;
-        }else{
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("[Log Activity Error] Gagal terhubung ke server")));
           return false;
         }
-      }else if(response == "Tidak ditemukan"){
+      } else if (response == "Tidak ditemukan") {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.remove("id_youtube_delay_streaming");
         preferences.remove("durasi_putar_youtube_delay_streaming");
         return true;
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("[Log Activity Error] Gagal terhubung ke server")));
         return false;
       }
-    }else{
+    } else {
       return true;
     }
   }
 
-  _bottomSheet(String idDelayStreaming, String kodeMapel, String judul, String deskripsi,
-      String? gdriveUrl, String youtubeUrl, String ytId) async{
+  _bottomSheet(
+      String idDelayStreaming,
+      String kodeMapel,
+      String judul,
+      String deskripsi,
+      String? gdriveUrl,
+      String youtubeUrl,
+      String ytId) async {
     bool showBottom = await _CekDurasiPlayYoutube();
-    if(showBottom == true){
+    if (showBottom == true) {
       return showModalBottomSheet(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -267,17 +307,17 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl:
-                                "https://img.youtube.com/vi/$ytId/0.jpg",
+                                    "https://img.youtube.com/vi/$ytId/0.jpg",
                                 errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                                    const Icon(Icons.error),
                               ),
                             ),
                           ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Flexible(
-                          child: Column(
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Flexible(
+                              child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -304,74 +344,81 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                         ],
                       ),
                     ),
-                  const SizedBox(height: 8),
-                  Container(
-                    margin: const EdgeInsets.all(padding / 2),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: kCelticBlue),
-                              child: TextButton.icon(
-                                  onPressed: () {
-                                    Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => PlayYoutubeVideoWidget(jenis: "delay_streaming",id: idDelayStreaming,
-                                                  youtubeId: ytId)));
-                                  },
-                                  icon: const Icon(Icons.play_arrow,
-                                      color: kWhite),
-                                  label: const Text('Play',
-                                      style: TextStyle(color: kWhite)))),
-                        ),
-                        const SizedBox(width: 8),
-                        gdriveUrl?.substring(32, 65) != null
-                            ? Expanded(
-                                child: Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: kCelticBlue),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: TextButton.icon(
-                                    onPressed: () async {
-                                      //extractYoutubeLink();
-                                      //String link = "https://drive.google.com/file/d/1jSt5TulzvgoF3dllHti30LHxVJZzNPCv/view?usp=sharing";
-                                      var idLink = gdriveUrl?.substring(32, 65);
+                    const SizedBox(height: 8),
+                    Container(
+                        margin: const EdgeInsets.all(padding / 2),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: kCelticBlue),
+                                  child: TextButton.icon(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PlayYoutubeVideoWidget(
+                                                        jenis:
+                                                            "delay_streaming",
+                                                        id: idDelayStreaming,
+                                                        youtubeId: ytId)));
+                                      },
+                                      icon: const Icon(Icons.play_arrow,
+                                          color: kWhite),
+                                      label: const Text('Play',
+                                          style: TextStyle(color: kWhite)))),
+                            ),
+                            const SizedBox(width: 8),
+                            gdriveUrl?.substring(32, 65) != null
+                                ? Expanded(
+                                    child: Container(
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: kCelticBlue),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: TextButton.icon(
+                                        onPressed: () async {
+                                          //extractYoutubeLink();
+                                          //String link = "https://drive.google.com/file/d/1jSt5TulzvgoF3dllHti30LHxVJZzNPCv/view?usp=sharing";
+                                          var idLink =
+                                              gdriveUrl?.substring(32, 65);
 
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                               builder: (context) =>
-                                                  ProgressDownload(
-                                                    ytId: ytId,
-                                                    videoUrl:
-                                                        //"https://drive.google.com/uc?export=download&id=$idLink",
-                                                        "https://www.googleapis.com/drive/v3/files/$idLink?alt=media&key=$ApiKeyGDrive",
-                                                    imageUrl:
-                                                        "https://img.youtube.com/vi/$ytId/0.jpg",
-                                                    judul: judul,
-                                                  )));
-                                    },
-                                    icon: const Icon(Icons.download,
-                                        color: kCelticBlue),
-                                    label: const Text('Download',
-                                        style: TextStyle(color: kCelticBlue))),
-                              ))
-                            : Container()
-                      ],
-                    )),
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProgressDownload(
+                                                        ytId: ytId,
+                                                        videoUrl:
+                                                            //"https://drive.google.com/uc?export=download&id=$idLink",
+                                                            "https://www.googleapis.com/drive/v3/files/$idLink?alt=media&key=$ApiKeyGDrive",
+                                                        imageUrl:
+                                                            "https://img.youtube.com/vi/$ytId/0.jpg",
+                                                        judul: judul,
+                                                      )));
+                                        },
+                                        icon: const Icon(Icons.download,
+                                            color: kCelticBlue),
+                                        label: const Text('Download',
+                                            style:
+                                                TextStyle(color: kCelticBlue))),
+                                  ))
+                                : Container()
+                          ],
+                        )),
                     const SizedBox(
                       height: 8,
                     )
                   ]),
             );
           });
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal terhubung ke server")));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Gagal terhubung ke server")));
     }
   }
 }
