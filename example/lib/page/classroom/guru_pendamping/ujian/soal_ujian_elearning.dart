@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
@@ -45,6 +46,11 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   ResponseJawabanSoalUjianModel? responseJawabanSoalUjian;
   late Timer timer;
   late Map<String, String> data;
+
+  AudioPlayer audioPlayer = new AudioPlayer();
+  Duration durationAudio = new Duration();
+  Duration positionAudio = new Duration();
+  bool playing = false;
 
   getDataMap() {
     data = {"elearning_id": "${widget.id}"};
@@ -181,6 +187,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   @override
   void dispose() {
     timer.cancel();
+    audioPlayer.stop();
     super.dispose();
   }
 
@@ -336,6 +343,55 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                         ),
                                       ),
                                     )
+                                  ],
+                                  if(listSoalUjian[i].audio != null)...[
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: Container(
+                                            width: 340,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(80),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              // mainAxisSize: MainAxisSize.max,
+                                              // mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                IconButton(
+                                                    icon: Icon(
+                                                      playing == false
+                                                          ? Icons.play_arrow
+                                                          : Icons.pause,
+                                                      color: Colors.black,
+                                                      size: 30,
+                                                    ),
+                                                    onPressed: () {
+                                                      getAudio(listSoalUjian[i].audio);
+                                                    }),
+                                                // IconButton(
+                                                //   icon: Icon(
+                                                //     Icons.stop,
+                                                //     color: Colors.black,
+                                                //     size: 25,
+                                                //   ),
+                                                //   onPressed: () {},
+                                                // ),
+                                                Container(
+                                                  width: 50,
+                                                  child: Text(
+                                                    "${setTimeDuration(durationAudio - positionAudio)}",
+                                                  ),
+                                                ),
+                                                Flexible(
+                                                  child: slider(),
+                                                )
+                                              ],
+                                            )),
+                                      ),
+                                    ),
                                   ],
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -576,5 +632,53 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
         return alert;
       },
     );
+  }
+
+  Widget slider(){
+    return Slider.adaptive(
+        min: 0.0,
+        value: positionAudio.inSeconds.toDouble(),
+        max: durationAudio.inSeconds.toDouble(),
+        onChanged: (double value){
+          setState(() {
+            audioPlayer.seek(new Duration(seconds: value.toInt()));
+          });
+        }
+    );
+  }
+
+  void getAudio(String url) async{
+    if(playing){
+      var res = await audioPlayer.pause();
+      if(res == 1){
+        setState(() {
+          playing = false;
+        });
+      }
+    }else{
+      var res = await audioPlayer.play(url,isLocal: true);
+      if(res == 1){
+        setState(() {
+          playing = true;
+        });
+      }
+    }
+    audioPlayer.onDurationChanged.listen((Duration dd) {
+      setState(() {
+        durationAudio = dd;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration dd) {
+      setState(() {
+        positionAudio = dd;
+      });
+    });
+  }
+
+  String setTimeDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 }
