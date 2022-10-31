@@ -379,11 +379,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                                 //   ),
                                                 //   onPressed: () {},
                                                 // ),
-                                                Text(
-                                                  "${setTimeDuration(positionAudio)} / ${setTimeDuration(durationAudio - positionAudio)}",
+                                                Container(
+                                                  child: Text(
+                                                    "${setTimeDuration(positionAudio)}",
+                                                  ),
                                                 ),
                                                 Flexible(
                                                   child: slider(),
+                                                ),
+                                                Container(
+                                                  child: Text(
+                                                    "${setTimeDuration(durationAudio - positionAudio)}",
+                                                  ),
                                                 )
                                               ],
                                             )),
