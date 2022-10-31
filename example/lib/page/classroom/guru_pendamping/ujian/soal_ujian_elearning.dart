@@ -356,7 +356,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                               borderRadius: BorderRadius.circular(80),
                                             ),
                                             child: Row(
-                                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               // mainAxisSize: MainAxisSize.max,
                                               // mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
@@ -380,17 +380,13 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                                 //   onPressed: () {},
                                                 // ),
                                                 Container(
+                                                  width: 50,
                                                   child: Text(
-                                                    "${setTimeDuration(positionAudio)}",
+                                                    "${setTimeDuration(durationAudio - positionAudio)}",
                                                   ),
                                                 ),
                                                 Flexible(
                                                   child: slider(),
-                                                ),
-                                                Container(
-                                                  child: Text(
-                                                    "${setTimeDuration(durationAudio - positionAudio)}",
-                                                  ),
                                                 )
                                               ],
                                             )),

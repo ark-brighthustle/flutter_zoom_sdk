@@ -226,7 +226,7 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                               borderRadius: BorderRadius.circular(80),
                                             ),
                                             child: Row(
-                                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               // mainAxisSize: MainAxisSize.max,
                                               // mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
@@ -249,8 +249,11 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                                 //   ),
                                                 //   onPressed: () {},
                                                 // ),
-                                                Text(
-                                                  "${setTimeDuration(positionAudio)} / ${setTimeDuration(durationAudio - positionAudio)}",
+                                                Container(
+                                                  width: 50,
+                                                  child: Text(
+                                                    "${setTimeDuration(durationAudio - positionAudio)}",
+                                                  ),
                                                 ),
                                                 Flexible(
                                                   child: slider(),
