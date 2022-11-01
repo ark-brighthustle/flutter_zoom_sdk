@@ -24,8 +24,10 @@ class VolumeInfo {
   String? description;
   String? printType;
   ImageLinks? image;
+  String? previewLinks;
+  String? infoLinks;
 
-  VolumeInfo({required this.printType, required this.title, required this.publisher, required this.description, required this.image, });
+  VolumeInfo({required this.printType, required this.title, required this.publisher, required this.description, required this.image, required this.previewLinks, required this.infoLinks});
 
   factory VolumeInfo.fromJson(Map<String, dynamic> parsedJson) {
 
@@ -36,7 +38,9 @@ class VolumeInfo {
       publisher: parsedJson['publisher'],
       description: parsedJson['description'],
       printType: parsedJson['printType'],
-      image: ImageLinks.fromJson(parsedJson['imageLinks']),
+      image: ImageLinks.fromJson(parsedJson['imageLinks'],),
+      previewLinks: parsedJson['previewLink'],
+      infoLinks: parsedJson['infoLink']
     );
   }
 }

@@ -6,7 +6,7 @@ import '../../models/library/library_model.dart';
 
 class LibraryService {
   getDatalibraryBook() async {
-    var url = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=isbn");
+    var url = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=SMA");
     final response = await http.get(url);
     var responseJson = jsonDecode(response.body);
 

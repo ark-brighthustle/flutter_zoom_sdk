@@ -27,7 +27,7 @@ import 'smart_character/smart_character_page.dart';
 import 'smart_diary/smart_diary_page.dart';
 import 'smart_event/kompetisi_page.dart';
 import 'smart_event/smart_event_page.dart';
-import 'smart_library/smart_library_page.dart';
+import 'smart_library/library_page.dart';
 import 'smart_news/smart_news_page.dart';
 import 'smart_passion/smart_passion_page.dart';
 
@@ -518,7 +518,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SmartLibraryPage())),
+                          builder: (context) => const LibraryPage())),
                   child: SizedBox(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
