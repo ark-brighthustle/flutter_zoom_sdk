@@ -35,6 +35,8 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
 
   bool isLoadingguruss = true;
   bool isLoadinggurupendamping = true;
+  bool cekKoneksiguruss = true;
+  bool cekKoneksigurupendamping = true;
 
   late final TabController _tabController = TabController(length: 2, vsync: this);
 
@@ -47,26 +49,42 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
 
    Future getDataMapel() async {
     setState((){
+      cekKoneksiguruss = true;
       isLoadingguruss = true;
     });
     var response = await MapelService().getDataMapel();
-    if (!mounted) return;
-    setState(() {
-      listMapel = response;
-      isLoadingguruss = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        cekKoneksiguruss = true;
+        listMapel = response;
+        isLoadingguruss = false;
+      });
+    }else{
+      setState(() {
+        cekKoneksiguruss = false;
+      });
+    }
   }
 
   Future getJadwalSiswa() async {
     setState((){
+      cekKoneksigurupendamping = true;
       isLoadinggurupendamping = true;
     });
     var response = await JadwalSiswaService().getDataJadwalSiswa();
-    if (!mounted) return;
-    setState(() {
-      listJadwalSiswa = response;
-      isLoadinggurupendamping = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        cekKoneksigurupendamping = true;
+        listJadwalSiswa = response;
+        isLoadinggurupendamping = false;
+      });
+    }else{
+      setState(() {
+        cekKoneksigurupendamping = false;
+      });
+    }
   }
 
   Future refreshGuruSmartSchool() async {
@@ -194,37 +212,39 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
         child: RefreshIndicator(
             onRefresh: refreshGuruSmartSchool,
             color: kCelticBlue,
-            child: isLoadingguruss == true
-                ? Center(child: CircularProgressIndicator())
-                : Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Stack(
-                  children: [
-                    ListView.builder(
-                        itemCount: listMapel.length,
-                        itemBuilder: (context, i){
-                          return Column(
-                            children: [
-                              ListTile(
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MateriLivePage(
-                                    id: listMapel[i].id,
-                                    kodeTingkat: listMapel[i].kodeTingkat,
-                                    namaMataPelajaran: listMapel[i].namaPelajaran
-                                ))),
-                                leading: Image.asset("assets/icon/book.png", width: 24,),
-                                title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                                trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
-                              ),
-                              const Divider(thickness: 1,)
-                            ],
-                          );
-                        }),
-                    buildNoData()
-                  ],
-                )
-            )
+            child: cekKoneksiguruss == true
+                ? isLoadingguruss == true
+                  ? Center(child: CircularProgressIndicator())
+                  : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Stack(
+                    children: [
+                      ListView.builder(
+                          itemCount: listMapel.length,
+                          itemBuilder: (context, i){
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MateriLivePage(
+                                      id: listMapel[i].id,
+                                      kodeTingkat: listMapel[i].kodeTingkat,
+                                      namaMataPelajaran: listMapel[i].namaPelajaran
+                                  ))),
+                                  leading: Image.asset("assets/icon/book.png", width: 24,),
+                                  title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                                  trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
+                                ),
+                                const Divider(thickness: 1,)
+                              ],
+                            );
+                          }),
+                      buildNoDataGuruSS()
+                    ],
+                  )
+              )
+                : buildNoKoneksiGuruSS()
         )
     );
   }
@@ -234,9 +254,10 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
         child: RefreshIndicator(
             onRefresh: refreshGuruPendamping,
             color: kCelticBlue,
-            child: isLoadinggurupendamping == true
-                ? Center(child: CircularProgressIndicator())
-                : Container(
+            child: cekKoneksigurupendamping == true
+                ? isLoadinggurupendamping == true
+                  ? Center(child: CircularProgressIndicator())
+                  : Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -506,15 +527,16 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
 
                             return const Text("Jadwal Tidak Ditemukan");
                           }),
-                      buildNoData()
+                      buildNoDataGuruPendamping()
                     ],
-                )
-            )
+                  )
+              )
+                : buildNoKoneksiGuruPendamping()
         )
     );
   }
 
-  Widget buildNoData() {
+  Widget buildNoDataGuruSS() {
     if (listMapel.length == 0) {
       return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
@@ -529,12 +551,111 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
               const Text(
                 "Belum Ada data",
                 style: TextStyle(fontSize: 12),
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshGuruSmartSchool,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ]),
       );
     }else{
       return Container();
     }
+  }
+
+  Widget buildNoKoneksiGuruSS() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshGuruSmartSchool,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
+  }
+
+  Widget buildNoDataGuruPendamping() {
+    if (listMapel.length == 0) {
+      return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_data.svg',
+                width: 90,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Belum Ada data",
+                style: TextStyle(fontSize: 12),
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshGuruPendamping,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ]),
+      );
+    }else{
+      return Container();
+    }
+  }
+
+  Widget buildNoKoneksiGuruPendamping() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshGuruPendamping,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 
   /*Widget guruPendamping() { 

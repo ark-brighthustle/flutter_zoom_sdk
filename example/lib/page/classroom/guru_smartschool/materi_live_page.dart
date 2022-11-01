@@ -26,17 +26,26 @@ class _MateriLivePageState extends State<MateriLivePage> {
   List _materiLiveList = [];
   String? tingkat;
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future getDataMateriLive() async {
     setState(() {
+      cekKoneksi = true;
       isLoading = true;
     });
     var response = await MateriLiveService().getDataMateriLive(widget.id.toString());
-    if (!mounted) return;
-    setState(() {
-      _materiLiveList = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        cekKoneksi = true;
+        _materiLiveList = response;
+        isLoading = false;
+      });
+    }else{
+      setState(() {
+        cekKoneksi = false;
+      });
+    }
   }
 
   getSiswa() async {
@@ -84,7 +93,8 @@ class _MateriLivePageState extends State<MateriLivePage> {
         child: RefreshIndicator(
             onRefresh: onRefresh,
             color: kCelticBlue,
-            child: isLoading == true
+            child: cekKoneksi == true
+              ? isLoading == true
                 ? Center(child: CircularProgressIndicator())
                 : Stack(
               children: [
@@ -139,6 +149,7 @@ class _MateriLivePageState extends State<MateriLivePage> {
                 buildNoData()
               ],
             )
+              : buildNoKoneksi()
         )
     );
   }
@@ -158,11 +169,49 @@ class _MateriLivePageState extends State<MateriLivePage> {
               const Text(
                 "Belum Ada data",
                 style: TextStyle(fontSize: 12),
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ]),
       );
     }else{
       return Container();
     }
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 }
