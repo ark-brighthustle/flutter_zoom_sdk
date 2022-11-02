@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_sdk_example/theme/colors.dart';
 import 'package:flutter_zoom_sdk_example/theme/padding.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
@@ -11,6 +12,9 @@ class DetailLibraryPage extends StatefulWidget {
   String? publisher;
   String? previewLinks;
   String? infoLinks;
+  String? webReaderLinks;
+  String? printType;
+  int? pageCount;
   DetailLibraryPage(
       {Key? key,
       this.imageThumb,
@@ -18,7 +22,10 @@ class DetailLibraryPage extends StatefulWidget {
       this.desc,
       this.publisher,
       this.previewLinks,
-      this.infoLinks})
+      this.infoLinks,
+      this.webReaderLinks,
+      this.printType,
+      this.pageCount,})
       : super(key: key);
 
   @override
@@ -80,20 +87,46 @@ class _DetailLibraryPageState extends State<DetailLibraryPage> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
               "${widget.title}",
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(fontWeight: FontWeight.w600), textAlign: TextAlign.center,
             ),
+          ),
+           Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  "${widget.publisher}",
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: kBlack45, fontSize: 12),
+                ),
+              ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  const Icon(Icons.book, color: kBlack),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text("${widget.printType}", style: const TextStyle(fontSize: 12),),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text("${widget.pageCount}", style: const TextStyle(fontWeight: FontWeight.w500),),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 12),
+                    child: Text('Halaman', style: TextStyle(fontSize: 12),),
+                  )
+                ],
+              )
+            ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
+            padding: const EdgeInsets.only(top: 24),
             child: Text(
-              "${widget.publisher}",
-              style:
-                  const TextStyle(fontWeight: FontWeight.w600, color: kBlack45),
+              "${widget.desc}",
+              style: const TextStyle(fontSize: 12),
+              textAlign: TextAlign.justify,
             ),
-          ),
-          Text(
-            "${widget.desc}",
-            textAlign: TextAlign.justify,
           )
         ],
       ),
@@ -109,12 +142,13 @@ class _DetailLibraryPageState extends State<DetailLibraryPage> {
 
   Widget buildPreview() {
     return GestureDetector(
-      onTap: () => launchPreviewLinks(Uri.parse("${widget.previewLinks}")),
+      onTap: () => launchPreviewLinks(Uri.parse("${widget.webReaderLinks}")),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: padding, horizontal: padding),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8), color: kBlack),
+            borderRadius: BorderRadius.circular(8), 
+            color: kBlack),
         child: const Center(
             child: Text(
           "Preview",
@@ -131,16 +165,14 @@ class _DetailLibraryPageState extends State<DetailLibraryPage> {
         margin: const EdgeInsets.symmetric(vertical: padding, horizontal: padding),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8), color: kGrey.withOpacity(0.7)),
+            borderRadius: BorderRadius.circular(8),
+            color: kGrey.withOpacity(0.7)),
         child: Center(
             child: Row(
-              children: const [
-                Text(
-          "Buy",
-          style: TextStyle(color: kBlack),
-        ),
-              ],
-            )),
+          children: const [
+            Icon(Icons.shopping_cart),
+          ],
+        )),
       ),
     );
   }
