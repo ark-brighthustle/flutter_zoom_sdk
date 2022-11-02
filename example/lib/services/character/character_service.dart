@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -14,153 +16,201 @@ import '../../utils/config.dart';
 class CharacterService{
   getDataHadist(String siswa) async {
     var url = Uri.parse("$API_CHARACTER/recitation/hadist?filters[siswa]="+siswa);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => HadistModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => HadistModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getDataHafalanSurahQuran(String siswa) async {
     var url = Uri.parse("$API_CHARACTER/recitation/quran?filters[siswa]="+siswa);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => HafalanQuaranModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => HafalanQuaranModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getDataFiqih(String siswa) async {
     var url = Uri.parse("$API_CHARACTER/recitation/fiqih?filters[siswa]="+siswa);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => FiqihModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => FiqihModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getDataTulisAlQuran(String siswa) async {
     var url = Uri.parse("$API_CHARACTER/writing/quran?filters[siswa]="+siswa);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson;
+          return data;
+        }
       } else {
-        var data = responseJson;
-        return data;
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getDataBacaAlQuran(String siswa) async {
     var url = Uri.parse("$API_CHARACTER/reading/quran?filters[siswa]="+siswa);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson;
+          return data;
+        }
       } else {
-        var data = responseJson;
-        return data;
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getKategoriPenguatanKarakterTematik() async {
     var url = Uri.parse("$API_CHARACTER/categories");
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => KategoriPenguatanKarakterTematikModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => KategoriPenguatanKarakterTematikModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getPenguatanKarakterTematik(String idIdentitasSekolah, String idkategori) async {
     var url = Uri.parse("$API_CHARACTER/videos?filters[school]="+idIdentitasSekolah+"&filters[status]=approved&filters[category]="+idkategori);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => PenguatanKarakterTematikModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => PenguatanKarakterTematikModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getAmaliahReferensi(String idIdentitasSekolah) async{
     var url = Uri.parse("$API_CHARACTER/amaliah/reference/verified/approved?filters[sekolah]="+idIdentitasSekolah);
-    final response = await http.get(url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          }).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => AmaliahReference.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => AmaliahReference.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 

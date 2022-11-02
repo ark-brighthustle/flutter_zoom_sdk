@@ -62,6 +62,7 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
       });
     }else{
       setState(() {
+        isLoadingguruss = false;
         cekKoneksiguruss = false;
       });
     }
@@ -82,13 +83,18 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
       });
     }else{
       setState(() {
+        isLoadinggurupendamping = false;
         cekKoneksigurupendamping = false;
       });
     }
   }
 
   Future refreshGuruSmartSchool() async {
+    await PlayVideo();
     await getDataMapel();
+    Future.delayed(const Duration(seconds: 1), () {
+      getLogActivity();
+    });
   }
 
   Future refreshGuruPendamping() async {
@@ -135,10 +141,9 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
 
   PlayVideo() async{
     bool playVideo = await _CekDurasiVideo();
-    if(playVideo == true){
-      getDataMapel();
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+    if(playVideo != true) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
   }
 
@@ -215,13 +220,13 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
             child: cekKoneksiguruss == true
                 ? isLoadingguruss == true
                   ? Center(child: CircularProgressIndicator())
-                  : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Stack(
-                    children: [
-                      ListView.builder(
+                  : listMapel.length == 0
+                    ? buildNoDataGuruSS()
+                    : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListView.builder(
                           itemCount: listMapel.length,
                           itemBuilder: (context, i){
                             return Column(
@@ -240,10 +245,7 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
                               ],
                             );
                           }),
-                      buildNoDataGuruSS()
-                    ],
-                  )
-              )
+            )
                 : buildNoKoneksiGuruSS()
         )
     );
@@ -257,13 +259,13 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
             child: cekKoneksigurupendamping == true
                 ? isLoadinggurupendamping == true
                   ? Center(child: CircularProgressIndicator())
-                  : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Stack(
-                    children: [
-                      ListView.builder(
+                  : listJadwalSiswa.length == 0
+                    ? buildNoDataGuruPendamping()
+                    : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: ListView.builder(
                           itemCount: listJadwalSiswa.length,
                           itemBuilder: (context, i) {
                             String jamMulai = listJadwalSiswa[i].jamMulai.substring(0, 5);
@@ -527,44 +529,40 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
 
                             return const Text("Jadwal Tidak Ditemukan");
                           }),
-                      buildNoDataGuruPendamping()
-                    ],
-                  )
-              )
+            )
                 : buildNoKoneksiGuruPendamping()
         )
     );
   }
 
   Widget buildNoDataGuruSS() {
-    if (listMapel.length == 0) {
-      return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshGuruSmartSchool,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              const Text(
-                "Belum Ada data",
-                style: TextStyle(fontSize: 12),
-              ),
-              TextButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
-                onPressed: refreshGuruSmartSchool,
-                child: Text(
-                  "Refresh",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            )
+          ]),
+    );
   }
 
   Widget buildNoKoneksiGuruSS() {
@@ -576,14 +574,14 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
                 width: 120,
               ),
               const SizedBox(
-                height: 15,
+                height: 8,
               ),
               const Text(
                 "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
               ),
-              SizedBox(
-                height: 10,
+              const SizedBox(
+                height: 8,
               ),
               TextButton(
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
@@ -598,34 +596,33 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
   }
 
   Widget buildNoDataGuruPendamping() {
-    if (listMapel.length == 0) {
-      return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshGuruPendamping,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              const Text(
-                "Belum Ada data",
-                style: TextStyle(fontSize: 12),
-              ),
-              TextButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
-                onPressed: refreshGuruPendamping,
-                child: Text(
-                  "Refresh",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            )
+          ]),
+    );
   }
 
   Widget buildNoKoneksiGuruPendamping() {
@@ -637,14 +634,14 @@ class _ClassRoomPageState extends State<ClassRoomPage> with TickerProviderStateM
                 width: 120,
               ),
               const SizedBox(
-                height: 15,
+                height: 8,
               ),
               const Text(
                 "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
               ),
-              SizedBox(
-                height: 10,
+              const SizedBox(
+                height: 8,
               ),
               TextButton(
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),

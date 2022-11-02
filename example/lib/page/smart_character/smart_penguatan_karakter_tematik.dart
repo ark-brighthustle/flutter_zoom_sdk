@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,17 +24,32 @@ class SmartPenguatanKarakterTematik extends StatefulWidget {
 
 class _SmartPenguatanKarakterTematikState extends State<SmartPenguatanKarakterTematik> {
   List VideoPembangunanKarakter = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future _getvideoPembangunanKarakterResource() async {
-    var response = await CharacterService().getPenguatanKarakterTematik(widget.idIdentitasSekolah.toString(),widget.idKategori.toString());
-    if (!mounted) return;
     setState(() {
-      VideoPembangunanKarakter = response;
+      cekKoneksi = true;
+      isLoading = true;
     });
+    var response = await CharacterService().getPenguatanKarakterTematik(widget.idIdentitasSekolah.toString(),widget.idKategori.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        VideoPembangunanKarakter = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future refreshPenguatanKarakterTematik() async{
-    _getvideoPembangunanKarakterResource();
+    await _getvideoPembangunanKarakterResource();
   }
 
   @override
@@ -102,72 +118,138 @@ class _SmartPenguatanKarakterTematikState extends State<SmartPenguatanKarakterTe
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: ListView.builder(
-            itemCount: VideoPembangunanKarakter.length,
-            itemBuilder: (context, i) {
-              String ytId = VideoPembangunanKarakter[i].video_url.substring(32, 43);
-              DateTime dateTime =
-              DateTime.parse(VideoPembangunanKarakter[i].created_at);
-              String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
-              return GestureDetector(
-                onTap: () { _CekDurasiPlayYoutube(VideoPembangunanKarakter[i].id.toString(), ytId);},
-                child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 168,
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              child: CachedNetworkImage(
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                imageUrl:
-                                "https://img.youtube.com/vi/$ytId/0.jpg",
-                                errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                              ),
-                            ),
-                            Align(
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.play_circle,
-                                  size: 60,
-                                  color: kBlack.withOpacity(0.5),
-                                ))
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0, top: 10.0, left: 16.0, right: 16.0),
+          child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(child: CircularProgressIndicator(),)
+                : VideoPembangunanKarakter.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+                  itemCount: VideoPembangunanKarakter.length,
+                  itemBuilder: (context, i) {
+                    String ytId = VideoPembangunanKarakter[i].video_url.substring(32, 43);
+                    DateTime dateTime =
+                    DateTime.parse(VideoPembangunanKarakter[i].created_at);
+                    String createdAt =
+                    DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+                    return GestureDetector(
+                      onTap: () { _CekDurasiPlayYoutube(VideoPembangunanKarakter[i].id.toString(), ytId);},
+                      child: Card(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${createdAt} - ${VideoPembangunanKarakter[i].category}"),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 168,
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                    child: CachedNetworkImage(
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      imageUrl:
+                                      "https://img.youtube.com/vi/$ytId/0.jpg",
+                                      errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                    ),
+                                  ),
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.play_circle,
+                                        size: 60,
+                                        color: kBlack.withOpacity(0.5),
+                                      ))
+                                ],
+                              ),
+                            ),
                             Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(VideoPembangunanKarakter[i].title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    ))),
-                            Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: VideoPembangunanKarakter[i].description != null
-                                    ? Text("${VideoPembangunanKarakter[i].description}")
-                                    : null
+                              padding: const EdgeInsets.only(bottom: 16.0, top: 10.0, left: 16.0, right: 16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${createdAt} - ${VideoPembangunanKarakter[i].category}"),
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Text(VideoPembangunanKarakter[i].title,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                          ))),
+                                  Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: VideoPembangunanKarakter[i].description != null
+                                          ? Text("${VideoPembangunanKarakter[i].description}")
+                                          : null
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+                    );
+                  })
+              : buildNoKoneksi()
       ),
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshPenguatanKarakterTematik,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshPenguatanKarakterTematik,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 

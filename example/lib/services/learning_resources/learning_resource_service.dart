@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -9,18 +11,24 @@ import '../../utils/config.dart';
 class LearningResourceService {
   getDataLearningResource(String topikId, String categoryId, String mapelId) async {
     var url = Uri.parse("$API_LEARNING_RESOURCE/?filters[topic_id]=$topikId&filters[category_id]=$categoryId&filters[mapel_id]=$mapelId");
-    final response = await http
-        .get(url);
-    var responseJson = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"Learning Resource": null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http
+          .get(url).timeout(const Duration(seconds: 7));
+      var responseJson = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"Learning Resource": null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => LearningResourcesModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => LearningResourcesModel.fromJson(p)).toList();
+        return throw Exception('Failed to load');
       }
-    } else {
-      return throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 

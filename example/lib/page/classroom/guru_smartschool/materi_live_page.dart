@@ -43,6 +43,7 @@ class _MateriLivePageState extends State<MateriLivePage> {
       });
     }else{
       setState(() {
+        isLoading = false;
         cekKoneksi = false;
       });
     }
@@ -96,93 +97,89 @@ class _MateriLivePageState extends State<MateriLivePage> {
             child: cekKoneksi == true
               ? isLoading == true
                 ? Center(child: CircularProgressIndicator())
-                : Stack(
-              children: [
-                ListView.builder(
-                    itemCount: _materiLiveList.length,
-                    itemBuilder: (context, i) {
-                      if (tingkat.toString() == widget.kodeTingkat && widget.id == _materiLiveList[i].pelajaranId) {
-                        return Column(
-                          children: [
-                            ListTile(
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMateriLivePage(
-                                id: _materiLiveList[i].id,
-                                sesiKe: _materiLiveList[i].sesiKe,
-                                judul: _materiLiveList[i].judul,
-                                deskripsi: _materiLiveList[i].deskripsi,
-                                namaGuru: _materiLiveList[i].namaGuruSmart,
-                                namaMataPelajaran: _materiLiveList[i].namaMataPelajaran,
-                                namaTingkat: _materiLiveList[i].namaTingkat,
-                                tahunAkademik: _materiLiveList[i].tahunAkademik,
-                                namaTahunAkademik: _materiLiveList[i].namaTahunAkademik,
-                                urlFileModul: _materiLiveList[i].urlFileModul,
-                                urlVideoBahan: _materiLiveList[i].urlVideoBahan,
-                                bahanAjar: _materiLiveList[i].bahanAjar,
-                                bahanTayang: _materiLiveList[i].bahanTayang,
-                                tanggalTayang: _materiLiveList[i].tanggalTayang,
-                              ))),
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Pertemuan ke- ${_materiLiveList[i].sesiKe}",
-                                    style: const TextStyle(
-                                        fontSize: 12, fontWeight: FontWeight.w600),
-                                  ),
-
-                                ],
-                              ),
-                              subtitle: Text(
-                                "${_materiLiveList[i].judul}",
+                : _materiLiveList.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+                itemCount: _materiLiveList.length,
+                itemBuilder: (context, i) {
+                  if (tingkat.toString() == widget.kodeTingkat && widget.id == _materiLiveList[i].pelajaranId) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMateriLivePage(
+                            id: _materiLiveList[i].id,
+                            sesiKe: _materiLiveList[i].sesiKe,
+                            judul: _materiLiveList[i].judul,
+                            deskripsi: _materiLiveList[i].deskripsi,
+                            namaGuru: _materiLiveList[i].namaGuruSmart,
+                            namaMataPelajaran: _materiLiveList[i].namaMataPelajaran,
+                            namaTingkat: _materiLiveList[i].namaTingkat,
+                            tahunAkademik: _materiLiveList[i].tahunAkademik,
+                            namaTahunAkademik: _materiLiveList[i].namaTahunAkademik,
+                            urlFileModul: _materiLiveList[i].urlFileModul,
+                            urlVideoBahan: _materiLiveList[i].urlVideoBahan,
+                            bahanAjar: _materiLiveList[i].bahanAjar,
+                            bahanTayang: _materiLiveList[i].bahanTayang,
+                            tanggalTayang: _materiLiveList[i].tanggalTayang,
+                          ))),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Pertemuan ke- ${_materiLiveList[i].sesiKe}",
                                 style: const TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.w600),
                               ),
-                              trailing:  Text("${_materiLiveList[i].tanggalTayang}", style: const TextStyle(fontSize: 12),),
-                            ),
-                            const Divider(thickness: 1,)
-                          ],
-                        );
-                      }
 
-                      return Container();
-                    }),
-                buildNoData()
-              ],
-            )
+                            ],
+                          ),
+                          subtitle: Text(
+                            "${_materiLiveList[i].judul}",
+                            style: const TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                          trailing:  Text("${_materiLiveList[i].tanggalTayang}", style: const TextStyle(fontSize: 12),),
+                        ),
+                        const Divider(thickness: 1,)
+                      ],
+                    );
+                  }
+
+                  return Container();
+                })
               : buildNoKoneksi()
         )
     );
   }
 
   Widget buildNoData() {
-    if (_materiLiveList.length == 0) {
-      return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              const Text(
-                "Belum Ada data",
-                style: TextStyle(fontSize: 12),
-              ),
-              TextButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
-                onPressed: onRefresh,
-                child: Text(
-                  "Refresh",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            )
+          ]),
+    );
   }
 
   Widget buildNoKoneksi() {
@@ -194,14 +191,14 @@ class _MateriLivePageState extends State<MateriLivePage> {
                 width: 120,
               ),
               const SizedBox(
-                height: 15,
+                height: 8,
               ),
               const Text(
                 "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
               ),
-              SizedBox(
-                height: 10,
+              const SizedBox(
+                height: 8,
               ),
               TextButton(
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
