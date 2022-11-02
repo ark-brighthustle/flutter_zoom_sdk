@@ -31,20 +31,30 @@ class DetailMembacaPage extends StatefulWidget {
 class _DetailMembacaPageState extends State<DetailMembacaPage> {
   List listLearningResource = [];
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   getLearningResource() async {
     setState((){
+      cekKoneksi = true;
       isLoading = true;
     });
     final response = await LearningResourceService().getDataLearningResource(
         widget.topikId.toString(),
         widget.categoryId.toString(),
         widget.mapelId.toString());
-    if (!mounted) return;
-    setState(() {
-      listLearningResource = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        listLearningResource = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   void _launchUrl(Uri _url) async {
@@ -139,71 +149,107 @@ class _DetailMembacaPageState extends State<DetailMembacaPage> {
       child: RefreshIndicator(
           onRefresh: onRefresh,
           color: kCelticBlue,
-          child: isLoading == true
+          child: cekKoneksi == true
+            ? isLoading == true
               ? Center(child: CircularProgressIndicator())
-              : Stack(
-            children: [
-              ListView.builder(
-                  itemCount: listLearningResource.length,
-                  itemBuilder: (context, i) {
-                    return Container(
-                      width: double.infinity,
-                      margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8), color: kWhite),
-                      child: ListTile(
-                        onTap: () => eventClick(listLearningResource[i].id.toString(),listLearningResource[i].fileUrl),
-                            // _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
-                        leading: const Padding(
-                          padding: EdgeInsets.only(top: 8),
-                          child: Icon(
-                            Icons.picture_as_pdf_rounded,
-                            size: 36,
-                            color: kRed,
-                          ),
-                        ),
-                        title: Text(
-                          "${listLearningResource[i].judul}",
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
+              : listLearningResource.length == 0
+                ? buildNoData()
+                : ListView.builder(
+                itemCount: listLearningResource.length,
+                itemBuilder: (context, i) {
+                  return Container(
+                    width: double.infinity,
+                    margin:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: padding),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8), color: kWhite),
+                    child: ListTile(
+                      onTap: () => eventClick(listLearningResource[i].id.toString(),listLearningResource[i].fileUrl),
+                      // _launchUrl(Uri.parse("${listLearningResource[i].fileUrl}")),
+                      leading: const Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Icon(
+                          Icons.picture_as_pdf_rounded,
+                          size: 36,
+                          color: kRed,
                         ),
                       ),
-                    );
-                  }),
-              buildNoData()
-            ],
-          )
+                      title: Text(
+                        "${listLearningResource[i].judul}",
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                      ),
+                    ),
+                  );
+                })
+            : buildNoKoneksi()
       )
     );
   }
 
   Widget buildNoData() {
-    if (listLearningResource.length == 0) {
-      return Center(
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+                'assets/no_connection.svg',
+                width: 120,
               ),
               const SizedBox(
                 height: 8,
               ),
               const Text(
-                "Belum Ada data",
+                "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            ])
+    );
   }
 
   Future<void> eventClick(String id, String urlFile) async{

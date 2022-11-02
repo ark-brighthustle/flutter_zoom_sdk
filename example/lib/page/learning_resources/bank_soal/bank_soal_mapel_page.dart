@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../services/classroom/mapel_service.dart';
 import '../../../theme/colors.dart';
@@ -15,27 +16,37 @@ class BankSoalMapelPage extends StatefulWidget {
 
 class _BankSoalMapelPageState extends State<BankSoalMapelPage> {
   List _matapelajaran = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   getMataPelajaran() async {
-    final response = await MapelService().getDataMapel();
-    if (!mounted) return;
     setState(() {
-      _matapelajaran = response;
+      cekKoneksi = true;
+      isLoading = true;
     });
+    final response = await MapelService().getDataMapel();
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        _matapelajaran = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future onRefresh() async {
-    await MapelService().getDataMapel();
-  }
-
-  Future refreshBankSoalMapel() async {
-    await MapelService().getDataMapel();
+    await getMataPelajaran();
   }
 
   @override
   void initState() {
     getMataPelajaran();
-    onRefresh();
     super.initState();
   }
 
@@ -99,9 +110,14 @@ class _BankSoalMapelPageState extends State<BankSoalMapelPage> {
     String title = "Bank Soal";
     return Expanded(
       child: RefreshIndicator(
-        onRefresh: refreshBankSoalMapel,
+        onRefresh: onRefresh,
         color: kCelticBlue,
-        child: ListView.builder(
+        child: cekKoneksi == true
+          ? isLoading == true
+            ? Center(child: CircularProgressIndicator(),)
+            : _matapelajaran.length == 0
+              ? buildNoData()
+              : ListView.builder(
             itemCount: _matapelajaran.length,
             itemBuilder: (context, i) {
               return Container(
@@ -132,8 +148,69 @@ class _BankSoalMapelPageState extends State<BankSoalMapelPage> {
                   ],
                 ),
               );
-            }),
+            })
+          : buildNoKoneksi()
       )
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../../models/classroom/event_click_model.dart';
@@ -8,17 +10,23 @@ import '../../utils/config.dart';
 class BankSoalService {
   getDataBankSoal(String id) async {
     var url = Uri.parse(API_BANK_SOAL+"?filters[mapel_id]="+id);
-    final response = await http.get(url);
-    var responseJson = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"Bank Soal": null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url).timeout(const Duration(seconds: 7));
+      var responseJson = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"Bank Soal": null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => BankSoalModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => BankSoalModel.fromJson(p)).toList();
+        return throw Exception('Failed to load');
       }
-    } else {
-      return throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 

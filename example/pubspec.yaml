@@ -85,6 +85,7 @@ flutter:
     - assets/ilustrasi_no_data.svg
     - assets/ilustrasi_no_live_stream.svg
     - assets/no_data.svg
+    - assets/no_connection.svg
     - assets/icon/diary.png
     - assets/icon/event.png
     - assets/icon/game.png

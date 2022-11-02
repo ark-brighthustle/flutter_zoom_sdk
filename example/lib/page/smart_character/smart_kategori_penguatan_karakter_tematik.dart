@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/classroom/event_click_model.dart';
@@ -20,30 +21,44 @@ class SmartKategoriPenguatanKarakterTematik extends StatefulWidget {
 
 class _SmartKategoriPenguatanKarakterTematikState extends State<SmartKategoriPenguatanKarakterTematik> {
   List KategoriPenguatanKarakterTematik = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future _getKategoriPenguatanKarakterTemaikResource() async {
-    var response = await CharacterService().getKategoriPenguatanKarakterTematik();
-    if (!mounted) return;
     setState(() {
-      KategoriPenguatanKarakterTematik = response;
+      isLoading = true;
+      cekKoneksi = true;
     });
+    var response = await CharacterService().getKategoriPenguatanKarakterTematik();
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        KategoriPenguatanKarakterTematik = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future refreshKategori() async {
-    _getKategoriPenguatanKarakterTemaikResource();
+    await durasiPlayYoutube();
+    await _getKategoriPenguatanKarakterTemaikResource();
   }
 
   @override
   void initState() {
-    durasiPlayYoutube();
+    _getKategoriPenguatanKarakterTemaikResource();
     super.initState();
   }
 
   durasiPlayYoutube() async{
     bool playYoutube = await _CekDurasiPlayYoutube();
-    if(playYoutube == true){
-      _getKategoriPenguatanKarakterTemaikResource();
-    }else{
+    if(playYoutube != true){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
   }
@@ -140,29 +155,95 @@ class _SmartKategoriPenguatanKarakterTematikState extends State<SmartKategoriPen
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: ListView.builder(
-            itemCount: KategoriPenguatanKarakterTematik.length,
-            itemBuilder: (context, i){
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: kWhite
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: ListTile(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SmartPenguatanKarakterTematik(
-                      idIdentitasSekolah: widget.idIdentitasSekolah, idKategori: KategoriPenguatanKarakterTematik[i].id.toString(),
-                    ))),
-                    title: Text("${KategoriPenguatanKarakterTematik[i].name}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                    subtitle: Text("${KategoriPenguatanKarakterTematik[i].description}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16,),
-                  ),
-                ),
-              );
-            }),
+          child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(child: CircularProgressIndicator(),)
+                : KategoriPenguatanKarakterTematik.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+                  itemCount: KategoriPenguatanKarakterTematik.length,
+                  itemBuilder: (context, i){
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: kWhite
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: ListTile(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SmartPenguatanKarakterTematik(
+                            idIdentitasSekolah: widget.idIdentitasSekolah, idKategori: KategoriPenguatanKarakterTematik[i].id.toString(),
+                          ))),
+                          title: Text("${KategoriPenguatanKarakterTematik[i].name}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                          subtitle: Text("${KategoriPenguatanKarakterTematik[i].description}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                          trailing: const Icon(Icons.arrow_forward_ios, size: 16,),
+                        ),
+                      ),
+                    );
+                  })
+              : buildNoKoneksi()
       ),
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshKategori,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshKategori,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }

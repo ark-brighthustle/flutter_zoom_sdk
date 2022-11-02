@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -39,17 +40,23 @@ class CharacterAmaliahPersonal{
 
   getPesonalAmaliah(String idSekolah, String idSiswa) async{
     var url = Uri.parse("$API_CHARACTER/amaliah/personal?filters['sekolah']="+idSekolah+"&filters[siswa]="+idSiswa);
-    final response = await http.get(url);
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      if (response.body == '{"data":null}') {
-        return throw Exception('No results');
+    try{
+      final response = await http.get(url).timeout(const Duration(seconds: 7));
+      var responseJson = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (response.body == '{"data":null}') {
+          return throw Exception('No results');
+        } else {
+          var data = responseJson['data'];
+          return data.map((p) => AmaliahPersonalSuccessModel.fromJson(p)).toList();
+        }
       } else {
-        var data = responseJson['data'];
-        return data.map((p) => AmaliahPersonalSuccessModel.fromJson(p)).toList();
+        throw Exception('Failed to load');
       }
-    } else {
-      throw Exception('Failed to load');
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 

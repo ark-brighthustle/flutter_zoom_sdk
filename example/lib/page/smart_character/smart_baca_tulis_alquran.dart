@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../services/character/character_service.dart';
 import '../../theme/colors.dart';
@@ -16,23 +17,56 @@ class SmartBacaTulisAlquran extends StatefulWidget {
 class _SmartBacaTulisAlquranState extends State<SmartBacaTulisAlquran> {
   String? statusTulis;
   String? statusBaca;
+  bool cekKoneksi = true;
+  bool isLoading = true;
 
   Future _getTulisAlquranResource() async {
-    var response = await CharacterService().getDataTulisAlQuran(widget.idSiswa.toString());
-    if (!mounted) return;
     setState(() {
-      statusTulis = response['data']['status'];
+      cekKoneksi = true;
+      isLoading  = true;
     });
+    var response = await CharacterService().getDataTulisAlQuran(widget.idSiswa.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        statusTulis = response['data']['status'];
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future _getBacaAlquranResource() async {
+    setState(() {
+      cekKoneksi = true;
+      isLoading  = true;
+    });
     var response = await CharacterService().getDataBacaAlQuran(widget.idSiswa.toString());
-    if (!mounted) return;
-    if(response['data'] != null) {
+    if(response != null){
+      if (!mounted) return;
+      if(response['data'] != null) {
+        setState(() {
+          statusBaca = response['data']['status'];
+          isLoading = false;
+          cekKoneksi = true;
+        });
+      }
+    }else{
       setState(() {
-        statusBaca = response['data']['status'];
+        isLoading = false;
+        cekKoneksi = false;
       });
     }
+  }
+
+  Future onRefresh() async {
+    await _getTulisAlquranResource();
+    await _getBacaAlquranResource();
   }
 
   @override
@@ -88,11 +122,13 @@ class _SmartBacaTulisAlquranState extends State<SmartBacaTulisAlquran> {
         Expanded(
           child: Align(
             alignment: Alignment.center,
-            child: statusBaca == null || statusTulis == null
-              ? Center(
-                  child: CircularProgressIndicator()
-                )
-              : itemBacaTulis()
+            child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(
+                child: CircularProgressIndicator()
+            )
+                : itemBacaTulis()
+              : buildNoKoneksi()
           ),
         ),
       ],
@@ -146,6 +182,36 @@ class _SmartBacaTulisAlquranState extends State<SmartBacaTulisAlquran> {
         ],
         // SingleChildScrollView(),
       ],
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }

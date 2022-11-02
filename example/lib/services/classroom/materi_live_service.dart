@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import '../../helpers/helpers.dart';
@@ -10,13 +12,19 @@ class MateriLiveService {
   getDataMateriLive(String id) async {
     var url = Uri.parse("$API_V2/materi-live/$id");
     String? token = await Helpers().getToken();
-    final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
-    var responseJson = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      var data = responseJson['data'];
-      return data.map((p) => MateriLiveModel.fromJson(p)).toList();
-    } else {
-      throw Exception('Failed to load');
+    try{
+      final response = await http.get(url, headers: {"Authorization": "Bearer $token"}).timeout(const Duration(seconds: 7));
+      var responseJson = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        var data = responseJson['data'];
+        return data.map((p) => MateriLiveModel.fromJson(p)).toList();
+      } else {
+        return null;
+      }
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 

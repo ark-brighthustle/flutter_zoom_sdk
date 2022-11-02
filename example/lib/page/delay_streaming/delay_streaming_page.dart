@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,16 +29,34 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
 
   List mapelList = [];
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future getDataMapel() async {
     setState(() {
+      cekKoneksi = true;
       isLoading = true;
     });
     var response = await MapelService().getDataMapel();
-    if (!mounted) return;
-    setState(() {
-      mapelList = response;
-      isLoading = false;
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        mapelList = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
+  }
+
+  Future onRefresh() async {
+    await durasiPlayYoutube();
+    await getDataMapel();
+    Future.delayed(const Duration(seconds: 1), () {
+      getLogActivity();
     });
   }
 
@@ -79,9 +98,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
 
   durasiPlayYoutube() async{
     bool playYoutube = await cekDurasiPlayYoutube();
-    if(playYoutube == true){
-      getDataMapel();
-    }else{
+    if(playYoutube != true){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
   }
@@ -138,36 +155,100 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
   }
 
   Widget buildMapel() {
-    return isLoading == true
-    ? const Center(child: CircularProgressIndicator(),)
-    : Stack(children: [
-      mapelList.isEmpty
-      ? const Center(child: Text(textGagalMemuatData))
-      : ListView.builder(
-              itemCount: mapelList.length,
-              itemBuilder: (context, i) {
-                return Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8), color: kGrey),
-                  child: ListTile(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailDelayStreamingPage(
-                                namaMapel: mapelList[i].namaPelajaran,
-                                kodeMapel: mapelList[i].kode))),
-                    leading: Image.asset('assets/icon/delay_streaming.png'),
-                    title: Text(
-                      "${mapelList[i].namaPelajaran}",
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600),
-                    ),
-                    trailing: const Icon(Icons.arrow_circle_right_rounded, color: kCelticBlue, size: 20,),
+    return RefreshIndicator(
+        onRefresh: onRefresh,
+        color: kCelticBlue,
+        child: cekKoneksi == true
+           ? isLoading == true
+            ? Center(child: CircularProgressIndicator())
+            : mapelList.length == 0
+              ? buildNoData()
+              : ListView.builder(
+            itemCount: mapelList.length,
+            itemBuilder: (context, i) {
+              return Container(
+                padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8), color: kGrey),
+                child: ListTile(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DetailDelayStreamingPage(
+                              namaMapel: mapelList[i].namaPelajaran,
+                              kodeMapel: mapelList[i].kode))),
+                  leading: Image.asset('assets/icon/delay_streaming.png'),
+                  title: Text(
+                    "${mapelList[i].namaPelajaran}",
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
                   ),
-                );
-              }),
-    ],);
+                  trailing: const Icon(Icons.arrow_circle_right_rounded, color: kCelticBlue, size: 20,),
+                ),
+              );
+            })
+            : buildNoKoneksi()
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 }

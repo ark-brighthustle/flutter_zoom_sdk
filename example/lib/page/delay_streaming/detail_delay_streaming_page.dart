@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_youtube_downloader/flutter_youtube_downloader.dart';
 import 'package:flutter_zoom_sdk_example/utils/constant.dart';
 import 'package:intl/intl.dart';
@@ -31,17 +32,31 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
   String? tingkat;
   bool? loadVideoYoutube;
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future getLiveDelay() async {
     setState(() {
+      cekKoneksi = true;
       isLoading = true;
     });
     var response = await DelayStreamingService().getDataLiveDelay();
-    if (!mounted) return;
-    setState(() {
-      liveDelayList = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        liveDelayList = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
+  }
+
+  Future onRefresh() async {
+    await getLiveDelay();
   }
 
   Future getSiswa() async {
@@ -93,132 +108,130 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
   }
 
   Widget buildLiveDelay() {
-    return isLoading == true
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : Stack(
-            children: [
-              liveDelayList.isEmpty
-                  ? const Center(
-                      child: Text(textGagalMemuatData),
-                    )
-                  : ListView.builder(
-                      itemCount: liveDelayList.length,
-                      itemBuilder: (context, i) {
-                        String ytId =
-                            liveDelayList[i].youtubeUrl.substring(32, 43);
-                        youtube_link = liveDelayList[i].youtubeUrl;
+    return RefreshIndicator(
+        onRefresh: onRefresh,
+        color: kCelticBlue,
+        child: cekKoneksi == true
+          ? isLoading == true
+            ? Center(child: CircularProgressIndicator())
+            : liveDelayList.length == 0
+              ?  buildNoData()
+              : ListView.builder(
+              itemCount: liveDelayList.length,
+              itemBuilder: (context, i) {
+                String ytId =
+                liveDelayList[i].youtubeUrl.substring(32, 43);
+                youtube_link = liveDelayList[i].youtubeUrl;
 
-                        DateTime dateTime =
-                            DateTime.parse(liveDelayList[i].createdAt);
-                        String createdAt =
-                            DateFormat('dd-MM-yyyy hh:mm').format(dateTime);
+                DateTime dateTime =
+                DateTime.parse(liveDelayList[i].createdAt);
+                String createdAt =
+                DateFormat('dd-MM-yyyy hh:mm').format(dateTime);
 
-                        return tingkat.toString() ==
-                                    liveDelayList[i].kodeTingkat &&
-                                widget.kodeMapel ==
-                                    liveDelayList[i].kodeMataPelajaran
-                            ? GestureDetector(
-                                onTap: () {
-                                  _bottomSheet(
-                                      liveDelayList[i].id.toString(),
-                                      liveDelayList[i].kodeMataPelajaran,
-                                      liveDelayList[i].judul,
-                                      liveDelayList[i].deskripsi,
-                                      liveDelayList[i].gdriveUrl,
-                                      liveDelayList[i].youtubeUrl,
-                                      ytId);
-                                },
-                                child: Container(
-                                  width: 300,
-                                  color: kWhite,
-                                  padding:
-                                      const EdgeInsets.only(bottom: padding),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: double.infinity,
-                                        height: 168,
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              child: CachedNetworkImage(
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
-                                                imageUrl:
-                                                    "https://img.youtube.com/vi/$ytId/0.jpg",
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                              ),
-                                            ),
-                                            Align(
-                                                alignment: Alignment.center,
-                                                child: Icon(
-                                                  Icons.play_circle,
-                                                  size: 60,
-                                                  color:
-                                                      kBlack.withOpacity(0.5),
-                                                ))
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              12, 4, 12, 4),
-                                          child: Text(liveDelayList[i].judul,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                              ))),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            12, 0, 12, 4),
-                                        child: Text(liveDelayList[i].deskripsi,
-                                            style:
-                                                const TextStyle(fontSize: 12)),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                12, 0, 0, 0),
-                                            child: Text("Created : $createdAt",
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                )),
-                                          ),
-                                          liveDelayList[i].liveAt == null
-                                              ? const Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 12, 0),
-                                                  child: Text("Live : -",
-                                                      style: TextStyle(
-                                                        fontSize: 10,
-                                                      )),
-                                                )
-                                              : Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          0, 0, 12, 0),
-                                                  child: Text(
-                                                      "Live : ${DateFormat('dd-MM-yyyy').format(DateTime.parse(liveDelayList[i].liveAt))}",
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                      ))),
-                                        ],
-                                      ),
-                                    ],
+                return tingkat.toString() ==
+                    liveDelayList[i].kodeTingkat &&
+                    widget.kodeMapel ==
+                        liveDelayList[i].kodeMataPelajaran
+                    ? GestureDetector(
+                    onTap: () {
+                      _bottomSheet(
+                          liveDelayList[i].id.toString(),
+                          liveDelayList[i].kodeMataPelajaran,
+                          liveDelayList[i].judul,
+                          liveDelayList[i].deskripsi,
+                          liveDelayList[i].gdriveUrl,
+                          liveDelayList[i].youtubeUrl,
+                          ytId);
+                    },
+                    child: Container(
+                      width: 300,
+                      color: kWhite,
+                      padding:
+                      const EdgeInsets.only(bottom: padding),
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: 168,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  child: CachedNetworkImage(
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    imageUrl:
+                                    "https://img.youtube.com/vi/$ytId/0.jpg",
+                                    errorWidget:
+                                        (context, url, error) =>
+                                    const Icon(Icons.error),
                                   ),
-                                ))
-                            : Container();
-                      })
-            ],
-          );
+                                ),
+                                Align(
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.play_circle,
+                                      size: 60,
+                                      color:
+                                      kBlack.withOpacity(0.5),
+                                    ))
+                              ],
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  12, 4, 12, 4),
+                              child: Text(liveDelayList[i].judul,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ))),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                12, 0, 12, 4),
+                            child: Text(liveDelayList[i].deskripsi,
+                                style:
+                                const TextStyle(fontSize: 12)),
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    12, 0, 0, 0),
+                                child: Text("Created : $createdAt",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                    )),
+                              ),
+                              liveDelayList[i].liveAt == null
+                                  ? const Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    0, 0, 12, 0),
+                                child: Text("Live : -",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    )),
+                              )
+                                  : Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(
+                                      0, 0, 12, 0),
+                                  child: Text(
+                                      "Live : ${DateFormat('dd-MM-yyyy').format(DateTime.parse(liveDelayList[i].liveAt))}",
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                      ))),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ))
+                    : Container();
+              })
+          : buildNoKoneksi()
+    );
   }
 
   Future<bool> _CekDurasiPlayYoutube() async {
@@ -420,5 +433,65 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Gagal terhubung ke server")));
     }
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import '../../services/character/character_service.dart';
 import '../../theme/colors.dart';
@@ -16,17 +17,32 @@ class SmartHafalanSurahAlquran extends StatefulWidget {
 
 class _SmartHafalanSurahAlquranState extends State<SmartHafalanSurahAlquran> {
   List Hafalanlist = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future _gethafalanResource() async {
-    var response = await CharacterService().getDataHafalanSurahQuran(widget.idSiswa.toString());
-    if (!mounted) return;
     setState(() {
-      Hafalanlist = response;
+      cekKoneksi = true;
+      isLoading = true;
     });
+    var response = await CharacterService().getDataHafalanSurahQuran(widget.idSiswa.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        Hafalanlist = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future refresh() async {
-    _gethafalanResource();
+    await _gethafalanResource();
   }
 
   @override
@@ -92,95 +108,161 @@ class _SmartHafalanSurahAlquranState extends State<SmartHafalanSurahAlquran> {
     return RefreshIndicator(
         onRefresh: refresh,
         color: kCelticBlue,
-        child: ListView.builder(
-            itemCount: Hafalanlist.length,
-            itemBuilder: (context, i) {
-              DateTime dateTime =
-              DateTime.parse(Hafalanlist[i].created_at);
-              String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
-              return Card(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 2.0),
-                        child: Column(
-                          children: [
-                            Row(
+        child: cekKoneksi == true
+            ? isLoading == true
+              ? Center(child: CircularProgressIndicator(),)
+              : Hafalanlist.length == 0
+                ? buildNoData()
+                : ListView.builder(
+                itemCount: Hafalanlist.length,
+                itemBuilder: (context, i) {
+                  DateTime dateTime =
+                  DateTime.parse(Hafalanlist[i].created_at);
+                  String createdAt =
+                  DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+                  return Card(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 2.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Surah ${Hafalanlist[i].nama_surah}',
+                                        style: const TextStyle(fontWeight: FontWeight.w600,),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Align(
+                                      child: Text(
+                                        createdAt,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Ayat ${Hafalanlist[i].nomor_ayat_dari} sampai ${Hafalanlist[i].nomor_ayat_sampai}',
+                                    style: TextStyle(color: Colors.black.withOpacity(0.5),),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(top:8.0, bottom: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Makhraj : ${Hafalanlist[i].makhraj},\nTajwid : ${Hafalanlist[i].tajwid},\nPelafalan : ${Hafalanlist[i].pelafalan}',
+                                              style: TextStyle(color: Colors.black.withOpacity(0.6),),
+                                            ),
+                                          ],
+                                        )
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 2.0, bottom: 16.0),
+                            child: Column(
                               children: [
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Surah ${Hafalanlist[i].nama_surah}',
-                                    style: const TextStyle(fontWeight: FontWeight.w600,),
+                                    'Keterangan',
+                                    style: TextStyle(color: Colors.black.withOpacity(0.5),),
                                   ),
                                 ),
-                                Spacer(),
                                 Align(
-                                  child: Text(
-                                    createdAt,
+                                  alignment: Alignment.centerLeft,
+                                  child: Hafalanlist[i].keterangan != null
+                                      ? Text(
+                                    '${Hafalanlist[i].keterangan}',
+                                    style: TextStyle(color: Colors.black.withOpacity(0.6),),
+                                  )
+                                      : Text(
+                                    '-',
+                                    style: TextStyle(color: Colors.black.withOpacity(0.6),),
                                   ),
                                 ),
                               ],
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Ayat ${Hafalanlist[i].nomor_ayat_dari} sampai ${Hafalanlist[i].nomor_ayat_sampai}',
-                                style: TextStyle(color: Colors.black.withOpacity(0.5),),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Padding(
-                                    padding: const EdgeInsets.only(top:8.0, bottom: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'Makhraj : ${Hafalanlist[i].makhraj},\nTajwid : ${Hafalanlist[i].tajwid},\nPelafalan : ${Hafalanlist[i].pelafalan}',
-                                          style: TextStyle(color: Colors.black.withOpacity(0.6),),
-                                        ),
-                                      ],
-                                    )
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 2.0, bottom: 16.0),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Keterangan',
-                                style: TextStyle(color: Colors.black.withOpacity(0.5),),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Hafalanlist[i].keterangan != null
-                                  ? Text(
-                                '${Hafalanlist[i].keterangan}',
-                                style: TextStyle(color: Colors.black.withOpacity(0.6),),
-                              )
-                                  : Text(
-                                '-',
-                                style: TextStyle(color: Colors.black.withOpacity(0.6),),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  );
+                })
+            : buildNoKoneksi()
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
                 ),
-              );
-            })
+              )
+            ])
     );
   }
 }

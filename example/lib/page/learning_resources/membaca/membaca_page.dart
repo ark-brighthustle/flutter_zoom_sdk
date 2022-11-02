@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../services/classroom/mapel_service.dart';
 import '../../../theme/colors.dart';
@@ -17,13 +18,28 @@ class _MembacaPageState extends State<MembacaPage> {
   int topikId = 1;
   int categoryId = 2;
   List listMapel = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future getMapel() async {
-    var response = await MapelService().getDataMapel();
-    if (!mounted) return;
-    setState(() {
-      listMapel = response;
+    setState((){
+      cekKoneksi = true;
+      isLoading = true;
     });
+    var response = await MapelService().getDataMapel();
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        listMapel = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future onRefresh() async {
@@ -97,45 +113,111 @@ class _MembacaPageState extends State<MembacaPage> {
       child: RefreshIndicator(
         onRefresh: onRefresh,
         color: kCelticBlue,
-        child: ListView.builder(
-            itemCount: listMapel.length,
-            itemBuilder: (context, i) {
-              return Container(
-                color: kWhite,
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailMembacaPage(
-                                  topikId: topikId,
-                                  categoryId: categoryId,
-                                  title: widget.title,
-                                  mapelId: listMapel[i].id,
-                                  namaMapel: listMapel[i].namaPelajaran))),
-                      leading: Image.asset(
-                        "assets/icon/membaca.png",
-                        width: 36,
+        child: cekKoneksi == true
+            ? isLoading == true
+              ? Center(child: CircularProgressIndicator(),)
+              : listMapel.length == 0
+                ? buildNoData()
+                : ListView.builder(
+              itemCount: listMapel.length,
+              itemBuilder: (context, i) {
+                return Container(
+                  color: kWhite,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailMembacaPage(
+                                    topikId: topikId,
+                                    categoryId: categoryId,
+                                    title: widget.title,
+                                    mapelId: listMapel[i].id,
+                                    namaMapel: listMapel[i].namaPelajaran))),
+                        leading: Image.asset(
+                          "assets/icon/membaca.png",
+                          width: 36,
+                        ),
+                        title: Text(
+                          "${listMapel[i].namaPelajaran}",
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 12,
+                        ),
                       ),
-                      title: Text(
-                        "${listMapel[i].namaPelajaran}",
-                        style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w600),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 12,
-                      ),
-                    ),
-                    const Divider(
-                      thickness: 1,
-                    )
-                  ],
-                ),
-              );
-            }),
+                      const Divider(
+                        thickness: 1,
+                      )
+                    ],
+                  ),
+                );
+              })
+           : buildNoKoneksi()
       )
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }

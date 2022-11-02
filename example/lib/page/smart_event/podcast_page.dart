@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../services/podcast/podcast_service.dart';
 import '../../theme/colors.dart';
@@ -16,17 +17,32 @@ class PodcastPage extends StatefulWidget {
 
 class _PodcastPageState extends State<PodcastPage> {
   List podcastList = [];
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   Future _podcast() async {
-    var response = await PodcastService().getDataPodcast();
-    if (!mounted) return;
     setState(() {
-      podcastList = response;
+      cekKoneksi = true;
+      isLoading = true;
     });
+    var response = await PodcastService().getDataPodcast();
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        podcastList = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future refreshPodcast() async{
-    _podcast();
+    await _podcast();
   }
 
   @override
@@ -68,7 +84,12 @@ class _PodcastPageState extends State<PodcastPage> {
             ),
          ),
           Expanded(
-            child: ListView.builder(
+            child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(child: CircularProgressIndicator(),)
+                : podcastList.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
                 itemCount: podcastList.length,
                 itemBuilder: (context, i) {
                   return GestureDetector(
@@ -114,10 +135,10 @@ class _PodcastPageState extends State<PodcastPage> {
                                               width: double.infinity,
                                               fit: BoxFit.cover,
                                               imageUrl:
-                                                  "https://img.youtube.com/vi/${podcastList[i].youtubeUrl.substring(32, 43)}/0.jpg",
+                                              "https://img.youtube.com/vi/${podcastList[i].youtubeUrl.substring(32, 43)}/0.jpg",
                                               errorWidget:
                                                   (context, url, error) =>
-                                                      const Icon(Icons.error),
+                                              const Icon(Icons.error),
                                             ),
                                           ),
                                           Align(
@@ -156,10 +177,71 @@ class _PodcastPageState extends State<PodcastPage> {
                       ),
                     ),
                   );
-                }),
+                })
+               : buildNoKoneksi()
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshPodcast,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshPodcast,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }

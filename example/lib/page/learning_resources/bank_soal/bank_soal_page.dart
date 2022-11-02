@@ -22,17 +22,27 @@ class BankSoalPage extends StatefulWidget {
 class _BankSoalPageState extends State<BankSoalPage> {
   List _bankSoalList = [];
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   getBankSoal() async {
     setState((){
+      cekKoneksi = true;
       isLoading = true;
     });
     final response = await BankSoalService().getDataBankSoal(widget.id_mapel);
-    if (!mounted) return;
-    setState(() {
-      _bankSoalList = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        _bankSoalList = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future onRefresh() async {
@@ -124,114 +134,151 @@ class _BankSoalPageState extends State<BankSoalPage> {
         child: RefreshIndicator(
             onRefresh: onRefresh,
             color: kCelticBlue,
-            child: isLoading == true
+            child: cekKoneksi == true
+              ? isLoading == true
                 ? Center(child: CircularProgressIndicator())
-                : Stack(
-              children: [
-                ListView.builder(
-                    itemCount: _bankSoalList.length,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ExpansionPanelList(
-                          animationDuration: const Duration(milliseconds: 700),
-                          children: [
-                            ExpansionPanel(
-                              headerBuilder: (context, isExpanded) {
-                                return ListTile(
-                                  title: Text(
-                                    "${_bankSoalList[i].kodeSoal}",
-                                  ),
-                                  subtitle: Text("${_bankSoalList[i].materiPokok}"),
-                                );
-                              },
-                              body: Container(
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.fromLTRB(4, 16, 0, 8),
-                                          child: Text("File Soal"),
-                                        ),
-                                        _bankSoalList[i].fileSoal == null
-                                            ? const Text("Tidak Ada")
-                                            : Padding(
-                                          padding: const EdgeInsets.only(top: 4),
-                                          child: TextButton(
-                                              onPressed: () => eventClick(_bankSoalList[i]
-                                                  .id.toString(),_bankSoalList[i]
-                                                  .fileSoal),
-                                              child: const Text("Lihat")),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.fromLTRB(4, 8, 0, 8),
-                                          child: Text("Video"),
-                                        ),
-                                        _bankSoalList[i].fileVideo == null
-                                            ? const Padding(
-                                          padding: EdgeInsets.only(right: padding),
-                                          child: Text("-"),
-                                        )
-                                            : TextButton(
-                                            onPressed: () => _CekDurasiVideo(_bankSoalList[i].id.toString(), _bankSoalList[i].fileVideo.toString()),
-                                            child: const Text("Nonton")),
-                                      ],
-                                    )
-                                  ],
+                : _bankSoalList.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+                  itemCount: _bankSoalList.length,
+                  itemBuilder: (context, i) {
+                    return Container(
+                      margin: const EdgeInsets.all(8),
+                      child: ExpansionPanelList(
+                        animationDuration: const Duration(milliseconds: 700),
+                        children: [
+                          ExpansionPanel(
+                            headerBuilder: (context, isExpanded) {
+                              return ListTile(
+                                title: Text(
+                                  "${_bankSoalList[i].kodeSoal}",
                                 ),
+                                subtitle: Text("${_bankSoalList[i].materiPokok}"),
+                              );
+                            },
+                            body: Container(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(4, 16, 0, 8),
+                                        child: Text("File Soal"),
+                                      ),
+                                      _bankSoalList[i].fileSoal == null
+                                          ? const Text("Tidak Ada")
+                                          : Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: TextButton(
+                                            onPressed: () => eventClick(_bankSoalList[i]
+                                                .id.toString(),_bankSoalList[i]
+                                                .fileSoal),
+                                            child: const Text("Lihat")),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(4, 8, 0, 8),
+                                        child: Text("Video"),
+                                      ),
+                                      _bankSoalList[i].fileVideo == null
+                                          ? const Padding(
+                                        padding: EdgeInsets.only(right: padding),
+                                        child: Text("-"),
+                                      )
+                                          : TextButton(
+                                          onPressed: () => _CekDurasiVideo(_bankSoalList[i].id.toString(), _bankSoalList[i].fileVideo.toString()),
+                                          child: const Text("Nonton")),
+                                    ],
+                                  )
+                                ],
                               ),
-                              isExpanded: _expanded,
-                              canTapOnHeader: true,
                             ),
-                          ],
-                          dividerColor: Colors.grey,
-                          expansionCallback: (panelIndex, isExpanded) {
-                            setState(() {
-                              _expanded = !_expanded;
-                            });
-                          },
-                        ),
-                      );
-                    }),
-                buildNoData()
-              ],
-            )
+                            isExpanded: _expanded,
+                            canTapOnHeader: true,
+                          ),
+                        ],
+                        dividerColor: Colors.grey,
+                        expansionCallback: (panelIndex, isExpanded) {
+                          setState(() {
+                            _expanded = !_expanded;
+                          });
+                        },
+                      ),
+                    );
+                  })
+              : buildNoKoneksi()
         )
     );
   }
 
   bool _expanded = false;
 
+
   Widget buildNoData() {
-    if (_bankSoalList.length == 0) {
-      return Center(
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+                'assets/no_connection.svg',
+                width: 120,
               ),
               const SizedBox(
                 height: 8,
               ),
               const Text(
-                "Belum Ada data",
+                "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            ])
+    );
   }
 
 

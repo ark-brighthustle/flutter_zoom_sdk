@@ -33,20 +33,30 @@ class DetailMenontonPage extends StatefulWidget {
 class _DetailMenontonPageState extends State<DetailMenontonPage> {
   List listLearningResource = [];
   bool isLoading = true;
+  bool cekKoneksi = true;
 
   getLearningResource() async {
     setState((){
+      cekKoneksi = true;
       isLoading = true;
     });
     final response = await LearningResourceService().getDataLearningResource(
         widget.topikId.toString(),
         widget.categoryId.toString(),
         widget.mapelId.toString());
-    if (!mounted) return;
-    setState(() {
-      listLearningResource = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        listLearningResource = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
   }
 
   Future onRefresh() async{
@@ -141,12 +151,13 @@ class _DetailMenontonPageState extends State<DetailMenontonPage> {
       child: RefreshIndicator(
           onRefresh: onRefresh,
           color: kCelticBlue,
-          child: isLoading == true
-              ? Center(child: CircularProgressIndicator())
-              : Stack(
-            children: [
-              ListView.builder(
-          itemCount: listLearningResource.length,
+          child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(child: CircularProgressIndicator())
+                : listLearningResource.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+              itemCount: listLearningResource.length,
               itemBuilder: (context, i) {
                 return Container(
                     width: double.infinity,
@@ -212,35 +223,70 @@ class _DetailMenontonPageState extends State<DetailMenontonPage> {
                         ),
                       ],
                     ));
-              }),
-              buildNoData()
-            ],
-          )
+              })
+              : buildNoKoneksi()
       )
     );
   }
 
   Widget buildNoData() {
-    if (listLearningResource.length == 0) {
-      return Center(
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+                'assets/no_connection.svg',
+                width: 120,
               ),
               const SizedBox(
                 height: 8,
               ),
               const Text(
-                "Belum Ada data",
+                "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            ])
+    );
   }
 
   Future<void> _CekDurasiPlayYoutube(String id, String YtId) async{

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/character/amaliah_personal/amaliah_personal_model.dart';
@@ -41,43 +42,73 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
 
   List ListAmaliahPersonal = [];
   List ListAmaliahReference = [];
+  bool isLoadingPersonal = true;
+  bool isLoadingReference = true;
+  bool cekKoneksiPersonal = true;
+  bool cekKoneksiReference = true;
 
   Future _getAmaliahPersonalResource() async {
-    var response = await CharacterAmaliahPersonal().getPesonalAmaliah(widget.idIdentitasSekolah.toString(),widget.idSiswa.toString());
-    if (!mounted) return;
     setState(() {
-      ListAmaliahPersonal = response;
+      isLoadingPersonal = true;
+      cekKoneksiPersonal = true;
     });
+    var response = await CharacterAmaliahPersonal().getPesonalAmaliah(widget.idIdentitasSekolah.toString(),widget.idSiswa.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        ListAmaliahPersonal = response;
+        isLoadingPersonal = false;
+        cekKoneksiPersonal = true;
+      });
+    }else{
+      setState(() {
+        isLoadingPersonal = false;
+        cekKoneksiPersonal = false;
+      });
+    }
   }
 
   Future _getAmaliahReferenceResource() async {
-    var response = await CharacterService().getAmaliahReferensi(widget.idIdentitasSekolah.toString());
-    if (!mounted) return;
     setState(() {
-      ListAmaliahReference = response;
+      isLoadingReference = true;
+      cekKoneksiReference = true;
     });
+    var response = await CharacterService().getAmaliahReferensi(widget.idIdentitasSekolah.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        ListAmaliahReference = response;
+        isLoadingReference = false;
+        cekKoneksiReference = true;
+      });
+    }else{
+      setState(() {
+        isLoadingReference = false;
+        cekKoneksiReference = false;
+      });
+    }
   }
 
   Future refreshAmaliahPersonal() async {
-    _getAmaliahPersonalResource();
+    await _getAmaliahPersonalResource();
   }
 
   Future refreshAmaliahReference() async {
-    _getAmaliahReferenceResource();
+    await durasiPlayYoutube();
+    await _getAmaliahReferenceResource();
   }
 
   @override
   void initState() {
     super.initState();
     durasiPlayYoutube();
+    _getAmaliahPersonalResource();
+    _getAmaliahReferenceResource();
   }
 
   durasiPlayYoutube() async{
     bool playYoutube = await _CekDurasiPlayYoutube();
-    if(playYoutube == true){
-      _getAmaliahPersonalResource();
-      _getAmaliahReferenceResource();
-    }else{
+    if(playYoutube != true){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
   }
@@ -250,188 +281,254 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
     return RefreshIndicator(
       onRefresh: refreshAmaliahPersonal,
       color: kCelticBlue,
-      child: ListView.builder(
-          itemCount: ListAmaliahPersonal.length,
-          itemBuilder: (context, i) {
-            DateTime dateTime =
-            DateTime.parse(ListAmaliahPersonal[i].created_at);
-            String createdAt =
-            DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
-            return Column(
-                children: [
-                  if(ListAmaliahPersonal[i].file_type == "mp4")...[
-                    // GestureDetector(
-                    //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChewieWidget(videoPlayerController: VideoPlayerController.network(ListAmaliahPersonal[i].file),looping: false,))),
-                    //   child: Card(
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         SizedBox(
-                    //           width: double.infinity,
-                    //           height: 168,
-                    //           child: Stack(
-                    //             children: [
-                    //               ClipRRect(
-                    //                 child: CachedNetworkImage(
-                    //                   width: double.infinity,
-                    //                   fit: BoxFit.cover,
-                    //                   imageUrl:
-                    //                   "https://img.youtube.com/vi/$ytId/0.jpg",
-                    //                   errorWidget: (context, url, error) =>
-                    //                   const Icon(Icons.error),
-                    //                 ),
-                    //               ),
-                    //               Align(
-                    //                   alignment: Alignment.center,
-                    //                   child: Icon(
-                    //                     Icons.play_circle,
-                    //                     size: 60,
-                    //                     color: kBlack.withOpacity(0.5),
-                    //                   ))
-                    //             ],
-                    //           ),
-                    //         ),
-                    //         Padding(
-                    //           padding: const EdgeInsets.only(bottom: 16.0, top: 10.0, left: 16.0, right: 16.0),
-                    //           child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Text(createdAt),
-                    //               Padding(
-                    //                   padding: const EdgeInsets.only(top: 5.0),
-                    //                   child: Text(ListAmaliahPersonal[i].topic,
-                    //                       style: const TextStyle(
-                    //                         fontWeight: FontWeight.w700,
-                    //                       ))),
-                    //               Padding(
-                    //                   padding: const EdgeInsets.only(top: 5.0),
-                    //                   child: ListAmaliahPersonal[i].description != null
-                    //                       ? Text("${ListAmaliahPersonal[i].description}")
-                    //                       : null
-                    //               )
-                    //             ],
-                    //           ),
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // )
-                    GestureDetector(
-                        onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"mp4",ListAmaliahPersonal[i].file),
-                        child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: padding),
-                              child: ListTile(
-                                leading:  Image.asset(
-                                  'assets/icon/mp4.png',
+        child: cekKoneksiPersonal == true
+            ? isLoadingPersonal == true
+              ? Center(child: CircularProgressIndicator(),)
+              : ListAmaliahPersonal.length == 0
+                ? buildNoDataPersonal()
+                : ListView.builder(
+            itemCount: ListAmaliahPersonal.length,
+            itemBuilder: (context, i) {
+              DateTime dateTime =
+              DateTime.parse(ListAmaliahPersonal[i].created_at);
+              String createdAt =
+              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+              return Column(
+                  children: [
+                    if(ListAmaliahPersonal[i].file_type == "mp4")...[
+                      // GestureDetector(
+                      //   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChewieWidget(videoPlayerController: VideoPlayerController.network(ListAmaliahPersonal[i].file),looping: false,))),
+                      //   child: Card(
+                      //     child: Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         SizedBox(
+                      //           width: double.infinity,
+                      //           height: 168,
+                      //           child: Stack(
+                      //             children: [
+                      //               ClipRRect(
+                      //                 child: CachedNetworkImage(
+                      //                   width: double.infinity,
+                      //                   fit: BoxFit.cover,
+                      //                   imageUrl:
+                      //                   "https://img.youtube.com/vi/$ytId/0.jpg",
+                      //                   errorWidget: (context, url, error) =>
+                      //                   const Icon(Icons.error),
+                      //                 ),
+                      //               ),
+                      //               Align(
+                      //                   alignment: Alignment.center,
+                      //                   child: Icon(
+                      //                     Icons.play_circle,
+                      //                     size: 60,
+                      //                     color: kBlack.withOpacity(0.5),
+                      //                   ))
+                      //             ],
+                      //           ),
+                      //         ),
+                      //         Padding(
+                      //           padding: const EdgeInsets.only(bottom: 16.0, top: 10.0, left: 16.0, right: 16.0),
+                      //           child: Column(
+                      //             crossAxisAlignment: CrossAxisAlignment.start,
+                      //             children: [
+                      //               Text(createdAt),
+                      //               Padding(
+                      //                   padding: const EdgeInsets.only(top: 5.0),
+                      //                   child: Text(ListAmaliahPersonal[i].topic,
+                      //                       style: const TextStyle(
+                      //                         fontWeight: FontWeight.w700,
+                      //                       ))),
+                      //               Padding(
+                      //                   padding: const EdgeInsets.only(top: 5.0),
+                      //                   child: ListAmaliahPersonal[i].description != null
+                      //                       ? Text("${ListAmaliahPersonal[i].description}")
+                      //                       : null
+                      //               )
+                      //             ],
+                      //           ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //   ),
+                      // )
+                      GestureDetector(
+                          onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"mp4",ListAmaliahPersonal[i].file),
+                          child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: padding),
+                                child: ListTile(
+                                  leading:  Image.asset(
+                                    'assets/icon/mp4.png',
+                                  ),
+                                  title: Text(ListAmaliahPersonal[i].topic,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.only(top: 5.0),
+                                          child: ListAmaliahPersonal[i].description != null
+                                              ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
+                                              : null
+                                      ),
+                                      SizedBox(
+                                        height: 12.0,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                title: Text(ListAmaliahPersonal[i].topic,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    )),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                        padding: const EdgeInsets.only(top: 5.0),
-                                        child: ListAmaliahPersonal[i].description != null
-                                            ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
-                                            : null
-                                    ),
-                                    SizedBox(
-                                      height: 12.0,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                        )
-                    )
-                  ]else if(ListAmaliahPersonal[i].file_type == "pdf")...[
-                    GestureDetector(
-                        onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"pdf",ListAmaliahPersonal[i].file),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: padding),
-                          child: ListTile(
-                            leading:  Image.asset(
-                              'assets/icon/pdf.png',
-                            ),
-                            title: Text(ListAmaliahPersonal[i].topic,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                )),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: ListAmaliahPersonal[i].description != null
-                                        ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
-                                        : null
-                                ),
-                                SizedBox(
-                                  height: 12.0,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        )
+                              )
+                          )
                       )
-                    )
-                  ]else if(ListAmaliahPersonal[i].file_type == "mp3")...[
-                    GestureDetector(
-                        onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"mp3",ListAmaliahPersonal[i].file),
-                        child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: padding),
-                              child: ListTile(
-                                leading:  Image.asset(
-                                  'assets/icon/mp3.png',
+                    ]else if(ListAmaliahPersonal[i].file_type == "pdf")...[
+                      GestureDetector(
+                          onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"pdf",ListAmaliahPersonal[i].file),
+                          child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: padding),
+                                child: ListTile(
+                                  leading:  Image.asset(
+                                    'assets/icon/pdf.png',
+                                  ),
+                                  title: Text(ListAmaliahPersonal[i].topic,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.only(top: 5.0),
+                                          child: ListAmaliahPersonal[i].description != null
+                                              ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
+                                              : null
+                                      ),
+                                      SizedBox(
+                                        height: 12.0,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                title: Text(ListAmaliahPersonal[i].topic,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    )),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                        padding: const EdgeInsets.only(top: 5.0),
-                                        child: ListAmaliahPersonal[i].description != null
-                                            ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
-                                            : null
-                                    ),
-                                    SizedBox(
-                                      height: 12.0,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
-                                      ],
-                                    )
-                                  ],
+                              )
+                          )
+                      )
+                    ]else if(ListAmaliahPersonal[i].file_type == "mp3")...[
+                      GestureDetector(
+                          onTap: () => showModalBottomView(ListAmaliahPersonal[i].id.toString(),widget.idIdentitasSekolah.toString(),"mp3",ListAmaliahPersonal[i].file),
+                          child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: padding),
+                                child: ListTile(
+                                  leading:  Image.asset(
+                                    'assets/icon/mp3.png',
+                                  ),
+                                  title: Text(ListAmaliahPersonal[i].topic,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.only(top: 5.0),
+                                          child: ListAmaliahPersonal[i].description != null
+                                              ? Text("${ListAmaliahPersonal[i].description}", style: TextStyle(color: Colors.black),)
+                                              : null
+                                      ),
+                                      SizedBox(
+                                        height: 12.0,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(createdAt, style: TextStyle(fontSize: 13, color: Colors.black),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                        )
-                    )
-                  ]
-                ]);
-          })
+                              )
+                          )
+                      )
+                    ]
+                  ]);
+            })
+            : buildNoKoneksiPersonal()
+    );
+  }
+
+  Widget buildNoDataPersonal() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshAmaliahPersonal,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksiPersonal() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshAmaliahPersonal,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 
@@ -730,7 +827,12 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
     return RefreshIndicator(
         onRefresh: refreshAmaliahReference,
         color: kCelticBlue,
-        child: ListView.builder(
+        child: cekKoneksiReference == true
+            ? isLoadingReference == true
+                ? Center(child: CircularProgressIndicator(),)
+                : ListAmaliahReference.length == 0
+                  ? buildNoDataReference()
+                  : ListView.builder(
             itemCount: ListAmaliahReference.length,
             itemBuilder: (context, i) {
               String ytId = ListAmaliahReference[i].reference_url.substring(32, 43);
@@ -795,6 +897,67 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
                 ),
               );
             })
+            : buildNoKoneksiReference()
+    );
+  }
+
+  Widget buildNoDataReference() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshAmaliahReference,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksiReference() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshAmaliahReference,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 

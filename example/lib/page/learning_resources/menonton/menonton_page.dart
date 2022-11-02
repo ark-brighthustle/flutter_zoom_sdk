@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/classroom/event_click_model.dart';
@@ -70,13 +71,28 @@ class _NonUmumViewState extends State<NonUmumView> {
   int topikId = 2;
   int categoryId = 1;
   List listMapel = [];
+  bool isLoadingNonUmum = true;
+  bool cekKoneksiNonumum = true;
 
   Future getMapel() async {
-    var response = await MapelService().getDataMapel();
-    if (!mounted) return;
     setState(() {
-      listMapel = response;
+      cekKoneksiNonumum = true;
+      isLoadingNonUmum = true;
     });
+    var response = await MapelService().getDataMapel();
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        listMapel = response;
+        isLoadingNonUmum = false;
+        cekKoneksiNonumum = true;
+      });
+    }else{
+      setState(() {
+        isLoadingNonUmum = false;
+        cekKoneksiNonumum = false;
+      });
+    }
   }
 
   Future onRefresh() async{
@@ -95,34 +111,100 @@ class _NonUmumViewState extends State<NonUmumView> {
       backgroundColor: kGrey,
         body: RefreshIndicator(
           onRefresh: onRefresh,
-          child: ListView.builder(
-            itemCount: listMapel.length,
-            itemBuilder: (context, i) {
-              return Container(
-                color: kWhite,
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailMenontonPage(
-                                  topikId: topikId,
-                                  categoryId: categoryId,
-                                  title: title,
-                                  mapelId: listMapel[i].id,
-                                  namaMapel: listMapel[i].namaPelajaran))),
-                      leading: Image.asset("assets/icon/menonton.png", width: 36,),
-                      title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
-                    ),
-                    const Divider(thickness: 1,)
-                  ],
-                ),
-              );
-            }),
+          child: cekKoneksiNonumum == true
+            ? isLoadingNonUmum == true
+              ? Center(child: CircularProgressIndicator(),)
+              : listMapel.length == 0
+                ? buildNoData()
+                : ListView.builder(
+              itemCount: listMapel.length,
+              itemBuilder: (context, i) {
+                return Container(
+                  color: kWhite,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailMenontonPage(
+                                    topikId: topikId,
+                                    categoryId: categoryId,
+                                    title: title,
+                                    mapelId: listMapel[i].id,
+                                    namaMapel: listMapel[i].namaPelajaran))),
+                        leading: Image.asset("assets/icon/menonton.png", width: 36,),
+                        title: Text("${listMapel[i].namaPelajaran}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),),
+                        trailing: const Icon(Icons.arrow_forward_ios, size: 12,),
+                      ),
+                      const Divider(thickness: 1,)
+                    ],
+                  ),
+                );
+              })
+            : buildNoKoneksi()
         )
 
+    );
+  }
+
+  Widget buildNoData() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 

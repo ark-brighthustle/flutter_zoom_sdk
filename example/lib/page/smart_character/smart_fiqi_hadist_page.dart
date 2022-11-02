@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import '../../services/character/character_service.dart';
 import '../../theme/colors.dart';
@@ -121,17 +122,32 @@ class FiqihView extends StatefulWidget {
 class _FiqihViewState extends State<FiqihView> {
 
   List Fiqihlist = [];
+  bool isLoadingFiqih = true;
+  bool cekKoneksiFiqih = true;
 
   Future _getFiqihResource() async {
-    var response = await CharacterService().getDataFiqih(widget.idSiswa.toString());
-    if (!mounted) return;
     setState(() {
-      Fiqihlist = response;
+      cekKoneksiFiqih = true;
+      isLoadingFiqih = true;
     });
+    var response = await CharacterService().getDataFiqih(widget.idSiswa.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        Fiqihlist = response;
+        isLoadingFiqih = false;
+        cekKoneksiFiqih = true;
+      });
+    }else{
+      setState(() {
+        isLoadingFiqih = false;
+        cekKoneksiFiqih = false;
+      });
+    }
   }
 
   Future refreshFiqih() async {
-    _getFiqihResource();
+    await _getFiqihResource();
   }
 
   @override
@@ -152,7 +168,12 @@ class _FiqihViewState extends State<FiqihView> {
     return RefreshIndicator(
         onRefresh: refreshFiqih,
         color: kCelticBlue,
-        child: ListView.builder(
+        child: cekKoneksiFiqih == true
+            ? isLoadingFiqih == true
+              ? Center(child: CircularProgressIndicator(),)
+              : Fiqihlist.length == 0
+                ? buildNoDataFiqih()
+                : ListView.builder(
             itemCount: Fiqihlist.length,
             itemBuilder: (context, i) {
               DateTime dateTime =
@@ -242,6 +263,67 @@ class _FiqihViewState extends State<FiqihView> {
               );
             }
         )
+            : buildNoKoneksiFiqih()
+    );
+  }
+
+  Widget buildNoDataFiqih() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshFiqih,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksiFiqih() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshFiqih,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }
@@ -258,13 +340,28 @@ class HadistView extends StatefulWidget {
 class _HadistViewState extends State<HadistView> {
 
   List Hadistlist = [];
+  bool isLoadingHadist = true;
+  bool cekKoneksiHadist = true;
 
   Future _getHadistResource() async {
-    var response = await CharacterService().getDataHadist(widget.idSiswa.toString());
-    if (!mounted) return;
     setState(() {
-      Hadistlist = response;
+      cekKoneksiHadist = true;
+      isLoadingHadist = true;
     });
+    var response = await CharacterService().getDataHadist(widget.idSiswa.toString());
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        Hadistlist = response;
+        isLoadingHadist = false;
+        cekKoneksiHadist = true;
+      });
+    }else{
+      setState(() {
+        isLoadingHadist = false;
+        cekKoneksiHadist = false;
+      });
+    }
   }
 
   Future refreshHadist() async {
@@ -289,7 +386,12 @@ class _HadistViewState extends State<HadistView> {
     return RefreshIndicator(
         onRefresh: refreshHadist,
         color: kCelticBlue,
-        child: ListView.builder(
+        child: cekKoneksiHadist == true
+            ? isLoadingHadist == true
+              ? Center(child: CircularProgressIndicator(),)
+              : Hadistlist.length == 0
+                ? buildNoDataHadist()
+                : ListView.builder(
             itemCount: Hadistlist.length,
             itemBuilder: (context, i) {
               DateTime dateTime =
@@ -345,6 +447,67 @@ class _HadistViewState extends State<HadistView> {
                 ),
               );
             })
+            : buildNoKoneksiHadist()
+    );
+  }
+
+  Widget buildNoDataHadist() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: refreshHadist,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksiHadist() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: refreshHadist,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
     );
   }
 }
