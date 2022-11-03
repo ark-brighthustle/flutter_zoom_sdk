@@ -18,17 +18,31 @@ class _LibraryPageState extends State<LibraryPage> {
   String assetIcon = "assets/icon/coming-soon.png";
   List itemListBook = [];
   bool isLoading = true;
+  bool cekKoneksi = true;
 
-  getLibraryBook() async {
+  Future getLibraryBook() async {
     setState(() {
+      cekKoneksi = true;
       isLoading = true;
     });
     final response = await LibraryService().getDatalibraryBook();
-    if (!mounted) return;
-    setState(() {
-      itemListBook = response;
-      isLoading = false;
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        itemListBook = response;
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
+    }
+  }
+
+  Future onRefresh() async{
+    await getLibraryBook();
   }
 
   @override
@@ -45,7 +59,13 @@ class _LibraryPageState extends State<LibraryPage> {
         width: size.width,
         height: size.height,
         padding: const EdgeInsets.all(8),
-        child: buildItemListBook()));
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildHeader(),
+            buildItemLibrary()
+          ],
+        )));
   }
 
   Widget buildIconBack() => Container(
@@ -79,85 +99,122 @@ class _LibraryPageState extends State<LibraryPage> {
     ),
   );
 
-  Widget buildItemListBook() => isLoading == true
-  ? const Center(child: CircularProgressIndicator(),) 
-  : Stack(
-    children: [
-     buildHeader(),
-      Positioned(
-        left: 0,
-        top: 90,
-        right: 0,
-        bottom: 0,
-        child: ListView.builder(
-        itemCount: itemListBook.length,
-        itemBuilder: (context, i){
-        return GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailLibraryPage(
-            imageThumb: itemListBook[i].volumeInfo.image.thumb,
-            title: itemListBook[i].volumeInfo.title,
-            desc: itemListBook[i].volumeInfo.description,
-            publisher: itemListBook[i].volumeInfo.publisher,
-            previewLinks: itemListBook[i].volumeInfo.previewLinks,
-            infoLinks: itemListBook[i].volumeInfo.infoLinks,
-            webReaderLinks: itemListBook[i].accessInfo.webReaderLinks,
-            printType: itemListBook[i].volumeInfo.printType,
-            pageCount: itemListBook[i].volumeInfo.pageCount,
-          ))),
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            margin: const EdgeInsets.symmetric(vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: kWhite
-            ),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network("${itemListBook[i].volumeInfo.image.thumb}")),
-                const SizedBox(width: 8,),
-                Flexible(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text("${itemListBook[i].volumeInfo.title},", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+  Widget buildItemLibrary() {
+    return Expanded(
+        child: RefreshIndicator(
+            onRefresh: onRefresh,
+            color: kCelticBlue,
+            child: cekKoneksi == true
+              ? isLoading == true
+                ? Center(child: CircularProgressIndicator())
+                : itemListBook.length == 0
+                  ? buildNoData()
+                  : ListView.builder(
+                  itemCount: itemListBook.length,
+                  itemBuilder: (context, i){
+                    return GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailLibraryPage(
+                        imageThumb: itemListBook[i].volumeInfo.image.thumb,
+                        title: itemListBook[i].volumeInfo.title,
+                        desc: itemListBook[i].volumeInfo.description,
+                        publisher: itemListBook[i].volumeInfo.publisher,
+                        previewLinks: itemListBook[i].volumeInfo.previewLinks,
+                        infoLinks: itemListBook[i].volumeInfo.infoLinks,
+                        webReaderLinks: itemListBook[i].accessInfo.webReaderLinks,
+                        printType: itemListBook[i].volumeInfo.printType,
+                        pageCount: itemListBook[i].volumeInfo.pageCount,
+                      ))),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: kWhite
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network("${itemListBook[i].volumeInfo.image.thumb}")),
+                            const SizedBox(width: 8,),
+                            Flexible(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text("${itemListBook[i].volumeInfo.title},", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+                                  ),
+                                  Text("${itemListBook[i].volumeInfo.description},", style: const TextStyle(fontSize: 10), maxLines: 5, textAlign: TextAlign.justify,),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      Text("${itemListBook[i].volumeInfo.description},", style: const TextStyle(fontSize: 10), maxLines: 5, textAlign: TextAlign.justify,),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-          }),
-      ),
-    buildNoData()
-    ],
-  );
+                    );
+                  })
+              : buildNoKoneksi()
+        )
+    );
+  }
 
   Widget buildNoData() {
-    if (itemListBook.isEmpty) {
-      return Center(
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/no_data.svg',
+              width: 90,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            const Text(
+              "Belum Ada data",
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            TextButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+              onPressed: onRefresh,
+              child: Text(
+                "Refresh",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ]),
+    );
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                'assets/no_data.svg',
-                width: 90,
+                'assets/no_connection.svg',
+                width: 120,
               ),
               const SizedBox(
                 height: 8,
               ),
               const Text(
-                "Belum Ada data",
+                "Gagal terhubung keserver",
                 style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: onRefresh,
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
-            ]),
-      );
-    }else{
-      return Container();
-    }
+            ])
+    );
   }
 }
