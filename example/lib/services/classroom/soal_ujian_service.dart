@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
@@ -11,24 +13,36 @@ class SoalUjianService {
   getDataSoalUjian(int id) async {
     var url = Uri.parse("$API_V2/elearning/ujian/soal/$id");
     String? token = await Helpers().getToken();
-    final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
-    var responseJson = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      return responseJson;
-    } else {
-      throw Exception('Failed to load');
+    try {
+      final response = await http.get(url, headers: {"Authorization": "Bearer $token"}).timeout(const Duration(seconds: 7));
+      var responseJson = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return responseJson;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
   getDetailHasilUjian(int id) async {
     var url = Uri.parse("$API_V2/elearning/ujian/detail_hasil/$id");
     String? token = await Helpers().getToken();
-    final response = await http.get(url, headers: {"Authorization": "Bearer $token"});
-    var responseJson = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      return responseJson;
-    } else {
-      throw Exception('Failed to load');
+    try{
+      final response = await http.get(url, headers: {"Authorization": "Bearer $token"}).timeout(const Duration(seconds: 7));
+      var responseJson = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return responseJson;
+      } else {
+        throw Exception('Failed to load');
+      }
+    } on TimeoutException catch (_){
+      return null;
+    } on SocketException catch (_){
+      return null;
     }
   }
 
