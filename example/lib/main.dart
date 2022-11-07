@@ -39,6 +39,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: colorCelticBlue, fontFamily: 'Montserrat'
       ),
+      initialRoute: '/',
+      routes: {
+        '/bottomNavbar': (_) => BottomNavbar() 
+      },
       debugShowCheckedModeBanner: false,
       home: const SplashScreens(),
     );

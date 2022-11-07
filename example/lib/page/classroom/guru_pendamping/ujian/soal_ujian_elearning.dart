@@ -146,8 +146,7 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/bottomNavbar');
                       },
                       child: Text("Selesai"))
                 ],
@@ -184,54 +183,48 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           width: size.width,
           height: size.height,
           padding: const EdgeInsets.all(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              iconBackPage(),
-              buildSoalUjian(),
-            ],
-          ),
+          child: buildSoalUjian()
         ),
       ),
     );
   }
 
-  Widget iconBackPage() {
+  Widget buildHeader() {
     int minutes = (widget.duration / 60).truncate();
     int hours = (widget.duration / 3600).truncate();
     String hoursStr = (hours % 60).toString().padLeft(2, '0');
     String minutesStr = (minutes % 60).toString().padLeft(2, '0');
     String secondsStr = (widget.duration % 60).toString().padLeft(2, '0');
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(padding),
-          child: Text(
+    return Container(
+      padding: const EdgeInsets.only(bottom: padding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
             widget.judul,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: padding),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.timer,
-                color: kCelticBlue,
-                size: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Text(
-                  "$hoursStr : $minutesStr : $secondsStr ",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.only(right: padding),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.timer,
+                  color: kCelticBlue,
+                  size: 16,
                 ),
-              ),
-            ],
-          ),
-        )
-      ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    "$hoursStr : $minutesStr : $secondsStr ",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -241,17 +234,18 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: listSoalUjian.length,
         itemBuilder: (context, i) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          return Stack(
             children: [
-              Expanded(
+              Positioned.fill(
+                left: 0,
+                right: 0,
+                bottom: 0,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: padding),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 48),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        buildHeader(),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Text(
