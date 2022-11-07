@@ -531,6 +531,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                         onPressed: () => {
                                           _pageController.previousPage(
                                               duration: duration, curve: curve),
+                                          audioPlayer.pause(),
+                                          playing = false
                                         },
                                         icon: Padding(
                                           padding: EdgeInsets.only(left: 4),
@@ -546,8 +548,13 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                         border: Border.all(color: kBlack26),
                                         borderRadius: BorderRadius.circular(4)),
                                     child: IconButton(
-                                        onPressed: () => _pageController.nextPage(
+                                        onPressed: () =>
+                                        {
+                                          _pageController.nextPage(
                                             duration: duration, curve: curve),
+                                          audioPlayer.pause(),
+                                          playing = false
+                                        },
                                         icon: const Padding(
                                           padding: EdgeInsets.only(left: 4),
                                           child: Icon(
@@ -558,6 +565,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                 if(listSoalUjian[i].id == listSoalUjian.length)...[
                                   GestureDetector(
                                     onTap: () async {
+                                      audioPlayer.pause();
+                                      playing = false;
                                       showAlertDialogLoading(context);
                                       var response = await SoalUjianService()
                                           .createJawabanSoalUjian(data);
@@ -671,6 +680,11 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     audioPlayer.onAudioPositionChanged.listen((Duration dd) {
       setState(() {
         positionAudio = dd;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        playing = false;
       });
     });
   }
