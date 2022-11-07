@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/detail_hasil_ujian.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
@@ -46,28 +47,59 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
   Duration durationAudio = new Duration();
   Duration positionAudio = new Duration();
   bool playing = false;
+  bool isLoadingUjian = true;
+  bool isLoadingHasilUjian = true;
+  bool cekKoneksiUjian = true;
+  bool cekKoneksiHasilUjian = true;
 
   getSoalUjian() async {
     final response = await SoalUjianService().getDataSoalUjian(widget.id);
-    if (!mounted) return;
-    setState(() {
-      var data = response['data'];
-      listSoalUjian = data.map((p) => SoalUjianModel.fromJson(p)).toList();
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        var data = response['data'];
+        listSoalUjian = data.map((p) => SoalUjianModel.fromJson(p)).toList();
+        isLoadingUjian = false;
+        cekKoneksiUjian = true;
+      });
+    }else{
+      setState(() {
+        isLoadingUjian = false;
+        cekKoneksiUjian = false;
+      });
+    }
   }
 
   getDetailHasilUjian() async {
     final response = await SoalUjianService().getDetailHasilUjian(widget.id);
-    if (!mounted) return;
-    setState(() {
-      var data = response['data'];
-      listDetailHasilUjian = data.map((p) => DetailHasilUjianModel.fromJson(p)).toList();
-    });
+    if(response != null){
+      if (!mounted) return;
+      setState(() {
+        var data = response['data'];
+        listDetailHasilUjian = data.map((p) => DetailHasilUjianModel.fromJson(p)).toList();
+        isLoadingHasilUjian = false;
+        cekKoneksiHasilUjian = true;
+      });
+    }else{
+      setState(() {
+        isLoadingHasilUjian = false;
+        cekKoneksiHasilUjian = false;
+      });
+    }
   }
 
 
   @override
   void initState() {
+    setState(() {
+      if(widget.detailHasilUjian == true){
+        isLoadingHasilUjian = true;
+        cekKoneksiHasilUjian = true;
+      }else{
+        isLoadingUjian = true;
+        cekKoneksiUjian = true;
+      }
+    });
     getSoalUjian();
     if(widget.detailHasilUjian == true) {
       getDetailHasilUjian();
@@ -90,7 +122,17 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
           width: size.width,
           height: size.height,
           padding: const EdgeInsets.all(8),
-          child: buildHasilUjian()
+          child: widget.detailHasilUjian == false
+            ? cekKoneksiUjian == true
+              ? isLoadingUjian == true
+                ? Center(child: CircularProgressIndicator(),)
+                : buildHasilUjian()
+              : buildNoKoneksi()
+            : cekKoneksiHasilUjian == true
+              ? isLoadingHasilUjian == true
+                ? Center(child: CircularProgressIndicator(),)
+                : buildHasilUjian()
+              : buildNoKoneksi()
         ),
       ),
     );
@@ -515,6 +557,8 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                       onPressed: () => {
                                         _pageController.previousPage(
                                             duration: duration, curve: curve),
+                                        audioPlayer.pause(),
+                                        playing = false,
                                       },
                                       icon: Padding(
                                         padding: EdgeInsets.only(left: 4),
@@ -530,8 +574,13 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                       border: Border.all(color: kBlack26),
                                       borderRadius: BorderRadius.circular(4)),
                                   child: IconButton(
-                                      onPressed: () => _pageController.nextPage(
-                                          duration: duration, curve: curve),
+                                      onPressed: () =>
+                                      {
+                                        _pageController.nextPage(
+                                            duration: duration, curve: curve),
+                                        audioPlayer.pause(),
+                                        playing = false,
+                                      },
                                       icon: const Padding(
                                         padding: EdgeInsets.only(left: 4),
                                         child: Icon(
@@ -589,6 +638,11 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
         positionAudio = dd;
       });
     });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        playing = false;
+      });
+    });
   }
 
   String setTimeDuration(Duration duration) {
@@ -596,5 +650,37 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: () => {
+                  initState()
+                },
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/response_jawaban_soal_ujian_model.dart';
 import 'package:flutter_zoom_sdk_example/models/classroom/soal_ujian/soal_ujian_model.dart';
@@ -46,6 +47,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
   Duration durationAudio = new Duration();
   Duration positionAudio = new Duration();
   bool playing = false;
+  bool isLoading = true;
+  bool cekKoneksi = true;
 
   getDataMap() {
     data = {"elearning_id": "${widget.id}"};
@@ -53,31 +56,40 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   getSoalUjian() async {
     final response = await SoalUjianService().getDataSoalUjian(widget.id);
-    if (!mounted) return;
-    DateTime dtmulai = DateTime.parse(widget.waktuMulai);
-    DateTime dtsekarang = DateTime.parse(response['waktu_sekarang']);
-    Duration diff = dtsekarang.difference(dtmulai);
-    // print("Waktu Mulai "+widget.waktuMulai);
-    // print("Waktu Sekarang "+response['waktu_sekarang']);
-    if (!diff.isNegative) {
-      DateTime dtselesai = DateTime.parse(widget.waktuSelesai); 
-      
-      if (DateFormat('dd-MM-yyyy').format(dtsekarang) ==
-          DateFormat('dd-MM-yyyy').format(dtselesai)) {
-        Duration waktuselesai = dtselesai.difference(dtsekarang);
-        // print("Waktu Sekarang "+response['waktu_sekarang']);
-        // print("Waktu Selesai "+widget.waktuSelesai);
-        setState(() {
-          widget.duration = waktuselesai.inSeconds;
-        });
-      } else {
-        // Navigator.pop(context);
+    if(response != null){
+      if (!mounted) return;
+      DateTime dtmulai = DateTime.parse(widget.waktuMulai);
+      DateTime dtsekarang = DateTime.parse(response['waktu_sekarang']);
+      Duration diff = dtsekarang.difference(dtmulai);
+      // print("Waktu Mulai "+widget.waktuMulai);
+      // print("Waktu Sekarang "+response['waktu_sekarang']);
+      if (!diff.isNegative) {
+        DateTime dtselesai = DateTime.parse(widget.waktuSelesai);
+
+        if (DateFormat('dd-MM-yyyy').format(dtsekarang) ==
+            DateFormat('dd-MM-yyyy').format(dtselesai)) {
+          Duration waktuselesai = dtselesai.difference(dtsekarang);
+          // print("Waktu Sekarang "+response['waktu_sekarang']);
+          // print("Waktu Selesai "+widget.waktuSelesai);
+          setState(() {
+            widget.duration = waktuselesai.inSeconds;
+          });
+        } else {
+          // Navigator.pop(context);
+        }
       }
+      setState(() {
+        var data = response['data'];
+        listSoalUjian = data.map((p) => SoalUjianModel.fromJson(p)).toList();
+        isLoading = false;
+        cekKoneksi = true;
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+        cekKoneksi = false;
+      });
     }
-    setState(() {
-      var data = response['data'];
-      listSoalUjian = data.map((p) => SoalUjianModel.fromJson(p)).toList();
-    });
   }
 
   Future<bool> _getHasilUjian() async {
@@ -158,6 +170,10 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
 
   @override
   void initState() {
+    setState(() {
+      isLoading = true;
+      cekKoneksi = true;
+    });
     getSoalUjian();
     getDataMap();
     if (mounted) {
@@ -183,7 +199,11 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
           width: size.width,
           height: size.height,
           padding: const EdgeInsets.all(8),
-          child: buildSoalUjian()
+          child: cekKoneksi == true
+            ? isLoading == true
+              ? Center(child: CircularProgressIndicator(),)
+              : buildSoalUjian()
+            : buildNoKoneksi()
         ),
       ),
     );
@@ -508,6 +528,8 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                       onPressed: () => {
                                         _pageController.previousPage(
                                             duration: duration, curve: curve),
+                                        audioPlayer.pause(),
+                                        playing = false
                                       },
                                       icon: Padding(
                                         padding: EdgeInsets.only(left: 4),
@@ -523,8 +545,13 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
                                       border: Border.all(color: kBlack26),
                                       borderRadius: BorderRadius.circular(4)),
                                   child: IconButton(
-                                      onPressed: () => _pageController.nextPage(
+                                      onPressed: () =>
+                                      {
+                                        _pageController.nextPage(
                                           duration: duration, curve: curve),
+                                        audioPlayer.pause(),
+                                        playing = false,
+                                      },
                                       icon: const Padding(
                                         padding: EdgeInsets.only(left: 4),
                                         child: Icon(
@@ -649,6 +676,11 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
         positionAudio = dd;
       });
     });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        playing = false;
+      });
+    });
   }
 
   String setTimeDuration(Duration duration) {
@@ -656,5 +688,37 @@ class _SoalUjianElearningPageState extends State<SoalUjianElearningPage> {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  Widget buildNoKoneksi() {
+    return Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/no_connection.svg',
+                width: 120,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                "Gagal terhubung keserver",
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
+                onPressed: () => {
+                  initState()
+                },
+                child: Text(
+                  "Refresh",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ])
+    );
   }
 }
