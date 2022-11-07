@@ -531,7 +531,7 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                         onPressed: () => {
                                           _pageController.previousPage(
                                               duration: duration, curve: curve),
-                                          audioPlayer.stop(),
+                                          audioPlayer.pause(),
                                           playing = false
                                         },
                                         icon: Padding(
@@ -552,7 +552,7 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                         {
                                           _pageController.nextPage(
                                             duration: duration, curve: curve),
-                                          audioPlayer.stop(),
+                                          audioPlayer.pause(),
                                           playing = false
                                         },
                                         icon: const Padding(
