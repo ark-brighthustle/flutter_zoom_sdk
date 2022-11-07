@@ -126,7 +126,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                 DateTime dateTime =
                 DateTime.parse(liveDelayList[i].createdAt);
                 String createdAt =
-                DateFormat('dd-MM-yyyy hh:mm').format(dateTime);
+                DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
 
                 return tingkat.toString() ==
                     liveDelayList[i].kodeTingkat &&
