@@ -292,7 +292,7 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
               DateTime dateTime =
               DateTime.parse(ListAmaliahPersonal[i].created_at);
               String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+              DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
               return Column(
                   children: [
                     if(ListAmaliahPersonal[i].file_type == "mp4")...[
@@ -839,7 +839,7 @@ class _SmartAmaliahState extends State<SmartAmaliah> {
               DateTime dateTime =
               DateTime.parse(ListAmaliahReference[i].created_at);
               String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+              DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
               return GestureDetector(
                 onTap: () { _CekDurasiPlayYoutube2(ListAmaliahReference[i].id.toString(), ytId);},
                 child: Card(

@@ -119,7 +119,7 @@ class _SmartHafalanSurahAlquranState extends State<SmartHafalanSurahAlquran> {
                   DateTime dateTime =
                   DateTime.parse(Hafalanlist[i].created_at);
                   String createdAt =
-                  DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+                  DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
                   return Card(
                     child: Align(
                       alignment: Alignment.centerLeft,

@@ -130,7 +130,7 @@ class _SmartPenguatanKarakterTematikState extends State<SmartPenguatanKarakterTe
                     DateTime dateTime =
                     DateTime.parse(VideoPembangunanKarakter[i].created_at);
                     String createdAt =
-                    DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+                    DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
                     return GestureDetector(
                       onTap: () { _CekDurasiPlayYoutube(VideoPembangunanKarakter[i].id.toString(), ytId);},
                       child: Card(

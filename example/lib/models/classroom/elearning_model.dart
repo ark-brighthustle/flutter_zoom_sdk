@@ -11,9 +11,8 @@ class ElearningModel {
   String? waktuMulai;
   String? waktuSelesai;
   String? statusWaktu;
-  int? duration; 
-  String? createdAt;
-  String? updatedAt;
+  bool? statusKerjakan;
+  int? duration;
 
   ElearningModel(
       {required this.id,
@@ -28,9 +27,8 @@ class ElearningModel {
       required this.waktuMulai,
       required this.waktuSelesai,
       required this.statusWaktu,
-      required this.duration,
-      required this.createdAt,
-      required this.updatedAt});
+      required this.statusKerjakan,
+      required this.duration});
 
   factory ElearningModel.fromJson(Map<String, dynamic> json) {
     return ElearningModel(
@@ -46,8 +44,7 @@ class ElearningModel {
       waktuMulai: json['waktu_mulai'], 
       waktuSelesai: json['waktu_selesai'],
       statusWaktu: json['status_waktu'],
-      duration: json['duration'], 
-      createdAt: json['created_at'], 
-      updatedAt: json['updatedAt']);
+      statusKerjakan: json['status_kerjakan'],
+      duration: json['duration']);
   }
 }

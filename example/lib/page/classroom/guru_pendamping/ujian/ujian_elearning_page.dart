@@ -105,9 +105,9 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                         itemCount: listUjianElearning.length,
                         itemBuilder: (context, i){
                           DateTime dateTimeMulai = DateTime.parse(listUjianElearning[i].waktuMulai);
-                          String waktuMulai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeMulai);
+                          String waktuMulai = DateFormat('dd-MM-yyyy HH:mm').format(dateTimeMulai);
                           DateTime dateTimeSelesai = DateTime.parse(listUjianElearning[i].waktuSelesai);
-                          String waktuSelesai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeSelesai);
+                          String waktuSelesai = DateFormat('dd-MM-yyyy HH:mm').format(dateTimeSelesai);
                           return SizedBox(
                             child: Column(
                               children: [

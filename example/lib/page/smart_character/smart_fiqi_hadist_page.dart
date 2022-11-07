@@ -179,7 +179,7 @@ class _FiqihViewState extends State<FiqihView> {
               DateTime dateTime =
               DateTime.parse(Fiqihlist[i].created_at);
               String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+              DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
               return Card(
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -397,7 +397,7 @@ class _HadistViewState extends State<HadistView> {
               DateTime dateTime =
               DateTime.parse(Hadistlist[i].created_at);
               String createdAt =
-              DateFormat('dd/MM/yyyy hh:mm').format(dateTime);
+              DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
               return Card(
                 child: Align(
                   alignment: Alignment.centerLeft,
