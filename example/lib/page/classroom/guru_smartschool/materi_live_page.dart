@@ -69,6 +69,7 @@ class _MateriLivePageState extends State<MateriLivePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -81,8 +82,8 @@ class _MateriLivePageState extends State<MateriLivePage> {
         ),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: size.width,
+        height: size.height,
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: materiLive(),
       ),
@@ -90,65 +91,63 @@ class _MateriLivePageState extends State<MateriLivePage> {
   }
 
   Widget materiLive() {
-    return Expanded(
-        child: RefreshIndicator(
-            onRefresh: onRefresh,
-            color: kCelticBlue,
-            child: cekKoneksi == true
-              ? isLoading == true
-                ? Center(child: CircularProgressIndicator())
-                : _materiLiveList.length == 0
-                  ? buildNoData()
-                  : ListView.builder(
-                itemCount: _materiLiveList.length,
-                itemBuilder: (context, i) {
-                  if (tingkat.toString() == widget.kodeTingkat && widget.id == _materiLiveList[i].pelajaranId) {
-                    return Column(
-                      children: [
-                        ListTile(
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMateriLivePage(
-                            id: _materiLiveList[i].id,
-                            sesiKe: _materiLiveList[i].sesiKe,
-                            judul: _materiLiveList[i].judul,
-                            deskripsi: _materiLiveList[i].deskripsi,
-                            namaGuru: _materiLiveList[i].namaGuruSmart,
-                            namaMataPelajaran: _materiLiveList[i].namaMataPelajaran,
-                            namaTingkat: _materiLiveList[i].namaTingkat,
-                            tahunAkademik: _materiLiveList[i].tahunAkademik,
-                            namaTahunAkademik: _materiLiveList[i].namaTahunAkademik,
-                            urlFileModul: _materiLiveList[i].urlFileModul,
-                            urlVideoBahan: _materiLiveList[i].urlVideoBahan,
-                            bahanAjar: _materiLiveList[i].bahanAjar,
-                            bahanTayang: _materiLiveList[i].bahanTayang,
-                            tanggalTayang: _materiLiveList[i].tanggalTayang,
-                          ))),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Pertemuan ke- ${_materiLiveList[i].sesiKe}",
-                                style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w600),
-                              ),
-
-                            ],
-                          ),
-                          subtitle: Text(
-                            "${_materiLiveList[i].judul}",
+    return RefreshIndicator(
+        onRefresh: onRefresh,
+        color: kCelticBlue,
+        child: cekKoneksi == true
+          ? isLoading == true
+            ? Center(child: CircularProgressIndicator())
+            : _materiLiveList.length == 0
+              ? buildNoData()
+              : ListView.builder(
+            itemCount: _materiLiveList.length,
+            itemBuilder: (context, i) {
+              if (tingkat.toString() == widget.kodeTingkat && widget.id == _materiLiveList[i].pelajaranId) {
+                return Column(
+                  children: [
+                    ListTile(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailMateriLivePage(
+                        id: _materiLiveList[i].id,
+                        sesiKe: _materiLiveList[i].sesiKe,
+                        judul: _materiLiveList[i].judul,
+                        deskripsi: _materiLiveList[i].deskripsi,
+                        namaGuru: _materiLiveList[i].namaGuruSmart,
+                        namaMataPelajaran: _materiLiveList[i].namaMataPelajaran,
+                        namaTingkat: _materiLiveList[i].namaTingkat,
+                        tahunAkademik: _materiLiveList[i].tahunAkademik,
+                        namaTahunAkademik: _materiLiveList[i].namaTahunAkademik,
+                        urlFileModul: _materiLiveList[i].urlFileModul,
+                        urlVideoBahan: _materiLiveList[i].urlVideoBahan,
+                        bahanAjar: _materiLiveList[i].bahanAjar,
+                        bahanTayang: _materiLiveList[i].bahanTayang,
+                        tanggalTayang: _materiLiveList[i].tanggalTayang,
+                      ))),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Pertemuan ke- ${_materiLiveList[i].sesiKe}",
                             style: const TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w600),
                           ),
-                          trailing:  Text("${_materiLiveList[i].tanggalTayang}", style: const TextStyle(fontSize: 12),),
-                        ),
-                        const Divider(thickness: 1,)
-                      ],
-                    );
-                  }
 
-                  return Container();
-                })
-              : buildNoKoneksi()
-        )
+                        ],
+                      ),
+                      subtitle: Text(
+                        "${_materiLiveList[i].judul}",
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                      trailing:  Text("${_materiLiveList[i].tanggalTayang}", style: const TextStyle(fontSize: 12),),
+                    ),
+                    const Divider(thickness: 1,)
+                  ],
+                );
+              }
+
+              return Container();
+            })
+          : buildNoKoneksi()
     );
   }
 

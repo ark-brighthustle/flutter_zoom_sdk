@@ -51,7 +51,7 @@ class DetailMateriLivePage extends StatefulWidget {
 }
 
 class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
-  late VlcPlayerController _videoPlayerController;
+  VlcPlayerController? _videoPlayerController;
   late EventClickModel _eventClickModel;
 
   @override
@@ -67,16 +67,17 @@ class _DetailMateriLivePageState extends State<DetailMateriLivePage> {
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
+    _videoPlayerController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        width: size.width,
+        height: size.height,
         padding: const EdgeInsets.all(padding),
         child: SafeArea(
             child: SingleChildScrollView(

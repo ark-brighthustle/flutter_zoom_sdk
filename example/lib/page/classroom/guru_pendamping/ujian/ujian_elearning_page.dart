@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_zoom_sdk_example/page/classroom/guru_pendamping/ujian/hasil_ujian_elearning_page.dart';
-import 'package:flutter_zoom_sdk_example/theme/padding.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../services/classroom/elearning_service.dart';
@@ -105,9 +104,9 @@ class _UjianElearningPageState extends State<UjianElearningPage> {
                         itemCount: listUjianElearning.length,
                         itemBuilder: (context, i){
                           DateTime dateTimeMulai = DateTime.parse(listUjianElearning[i].waktuMulai);
-                          String waktuMulai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeMulai);
+                          String waktuMulai = DateFormat('dd-MM-yyyy HH:mm').format(dateTimeMulai);
                           DateTime dateTimeSelesai = DateTime.parse(listUjianElearning[i].waktuSelesai);
-                          String waktuSelesai = DateFormat('dd-MM-yyyy hh:mm').format(dateTimeSelesai);
+                          String waktuSelesai = DateFormat('dd-MM-yyyy HH:mm').format(dateTimeSelesai);
                           return SizedBox(
                             child: Column(
                               children: [
