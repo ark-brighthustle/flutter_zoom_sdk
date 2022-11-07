@@ -531,6 +531,8 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                         onPressed: () => {
                                           _pageController.previousPage(
                                               duration: duration, curve: curve),
+                                          audioPlayer.pause(),
+                                          playing = false
                                         },
                                         icon: Padding(
                                           padding: EdgeInsets.only(left: 4),
@@ -546,8 +548,13 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
                                         border: Border.all(color: kBlack26),
                                         borderRadius: BorderRadius.circular(4)),
                                     child: IconButton(
-                                        onPressed: () => _pageController.nextPage(
+                                        onPressed: () =>
+                                        {
+                                          _pageController.nextPage(
                                             duration: duration, curve: curve),
+                                          audioPlayer.pause(),
+                                          playing = false
+                                        },
                                         icon: const Padding(
                                           padding: EdgeInsets.only(left: 4),
                                           child: Icon(
@@ -604,6 +611,11 @@ class _HasilUjianElearningPageState extends State<HasilUjianElearningPage> {
     audioPlayer.onAudioPositionChanged.listen((Duration dd) {
       setState(() {
         positionAudio = dd;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        playing = false;
       });
     });
   }
