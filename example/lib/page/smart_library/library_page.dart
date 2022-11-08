@@ -71,7 +71,7 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget buildIconBack() => Container(
       width: 40,
       height: 40,
-      margin: const EdgeInsets.only(left: padding, top: padding),
+      margin: const EdgeInsets.only(left: 8, top: padding),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
           color: kGrey.withOpacity(0.7)),
@@ -85,10 +85,10 @@ class _LibraryPageState extends State<LibraryPage> {
       ),
     );
 
-  Widget buildTitlePage() => const Padding(padding: EdgeInsets.all(padding), child: Text(titleSmartLibrary, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),);
+  Widget buildTitlePage() => const Padding(padding: EdgeInsets.only(left: 8, top: padding), child: Text(titleSmartLibrary, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),);
 
   Widget buildHeader() => Container(
-    margin: const EdgeInsets.symmetric(vertical: padding),
+    margin: const EdgeInsets.only(top: padding, bottom: padding/4),
     color: kTransparent,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,8 +106,8 @@ class _LibraryPageState extends State<LibraryPage> {
             color: kCelticBlue,
             child: cekKoneksi == true
               ? isLoading == true
-                ? Center(child: CircularProgressIndicator())
-                : itemListBook.length == 0
+                ? const Center(child: CircularProgressIndicator())
+                : itemListBook.isEmpty
                   ? buildNoData()
                   : ListView.builder(
                   itemCount: itemListBook.length,

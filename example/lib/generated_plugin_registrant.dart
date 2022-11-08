@@ -11,6 +11,7 @@ import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter_zoom_sdk/flutter_zoom_web.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
 import 'package:package_info_plus_web/package_info_plus_web.dart';
+import 'package:share_plus_web/share_plus_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:syncfusion_flutter_pdfviewer_web/pdfviewer_web.dart';
 import 'package:url_launcher_web/url_launcher_web.dart';
@@ -25,6 +26,7 @@ void registerPlugins(final Registrar registrar) {
   ZoomViewWeb.registerWith(registrar);
   ImagePickerPlugin.registerWith(registrar);
   PackageInfoPlugin.registerWith(registrar);
+  SharePlusPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);
   SyncfusionFlutterPdfViewerPlugin.registerWith(registrar);
   UrlLauncherPlugin.registerWith(registrar);
