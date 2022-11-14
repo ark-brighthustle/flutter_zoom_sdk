@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_youtube_downloader/flutter_youtube_downloader.dart';
-import 'package:flutter_zoom_sdk_example/utils/constant.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,23 +63,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
     });
   }
 
-  var youtube_link;
-  String _extractedLink = 'Loading...';
-
-  Future<void> extractYoutubeLink() async {
-    String link;
-    try {
-      link =
-          await FlutterYoutubeDownloader.extractYoutubeLink(youtube_link, 18);
-    } on PlatformException {
-      link = 'Failed to Extract YouTube Video Link.';
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _extractedLink = link;
-    });
-  }
+  
 
   @override
   void initState() {
@@ -113,25 +94,19 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
         color: kCelticBlue,
         child: cekKoneksi == true
           ? isLoading == true
-            ? Center(child: CircularProgressIndicator())
-            : liveDelayList.length == 0
+            ? const Center(child: CircularProgressIndicator())
+            : liveDelayList.isEmpty
               ?  buildNoData()
               : ListView.builder(
               itemCount: liveDelayList.length,
               itemBuilder: (context, i) {
-                String ytId =
-                liveDelayList[i].youtubeUrl.substring(32, 43);
-                youtube_link = liveDelayList[i].youtubeUrl;
+                String ytId = liveDelayList[i].youtubeUrl.substring(32, 43);
 
-                DateTime dateTime =
-                DateTime.parse(liveDelayList[i].createdAt);
-                String createdAt =
-                DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
+                DateTime dateTime = DateTime.parse(liveDelayList[i].createdAt);
+                String createdAt = DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
 
-                return tingkat.toString() ==
-                    liveDelayList[i].kodeTingkat &&
-                    widget.kodeMapel ==
-                        liveDelayList[i].kodeMataPelajaran
+                return tingkat.toString() == liveDelayList[i].kodeTingkat &&
+                    widget.kodeMapel == liveDelayList[i].kodeMataPelajaran
                     ? GestureDetector(
                     onTap: () {
                       _bottomSheet(
@@ -234,7 +209,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
     );
   }
 
-  Future<bool> _CekDurasiPlayYoutube() async {
+  Future<bool> cekDurasiPlayYoutube() async {
     late EventClickModel _eventClickModel;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? idSiswa = preferences.getInt('idSiswa').toString();
@@ -243,7 +218,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
         preferences.getString('durasi_putar_youtube_delay_streaming');
     if (idYoutube != null && durasiPutarYoutube != null) {
       var response = await DelayStreamingService()
-          .DurationPlay(idSiswa, idYoutube, durasiPutarYoutube);
+          .durationPlay(idSiswa, idYoutube, durasiPutarYoutube);
       if (response != null && response != "Tidak ditemukan") {
         _eventClickModel = response;
         if (_eventClickModel.code == 200) {
@@ -252,7 +227,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
           preferences.remove("durasi_putar_youtube_delay_streaming");
           return true;
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("[Log Activity Error] Gagal terhubung ke server")));
           return false;
         }
@@ -262,7 +237,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
         preferences.remove("durasi_putar_youtube_delay_streaming");
         return true;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("[Log Activity Error] Gagal terhubung ke server")));
         return false;
       }
@@ -279,7 +254,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
       String? gdriveUrl,
       String youtubeUrl,
       String ytId) async {
-    bool showBottom = await _CekDurasiPlayYoutube();
+    bool showBottom = await cekDurasiPlayYoutube();
     if (showBottom == true) {
       return showModalBottomSheet(
           shape: const RoundedRectangleBorder(
@@ -375,8 +350,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     PlayYoutubeVideoWidget(
-                                                        jenis:
-                                                            "delay_streaming",
+                                                        jenis: "delay_streaming",
                                                         id: idDelayStreaming,
                                                         youtubeId: ytId)));
                                       },
@@ -395,10 +369,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                                         borderRadius: BorderRadius.circular(8)),
                                     child: TextButton.icon(
                                         onPressed: () async {
-                                          //extractYoutubeLink();
-                                          //String link = "https://drive.google.com/file/d/1jSt5TulzvgoF3dllHti30LHxVJZzNPCv/view?usp=sharing";
-                                          var idLink =
-                                              gdriveUrl?.substring(32, 65);
+                                          var idLink = gdriveUrl?.substring(32, 65);
 
                                           Navigator.push(
                                               context,
@@ -406,11 +377,8 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                                                   builder: (context) =>
                                                       ProgressDownload(
                                                         ytId: ytId,
-                                                        videoUrl:
-                                                            //"https://drive.google.com/uc?export=download&id=$idLink",
-                                                            "https://www.googleapis.com/drive/v3/files/$idLink?alt=media&key=$ApiKeyGDrive",
-                                                        imageUrl:
-                                                            "https://img.youtube.com/vi/$ytId/0.jpg",
+                                                        videoUrl: "https://www.googleapis.com/drive/v3/files/$idLink?alt=media&key=$ApiKeyGDrive",
+                                                        imageUrl: "https://img.youtube.com/vi/$ytId/0.jpg",
                                                         judul: judul,
                                                       )));
                                         },
@@ -431,7 +399,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
           });
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Gagal terhubung ke server")));
+          .showSnackBar(const SnackBar(content: Text("Gagal terhubung ke server")));
     }
   }
 
@@ -456,7 +424,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
             TextButton(
               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
               onPressed: onRefresh,
-              child: Text(
+              child: const Text(
                 "Refresh",
                 style: TextStyle(color: Colors.white),
               ),
@@ -486,7 +454,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
               TextButton(
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
                 onPressed: onRefresh,
-                child: Text(
+                child: const Text(
                   "Refresh",
                   style: TextStyle(color: Colors.white),
                 ),

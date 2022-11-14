@@ -31,8 +31,8 @@ class DelayStreamingService {
     }
   }
 
-  DurationPlay(String id_siswa, String id_delay, String duration) async{
-    var url = Uri.parse("$API_LEARNING_RESOUCE_TRACKING/delay-stream/watching/${id_siswa}/${id_delay}");
+  durationPlay(String idSiswa, String idDelay, String duration) async{
+    var url = Uri.parse("$API_LEARNING_RESOUCE_TRACKING/delay-stream/watching/$idSiswa/$idDelay");
     final response = await http.post(url,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

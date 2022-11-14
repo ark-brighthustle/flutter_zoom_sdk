@@ -99,7 +99,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
   durasiPlayYoutube() async{
     bool playYoutube = await cekDurasiPlayYoutube();
     if(playYoutube != true){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("[Log Activity Error] Gagal terhubung ke server")));
     }
   }
 
@@ -110,7 +110,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
     String? idYoutube = preferences.getString('id_youtube_delay_streaming');
     String? durasiPutarYoutube = preferences.getString('durasi_putar_youtube_delay_streaming');
     if(idYoutube != null && durasiPutarYoutube != null) {
-      var response = await DelayStreamingService().DurationPlay(
+      var response = await DelayStreamingService().durationPlay(
           idSiswa, idYoutube, durasiPutarYoutube);
       if(response != null && response != "Tidak ditemukan"){
         _eventClickModel = response;
@@ -160,8 +160,8 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
         color: kCelticBlue,
         child: cekKoneksi == true
            ? isLoading == true
-            ? Center(child: CircularProgressIndicator())
-            : mapelList.length == 0
+            ? const Center(child: CircularProgressIndicator())
+            : mapelList.isEmpty
               ? buildNoData()
               : ListView.builder(
             itemCount: mapelList.length,
@@ -213,7 +213,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
             TextButton(
               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
               onPressed: onRefresh,
-              child: Text(
+              child: const Text(
                 "Refresh",
                 style: TextStyle(color: Colors.white),
               ),
@@ -243,7 +243,7 @@ class _DelayStreamingPageState extends State<DelayStreamingPage>
               TextButton(
                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kCelticBlue)),
                 onPressed: onRefresh,
-                child: Text(
+                child: const Text(
                   "Refresh",
                   style: TextStyle(color: Colors.white),
                 ),
