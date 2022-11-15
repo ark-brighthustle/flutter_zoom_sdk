@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import io.flutter.plugin.common.EventChannel;
 import us.zoom.sdk.MeetingError;
+import us.zoom.sdk.MeetingParameter;
 import us.zoom.sdk.MeetingService;
 import us.zoom.sdk.MeetingServiceListener;
 import us.zoom.sdk.MeetingStatus;
@@ -13,28 +14,38 @@ import us.zoom.sdk.MeetingStatus;
 /**
  * This class implements the handler for the Zoom meeting event in the flutter event channel
  */
-public class StatusStreamHandler implements EventChannel.StreamHandler {
+public class StatusStreamHandler implements EventChannel.StreamHandler,MeetingServiceListener {
     private final MeetingService meetingService;
     private MeetingServiceListener statusListener;
-
+    private EventChannel.EventSink events;
     public StatusStreamHandler(MeetingService meetingService) {
         this.meetingService = meetingService;
+    }
+    @Override
+    public void onMeetingStatusChanged(MeetingStatus meetingStatus,
+                                       int errorCode,
+                                       int internalErrorCode) {
+        if(meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
+                errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
+            events.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "Version of ZoomSDK is too low"));
+            return;
+        }
+
+        events.success(getMeetingStatusMessage(meetingStatus));
+    }
+
+    @Override
+    public void onMeetingParameterNotification(MeetingParameter meetingParameter) {
+
     }
 
     @Override
     public void onListen(Object arguments, final EventChannel.EventSink events) {
-        statusListener = (meetingStatus, errorCode, internalErrorCode) -> {
+        this.events=events;
 
-            if(meetingStatus == MeetingStatus.MEETING_STATUS_FAILED &&
-                    errorCode == MeetingError.MEETING_ERROR_CLIENT_INCOMPATIBLE) {
-                events.success(Arrays.asList("MEETING_STATUS_UNKNOWN", "Version of ZoomSDK is too low"));
-                return;
-            }
-
-            events.success(getMeetingStatusMessage(meetingStatus));
-        };
-
-        this.meetingService.addListener(statusListener);
+        if (meetingService != null) {
+            meetingService.addListener(this);
+        }
     }
 
     @Override
