@@ -144,4 +144,40 @@
         <ID8 text="Yên ả"></ID8>
         <ID9 text="Beep"></ID9>
     </Vietnamese>
+    <Polish>
+        <ID0 text="Domyślny"></ID0>
+        <ID1 text="Fala"></ID1>
+        <ID2 text="Dyskoteka"></ID2>
+        <ID3 text="Pobudzenie"></ID3>
+        <ID4 text="Wiosenna radość"></ID4>
+        <ID5 text="W szuwarach"></ID5>
+        <ID6 text="Słońce w południe"></ID6>
+        <ID7 text="Delikatne przebudzenie"></ID7>
+        <ID8 text="Fred"></ID8>
+        <ID9 text="Sygnał dźwiękowy"></ID9>
+    </Polish>
+    <Turkish>
+        <ID0 text="Varsayılan"></ID0>
+        <ID1 text="Dalga"></ID1>
+        <ID2 text="Disko"></ID2>
+        <ID3 text="Uyanış"></ID3>
+        <ID4 text="Bahar Neşesi"></ID4>
+        <ID5 text="Sazlık Keyfi"></ID5>
+        <ID6 text="Öğle Güneşi"></ID6>
+        <ID7 text="Yumuşak Bir Çağrı"></ID7>
+        <ID8 text="Fred"></ID8>
+        <ID9 text="Bip"></ID9>
+    </Turkish>
+    <Indonesian>
+        <ID0 text="Default"></ID0>
+        <ID1 text="Riak Air"></ID1>
+        <ID2 text="Diskotek"></ID2>
+        <ID3 text="Bangkit"></ID3>
+        <ID4 text="Keceriaan Musim Semi"></ID4>
+        <ID5 text="Di Tengah Alang-Alang"></ID5>
+        <ID6 text="Matahari Terik"></ID6>
+        <ID7 text="Reveille Lembut"></ID7>
+        <ID8 text="Fred"></ID8>
+        <ID9 text="Bip"></ID9>
+    </Indonesian>
 </language>
