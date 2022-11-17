@@ -115,14 +115,9 @@
 @property (nullable, nonatomic, retain, readwrite) NSString * zak;
 
 /*!
- @brief appPrivilegeToken Token for app privilege.
+ @brief Using jmak.
  */
-@property(nullable, nonatomic, retain, readwrite) NSString *appPrivilegeToken;
-
-/*!
- @brief Using zoom meeting token.
- */
-@property (nullable, nonatomic, retain, readwrite) NSString * join_token;
+@property (nullable, nonatomic, retain, readwrite) NSString * jmak;
 @end
 
 /*!

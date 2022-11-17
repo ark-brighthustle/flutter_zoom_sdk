@@ -150,10 +150,4 @@
  */
 - (BOOL)setCustomizedPollingUrl:(nullable NSString *)pollingURL bCreate:(BOOL)bCreate;
 
-/*!
- @brief Allowing the developer to customize the URL of cloud whiteboard feedback.
- @param feedbackUrl customized URL.
- @return YES means the method is called successfully, otherwise not.
- */
-- (BOOL)setCloudWhiteboardFeedbackUrl:(nullable NSString *)feedbackUrl;
 @end

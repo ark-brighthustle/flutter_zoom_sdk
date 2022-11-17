@@ -107,24 +107,4 @@ typedef enum {
  @return The result of  the message can be deleted.
  */
 - (BOOL)isChatMessageCanBeDeleted:(nonnull NSString *)msgId;
-
-/*!
- @brief Is share meeting chat legal notice available.
- @return available or not.
- @warning need call in meeting.
- */
-- (BOOL)isShareMeetingChatLegalNoticeAvailable;
-
-/*!
- @brief Get start share meeting chat legal notice content.
- @return start share chat legal notice content.
- */
-- (NSString *_Nullable)getShareMeetingChatStartedLegalNoticeContent;
-
-/*!
- @brief Get stop share meeting chat legal notice content.
- @return stop share chat legal notice content.
- */
-- (NSString *_Nullable)getShareMeetingChatStoppedLegalNoticeContent;
-
 @end

@@ -12,7 +12,6 @@
 #import "MobileRTCBORole.h"
 #import "MobileRTCReturnToMainSessionHandler.h"
 #import "MobileRTCPreProcessRawData.h"
-#import "MobileRTCAudioSender.h"
 #import "MobileRTCVideoSender.h"
 #import "MobileRTCShareSender.h"
 #import "MobileRTCVideoCapabilityItem.h"
@@ -935,36 +934,6 @@
  @param rawData Audio's raw data.
  */
 - (void)onMobileRTCOneWayAudioAudioRawData:(MobileRTCAudioRawData *_Nonnull)rawData userId:(NSUInteger)userId;
-@end
-
-#pragma mark - MobileRTCAudioSourceDelegate
-/*!
-@protocol MobileRTCAudioSourceDelegate
-@brief This class is used to send your own audio rawdata.
-@discussion The MobileRTCAudioSourceDelegate protocol is required in the custom meeting UI view.
-*/
-@protocol MobileRTCAudioSourceDelegate <NSObject>
-
-@optional
-
-/**
- @brief Callback for virtual audio source to do some initialization.
- @param rawdataSender It is a pointer of audio sender object.
- */
-- (void)onDeviceInitialize:(MobileRTCAudioSender *_Nonnull)rawdataSender;
-/**
- @brief Callback for virtual audio source can send raw data with 'rawdataSender'.
- */
-- (void)onStartSendData;
-/**
- @brief Callback for virtual audio source should stop send raw data.
- */
-- (void)onStopSendData;
-/**
- @brief Callback for virtual audio source is uninitialized.
- */
-- (void)onDeviceUninitialize;
-
 @end
 
 #pragma mark - MobileRTCPreProcessorDelegate

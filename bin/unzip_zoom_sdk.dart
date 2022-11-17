@@ -59,7 +59,7 @@ Future<void> checkAndDownloadSDK(String location) async {
 
   if (!exists) {
     await downloadFile(
-        Uri.parse('https://www.dropbox.com/s/2wm3fu18ewseu9c/mobilertc.aar?dl=1'),
+        Uri.parse('https://www.dropbox.com/s/ay2uh3dcw8jzib4/MobileRTC?dl=1'),
         iosSimulateSDKFile);
   }
 

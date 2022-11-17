@@ -191,17 +191,6 @@
  @brief Enable Custom In-Meeting UI in meeting.
  */
 @property (assign, nonatomic) BOOL enableCustomMeeting;
-
-/*!
- @brief hide feedback button on cloud whiteboard.
- */
-@property (assign, nonatomic) BOOL hideFeedbackButtonOnCloudWhiteboard;
-
-/*!
- @brief hide share button on cloud whiteboard.
- */
-@property (assign, nonatomic) BOOL hideShareButtonOnCloudWhiteboard;
-
 /*!
  @brief Query if the user joins meeting with audio device. 
  @return YES means the audio device is automatically connected, otherwise not. 

@@ -16,25 +16,13 @@
 @optional
 
 /*!
- @protocol MobileRTCWaitingRoomServiceDelegate
+ @class MobileRTCWaitingRoomServiceDelegate
  @brief Meeting host enabled the waiting room feature, then the delegate will receive this notification  #only for custom UI#.
          onWaitingRoomUserJoin: will notify the host someone entery the waiting room.
          onWaitingRoomUserLeft: will notify the host someone left from waiting room.
  */
 - (void)onWaitingRoomUserJoin:(NSUInteger)userId;
 - (void)onWaitingRoomUserLeft:(NSUInteger)userId;
-
-/*!
- @brief During the waiting room, this callback event will be triggered when host change audio status.
- @param audioCanTurnOn YES means audio can be turned on. Otherwise not.
- */
-- (void)onWaitingRoomPresetAudioStatusChanged:(BOOL)audioCanTurnOn;
-
-/*!
- @brief During the waiting room, this callback event will be triggered when host change video status.
- @param videoCanTurnOn YES means video can be turned on. Otherwise not.
- */
-- (void)onWaitingRoomPresetVideoStatusChanged:(BOOL)videoCanTurnOn;
 @end
 
 @interface MobileRTCWaitingRoomService : NSObject
@@ -87,17 +75,5 @@
  @warning Only meeting host/co-host can run the function.
  */
 - (BOOL)putInWaitingRoom:(NSUInteger)userId;
-
-/*!
- @brief Determine if the attendee is enabled to turn on audio when joining the meeting.
- @return YES indicates to enable to turn on.
- */
-- (BOOL)isAudioEnabledInWaitingRoom;
-
-/*!
- @brief Determine if the attendee is enabled to turn on video when joining the meeting.
- @return YES indicates to enable to turn on.
- */
-- (BOOL)isVideoEnabledInWaitingRoom;
 
 @end

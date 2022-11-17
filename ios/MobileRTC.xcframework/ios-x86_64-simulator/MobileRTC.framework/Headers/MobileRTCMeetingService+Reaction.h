@@ -25,15 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @param skinTone The skintone of the emoji reaction
  * @return If the function succeeds, it will return MobileRTCMeetError_Success, otherwise not.
  */
-- (MobileRTCMeetError)sendEmojiReaction:(MobileRTCEmojiReactionType)type reactionSkinTone:(MobileRTCEmojiReactionSkinTone)skinTone; DEPRECATED_MSG_ATTRIBUTE("Use -sendEmojiReaction: instead");
+- (MobileRTCMeetError)sendEmojiReaction:(MobileRTCEmojiReactionType)type reactionSkinTone:(MobileRTCEmojiReactionSkinTone)skinTone;
 
-/**
- * @brief Send emoji reaction.
- * @param type The type of the emoji reaction.
- * @return If the function succeeds, it will return ZoomSDKError_succuss, otherwise not.
- * @waring MobileRTCEmojiReactionSkinTone don't work for MobileRTCEmojiReactionType_Heart type. if you want to set MobileRTCEmojiReactionSkinTone, you need to use -[MobileRTCMeetingSettings setReactionSkinTone] in MobileRTCMeetingSettings.h file
- */
-- (MobileRTCMeetError)sendEmojiReaction:(MobileRTCEmojiReactionType)type;
 
 @end
 

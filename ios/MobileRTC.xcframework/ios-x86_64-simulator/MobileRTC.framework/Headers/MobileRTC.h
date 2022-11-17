@@ -23,7 +23,6 @@
 #import <MobileRTC/MobileRTCMeetingService+BO.h>
 #import <MobileRTC/MobileRTCMeetingService+Reaction.h>
 #import <MobileRTC/MobileRTCMeetingService+LiveTranscription.h>
-#import <MobileRTC/MobileRTCMeetingService+RawArchiving.h>
 #import <MobileRTC/MobileRTCMeetingSettings.h>
 #import <MobileRTC/MobileRTCInviteHelper.h>
 #import <MobileRTC/MobileRTCRoomDevice.h>
@@ -39,7 +38,6 @@
 #import <MobileRTC/MobileRTCAudioRawDataHelper.h>
 #import <MobileRTC/MobileRTCVideoSourceHelper.h>
 #import <MobileRTC/MobileRTCShareSourceHelper.h>
-#import <MobileRTC/MobileRTCAudioSourceHelper.h>
 #import <MobileRTC/MobileRTCSMSService.h>
 #import <MobileRTC/MobileRTCDirectShareService.h>
 
