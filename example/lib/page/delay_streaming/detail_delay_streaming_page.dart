@@ -100,7 +100,10 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
               : ListView.builder(
               itemCount: liveDelayList.length,
               itemBuilder: (context, i) {
-                String ytId = liveDelayList[i].youtubeUrl.substring(32, 43);
+                // String ytId = liveDelayList[i].youtubeUrl.substring(32, 43);
+                RegExp? regExp2 = new RegExp(r'(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:embed/|v/|watch\?v=|watch\?.+&v=))([\w-]{11})(?:[^\w-]|$)');
+                RegExpMatch? match2 = regExp2.firstMatch(liveDelayList[i].youtubeUrl);
+                String? ytId = match2!.group(1);
 
                 DateTime dateTime = DateTime.parse(liveDelayList[i].createdAt);
                 String createdAt = DateFormat('dd-MM-yyyy HH:mm').format(dateTime);
@@ -116,7 +119,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                           liveDelayList[i].deskripsi,
                           liveDelayList[i].gdriveUrl,
                           liveDelayList[i].youtubeUrl,
-                          ytId);
+                          ytId!);
                     },
                     child: Container(
                       width: 300,
@@ -262,7 +265,10 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                   topLeft: Radius.circular(12), topRight: Radius.circular(12))),
           context: context,
           builder: (_) {
-            var ytId = youtubeUrl.substring(32, 43);
+            // var ytId = youtubeUrl.substring(32, 43);
+            RegExp? regExp2 = new RegExp(r'(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:embed/|v/|watch\?v=|watch\?.+&v=))([\w-]{11})(?:[^\w-]|$)');
+            RegExpMatch? match2 = regExp2.firstMatch(youtubeUrl);
+            String? ytId = match2!.group(1);
 
             return SizedBox(
               child: Column(
@@ -352,7 +358,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                                                     PlayYoutubeVideoWidget(
                                                         jenis: "delay_streaming",
                                                         id: idDelayStreaming,
-                                                        youtubeId: ytId)));
+                                                        youtubeId: ytId!)));
                                       },
                                       icon: const Icon(Icons.play_arrow,
                                           color: kWhite),
@@ -376,7 +382,7 @@ class _DetailDelayStreamingPageState extends State<DetailDelayStreamingPage> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgressDownload(
-                                                        ytId: ytId,
+                                                        ytId: ytId!,
                                                         videoUrl: "https://www.googleapis.com/drive/v3/files/$idLink?alt=media&key=$ApiKeyGDrive",
                                                         imageUrl: "https://img.youtube.com/vi/$ytId/0.jpg",
                                                         judul: judul,

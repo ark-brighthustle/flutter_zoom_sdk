@@ -114,6 +114,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> {
   _getDataVaksin() async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if(preferences.getInt("vaksin_id_siswa") == null) {
+      print("DATA SERVER");
       var response = await VaksinService().getDataVaksin(widget.idSiswa);
 
       if(response != null){
@@ -168,6 +169,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> {
       }
 
     }else{
+      print("DATA SHAREDPREFERENCE");
       String? tempatlahir = preferences.getString("vaksin_tempat_lahir");
       String? tanggallahir = preferences.getString("vaksin_tanggal_lahir");
       String? nokk = preferences.getString("vaksin_no_kk");
@@ -180,10 +182,15 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> {
         _controllerTempatLahir.text = tempatlahir.toString();
       }
       if(tanggallahir != null){
-        TglLahir = tanggallahir;
-        DateTime tanggal = DateTime.parse(tanggallahir.toString());
-        String tanggal_lahir = DateFormat('dd/MM/yyyy').format(tanggal);
-        _controllerTglLahir.text = tanggal_lahir;
+        try {
+          TglLahir = tanggallahir;
+          DateTime tanggal = DateTime.parse(tanggallahir.toString());
+          String tanggal_lahir = DateFormat('dd/MM/yyyy').format(tanggal);
+          _controllerTglLahir.text = tanggal_lahir;
+        } catch (e) {
+          // Handle the error
+          print("Error parsing date: $e");
+        }
       }
       if(nokk != null) {
         _controllerNoKk.text = nokk.toString();
@@ -478,6 +485,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.isEdit) {
       setState(() {
         _controllerJekel.text = widget.jekel;
@@ -486,7 +494,6 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> {
         _getDataVaksin();
       });
     }
-    super.initState();
   }
 
   @override

@@ -11,6 +11,7 @@ import '../../utils/config.dart';
 class DelayStreamingService {
   getDataLiveDelay() async {
     var url = Uri.parse(API_DELAY_STREAMING);
+    print(url);
     try{
       final response = await http.get(url).timeout(const Duration(seconds: 7));
       var responseJson = json.decode(response.body);
