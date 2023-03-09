@@ -215,7 +215,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     };
 
     if(!zoomSDK.isLoggedIn()){
-      zoomSDK.loginWithZoom(options.get("userId"), options.get("userPassword"));
+      //zoomSDK.loginWithZoom(options.get("userId"), options.get("userPassword"));
       zoomSDK.addAuthenticationListener(authenticationListener);
     }
 
@@ -349,7 +349,7 @@ public class FlutterZoomSdkPlugin implements FlutterPlugin, MethodChannel.Method
     };
 
     if(!zoomSDK.isLoggedIn()){
-      zoomSDK.loginWithZoom(options.get("userId"), options.get("userPassword"));
+      //zoomSDK.loginWithZoom(options.get("userId"), options.get("userPassword"));
       zoomSDK.addAuthenticationListener(authenticationListener);
     }
   }
